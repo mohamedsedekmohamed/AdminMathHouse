@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, X, Upload, AlertCircle, Info } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Select from "react-select";
 
 const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
   const navigate = useNavigate();
@@ -17,19 +18,23 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
 
   // Dirty Check (to detect unsaved changes)
   const isDirty = JSON.stringify(formData) !== JSON.stringify(initialData || fields.reduce((acc, field) => ({ ...acc, [field.name]: field.defaultValue ?? '' }), {}));
-
-  useEffect(() => {
+useEffect(() => {
     if (initialData) {
       setFormData(prev => ({ ...prev, ...initialData }));
+      
       const newPreviews = {};
-      fields.forEach(field => {
-        if (field.type === 'file' && typeof initialData[field.name] === 'string') {
-          newPreviews[field.name] = initialData[field.name];
+      // يمكنك استخدام fields هنا دون وضعها في مصفوفة الاعتماديات 
+      // أو الاكتفاء بالـ initialData
+      Object.keys(initialData).forEach(key => {
+        // افتراض: لو في داتا جاية كـ string وصورتها محفوظة
+        if (typeof initialData[key] === 'string' && initialData[key].includes('http')) {
+           newPreviews[key] = initialData[key];
         }
       });
       setPreviews(newPreviews);
     }
-  }, [initialData, fields]);
+  // ✅ احذف fields من هنا لتجنب مسح الفورم عند جلب الـ roles
+  }, [initialData]);
 
   // --- Validation Logic (Translated) ---
   const validateField = useCallback((field, value) => {
@@ -44,6 +49,18 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
       const customError = field.customValidator(value, formData);
       if (customError) error = customError;
     }
+    if (
+  field.required &&
+  (
+    value === undefined ||
+    value === null ||
+    value === "" ||
+    (Array.isArray(value) && value.length === 0)
+  )
+) {
+  error = field.requiredMessage || "This field is required";
+}
+
     return error;
   }, [formData]);
 
@@ -109,20 +126,23 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
       </div>
 
       <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (!validateForm()) return;
-          try {
-            setIsSubmitting(true);
-            await onSave(formData);
-          } finally {
-            setIsSubmitting(false);
-          }
-        }}
+       onSubmit={async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      setIsSubmitting(true);
+      await onSave(formData);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }}
         className=" mx-auto space-y-8"
       >
         {Object.entries(sections).map(([sectionTitle, sectionFields]) => (
-          <div key={sectionTitle} className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div key={sectionTitle} className="bg-white rounded-2xl shadow-sm border border-slate-100 ">
             <div className="px-8 py-4 bg-slate-50/50 border-b border-slate-100">
               <h2 className="text-lg font-bold text-slate-700">{sectionTitle}</h2>
             </div>
@@ -140,7 +160,7 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
                     </label>
 
                     {/* Inputs logic */}
-                    {['text', 'email', 'password', 'number'].includes(field.type) && (
+                    {['text', 'email', 'password'].includes(field.type) && (
                       <input
                         type={field.type}
                         name={field.name}
@@ -150,7 +170,95 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
                         onChange={handleChange}
                       />
                     )}
+                  
+      {['number'].includes(field.type) && (
+  <input
+    min={0}
+    type={field.type}
+    name={field.name}
+    value={formData[field.name] || ''}
+    placeholder={field.placeholder}
+    className={`
+      appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none 
+      no-spinner p-3 rounded-xl border bg-slate-50/30 focus:ring-4 focus:ring-one/10 outline-none transition-all ${
+      errors[field.name]
+        ? 'border-red-400'
+        : 'border-slate-200 focus:border-one'
+    }`}
+    onChange={handleChange}
+  />
+)}
+{['numberdecimal'].includes(field.type) && (
+  <input
+    min={0}
+    step="any"        // هنا
+    type="number"     // type لازم يكون "number"
+    name={field.name}
+    value={formData[field.name] || ''}
+    placeholder={field.placeholder}
+    className={`
+      appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none 
+      no-spinner p-3 rounded-xl border bg-slate-50/30 focus:ring-4 focus:ring-one/10 outline-none transition-all ${
+        errors[field.name]
+          ? 'border-red-400'
+          : 'border-slate-200 focus:border-one'
+      }`}
+    onChange={handleChange}
+  />
+)}  
 
+
+{field.type === "multipleSelect" && (
+  <Select
+    isMulti
+    name={field.name}
+    options={field.options} // [{ value: '1', label: 'Option 1' }]
+value={
+  Array.isArray(formData[field.name])
+    ? field.options.filter(opt => formData[field.name].includes(opt.value))
+    : []
+}
+    onChange={(selected) => {
+      const values = selected ? selected.map(opt => opt.value) : [];
+      setFormData(prev => ({ ...prev, [field.name]: values }));
+      if (errors[field.name]) setErrors(prev => ({ ...prev, [field.name]: "" }));
+    }}
+    className="basic-multi-select"
+    classNamePrefix="select"
+  styles={{
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "var(--color-two)", // خلفية الصندوق
+      borderColor: "var(--color-one)",     // لون الحدود
+      borderRadius: "0.75rem",
+      padding: "0.25rem",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused
+        ? "var(--color-three)" // عند المرور بالماوس
+        : "var(--color-two)",  // الخلفية العادية
+      color: "var(--color-one)", // لون النص
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: "var(--color-four)", // خلفية القيمة المختارة
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: "var(--color-two)", // نص القيمة المختارة
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: "var(--color-two)", // لون علامة الإزالة
+      ":hover": {
+        backgroundColor: "var(--color-one)",
+        color: "var(--color-two)",
+      },
+    }),
+  }}
+  />
+)}
                     {field.type === "date" && (
                       <DatePicker
                         selected={formData[field.name] ? new Date(formData[field.name]) : null}

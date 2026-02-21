@@ -6,11 +6,10 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
-
-const RawScore = () => {
+const Teachers = () => {
   const navigate = useNavigate();
 
-  const { data, loading, refetch, error } = useGet("/api/admin/rawScore");
+  const { data, loading, refetch ,error } = useGet("/api/admin/teacher");
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -23,7 +22,7 @@ const RawScore = () => {
 
   const confirmDelete = async () => {
     try {
-      await deleteData(`/api/admin/rawScore/${selectedRow.id}`);
+      await deleteData(`/api/admin/teacher/${selectedRow.id}`);
       setOpenDeleteModal(false);
       setSelectedRow(null);
       refetch();
@@ -33,62 +32,56 @@ const RawScore = () => {
   };
 
   const columns = [
-    { header: "Name", key: "name" },
-    { header: "Score", key: "score" },
     {
-      header: "Gifting?",
-      key: "is_giftingScore",
+      header: "Avatar",
+      key: "avatar",
       render: (value) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            value ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-          }`}
-        >
-          {value ? "Yes" : "No"}
-        </span>
+        <img
+          src={value || "/placeholder.png"}
+          alt="teacher"
+          className="w-12 h-12 object-cover rounded-full border bg-gray-100"
+        />
       ),
     },
-    {
-      header: "Gifting Score",
-      key: "giftingScore",
-      render: (value) => (value ? value : "-"),
-    },
-    {
-      header: "Course",
-      key: "courseName",
-    },
+    { header: "Name", key: "name" },
+    { header: "Email", key: "email" },
+    { header: "Phone", key: "phoneNumber" },
+
   ];
 
   const tableData = useMemo(() => {
     return (
-      data?.data?.rawScores?.map((r) => ({
-        id: r.id,
-        name: r.name,
-        score: r.score,
-        is_giftingScore: r.is_giftingScore,
-        giftingScore: r.giftingScore,
-        courseName: r.courses?.name || "-",
-        raw: r,
+      data?.data?.teacher?.map((t) => ({
+        id: t.id,
+        name: t.name,
+        email: t.email,
+        phoneNumber: t.phoneNumber,
+        avatar: t.avatar,
+        raw: t,
       })) || []
     );
   }, [data]);
 
   const handleEdit = (row) => {
-    navigate(`/admin/settings/rawscore/edit/${row.id}`);
+    navigate(`/admin/users/teachers/edit/${row.id}`);
   };
 
-  if (loading) return <Loader />;
-  if (error) return <Errorpage />;
+if (loading) {
+    return <Loader />;
+  }
 
+  if (error) {
+    return <div><Errorpage /></div>;
+  }
   return (
     <div>
       <ReusableTable
-        title="Raw Scores"
-        titleAdd="Raw Score"
+        title="Teachers"
+        titleAdd="Teacher"
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-        onAddClick={() => navigate("/admin/settings/rawscore/add")}
+        onAddClick={() => navigate("/admin/users/teachers/add")}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
@@ -97,11 +90,11 @@ const RawScore = () => {
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Raw Score"
+        title="Delete Teacher"
         description={`Are you sure you want to delete "${selectedRow?.name}" ?`}
       />
     </div>
   );
 };
 
-export default RawScore;
+export default Teachers;

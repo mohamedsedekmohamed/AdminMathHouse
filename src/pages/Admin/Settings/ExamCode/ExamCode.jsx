@@ -6,11 +6,10 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
-
-const RawScore = () => {
+const Exam = () => {
   const navigate = useNavigate();
 
-  const { data, loading, refetch, error } = useGet("/api/admin/rawScore");
+  const { data, loading, refetch ,error } = useGet("/api/admin/examCodes");
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -23,7 +22,7 @@ const RawScore = () => {
 
   const confirmDelete = async () => {
     try {
-      await deleteData(`/api/admin/rawScore/${selectedRow.id}`);
+      await deleteData(`/api/admin/examCodes/${selectedRow.id}`);
       setOpenDeleteModal(false);
       setSelectedRow(null);
       refetch();
@@ -33,62 +32,38 @@ const RawScore = () => {
   };
 
   const columns = [
-    { header: "Name", key: "name" },
-    { header: "Score", key: "score" },
-    {
-      header: "Gifting?",
-      key: "is_giftingScore",
-      render: (value) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            value ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-          }`}
-        >
-          {value ? "Yes" : "No"}
-        </span>
-      ),
-    },
-    {
-      header: "Gifting Score",
-      key: "giftingScore",
-      render: (value) => (value ? value : "-"),
-    },
-    {
-      header: "Course",
-      key: "courseName",
-    },
+    { header: "Code", key: "code" },
   ];
 
   const tableData = useMemo(() => {
     return (
-      data?.data?.rawScores?.map((r) => ({
-        id: r.id,
-        name: r.name,
-        score: r.score,
-        is_giftingScore: r.is_giftingScore,
-        giftingScore: r.giftingScore,
-        courseName: r.courses?.name || "-",
-        raw: r,
+      data?.data?.data?.map((exam) => ({
+        id: exam.id,
+        code: exam.code,
+        createdAt: new Date(exam.createdAt).toLocaleDateString(),
+        raw: exam,
       })) || []
     );
   }, [data]);
 
   const handleEdit = (row) => {
-    navigate(`/admin/settings/rawscore/edit/${row.id}`);
+    navigate(`/admin/settings/examcode/edit/${row.id}`);
   };
-
-  if (loading) return <Loader />;
-  if (error) return <Errorpage />;
-
+if (loading) {
+  return <Loader />;
+}
+if (error) {
+  return <Errorpage />;
+}
   return (
     <div>
       <ReusableTable
-        title="Raw Scores"
-        titleAdd="Raw Score"
+        title="Exam Codes"
+        titleAdd="Exam Code"
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-        onAddClick={() => navigate("/admin/settings/rawscore/add")}
+        onAddClick={() => navigate("/admin/settings/examcode/add")}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
@@ -97,11 +72,11 @@ const RawScore = () => {
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Raw Score"
-        description={`Are you sure you want to delete "${selectedRow?.name}" ?`}
+        title="Delete Exam Code"
+        description={`Are you sure you want to delete "${selectedRow?.code}" ?`}
       />
     </div>
   );
 };
 
-export default RawScore;
+export default Exam;

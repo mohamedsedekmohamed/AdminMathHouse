@@ -4,13 +4,11 @@ import useGet from "@/hooks/useGet";
 import React, { useMemo, useState } from "react";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
-import Loader from "@/components/Loader";
-import Errorpage from "@/components/Errorpage";
-
-const RawScore = () => {
+import NavChild from "../../../../components/NavChild";
+const Category = () => {
   const navigate = useNavigate();
 
-  const { data, loading, refetch, error } = useGet("/api/admin/rawScore");
+  const { data, loading, refetch } = useGet("/api/admin/category");
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -23,7 +21,7 @@ const RawScore = () => {
 
   const confirmDelete = async () => {
     try {
-      await deleteData(`/api/admin/rawScore/${selectedRow.id}`);
+      await deleteData(`/api/admin/category/${selectedRow.id}`);
       setOpenDeleteModal(false);
       setSelectedRow(null);
       refetch();
@@ -31,77 +29,70 @@ const RawScore = () => {
       console.error(e);
     }
   };
-
   const columns = [
-    { header: "Name", key: "name" },
-    { header: "Score", key: "score" },
     {
-      header: "Gifting?",
-      key: "is_giftingScore",
+      header: "Image",
+      key: "image",
       render: (value) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            value ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-          }`}
-        >
-          {value ? "Yes" : "No"}
-        </span>
+        <img
+          src={value || "/placeholder.png"}
+          alt="category"
+          className="w-12 h-12 object-cover rounded-md border bg-gray-100"
+        />
       ),
     },
-    {
-      header: "Gifting Score",
-      key: "giftingScore",
-      render: (value) => (value ? value : "-"),
-    },
-    {
-      header: "Course",
-      key: "courseName",
-    },
+    { header: "Name", key: "name" },
+    { header: "Description", key: "description" },
+    { header: "Parent", key: "parentName" },
+    { header: "Level", key: "level" },
   ];
 
   const tableData = useMemo(() => {
     return (
-      data?.data?.rawScores?.map((r) => ({
-        id: r.id,
-        name: r.name,
-        score: r.score,
-        is_giftingScore: r.is_giftingScore,
-        giftingScore: r.giftingScore,
-        courseName: r.courses?.name || "-",
-        raw: r,
+      data?.data?.data?.map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+        description: cat.description,
+        parentName:
+          cat.ancestors?.length > 0
+            ? cat.ancestors[cat.ancestors.length - 1]?.name
+            : "—",
+        level: cat.ancestors?.length || 0,
+        image: cat.image,
+        raw: cat,
       })) || []
     );
   }, [data]);
 
   const handleEdit = (row) => {
-    navigate(`/admin/settings/rawscore/edit/${row.id}`);
+    navigate(`/admin/courses/categories/edit/${row.id}`);
   };
-
-  if (loading) return <Loader />;
-  if (error) return <Errorpage />;
 
   return (
     <div>
       <ReusableTable
-        title="Raw Scores"
-        titleAdd="Raw Score"
+        title="Categories"
+        titleAdd="Category"
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-        onAddClick={() => navigate("/admin/settings/rawscore/add")}
+        onAddClick={() => navigate("/admin/courses/categories/add")}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        extraActions={(row) => (
+       <NavChild route={`/admin/courses/courses/${row.id}`}/>
+        )}
       />
 
       <ConfirmDeleteModal
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Raw Score"
+        title="Delete Category"
         description={`Are you sure you want to delete "${selectedRow?.name}" ?`}
       />
     </div>
   );
 };
 
-export default RawScore;
+export default Category;

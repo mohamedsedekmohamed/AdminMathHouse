@@ -10,7 +10,10 @@ const ReusableTable = ({
   titleAdd, 
   onEdit,     // دالة التعديل
   onDelete,   // دالة الحذف
-  extraActions // دالة لإضافة أي أزرار أخرى
+  extraActions, // دالة لإضافة أي أزرار أخرى
+   showStatusInActions = false,
+  onToggleStatus,
+  statusKey = "status",
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +80,7 @@ const ReusableTable = ({
                     {col.header}
                   </th>
                 ))}
-                {(onEdit || onDelete || extraActions) && (
+{(onEdit || onDelete || extraActions || showStatusInActions) && (
                   <th className="p-4 font-bold text-one uppercase text-[11px] tracking-widest text-center">
                     Actions
                   </th>
@@ -99,36 +102,105 @@ const ReusableTable = ({
                     ))}
 
                     {/* Actions Column */}
-                    {(onEdit || onDelete || extraActions) && (
-                      <td className="p-4">
-                        <div className="flex justify-center items-center gap-2">
-                          {/* Extra Custom Actions */}
-                          {extraActions && extraActions(row)}
+            {/* Actions Column */}
+{(onEdit || onDelete || extraActions || showStatusInActions) && (
+  <td className="p-4">
+    <div className="flex justify-center items-center gap-2 flex-wrap">
+      
+      {/* Status Badge / Toggle */}
+      {showStatusInActions && (
+        onToggleStatus ? (
+       <button
+  onClick={() => onToggleStatus(row)}
+  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-300 ${
+    row[statusKey] === "active" ? "bg-green-500" : "bg-gray-300"
+  }`}
+  title={row[statusKey] === "active" ? "Deactivate" : "Activate"}
+>
+  <span
+    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+      row[statusKey] === "active" ? "translate-x-4" : "translate-x-1"
+    }`}
+  />
+</button>
 
-                          {/* Default Edit Button */}
-                          {onEdit && (
-                            <button
-                              onClick={() => onEdit(row)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              title="Edit"
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </button>
-                          )}
+        ) : (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              row[statusKey] === "active"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {row[statusKey]}
+          </span>
+        )
+      )}
 
-                          {/* Default Delete Button */}
-                          {onDelete && (
-                            <button
-                              onClick={() => onDelete(row)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    )}
+      {/* Extra Custom Actions */}
+      {extraActions && extraActions(row)}
+
+      {/* Default Edit Button */}
+      {onEdit && (
+      <button
+  onClick={() => onEdit(row)}
+  className="
+    group
+    p-2 
+    rounded-lg 
+    transition-all 
+    duration-200
+    hover:bg-blue-600
+    hover:scale-105
+  "
+  title="Edit"
+>
+  <Pencil
+    className="
+      w-4 h-4 
+      text-blue-600 
+      transition-all 
+      duration-200
+      group-hover:text-white
+      group-hover:-rotate-6
+    "
+  />
+</button>
+
+      )}
+
+      {/* Default Delete Button */}
+      {onDelete && (
+        <button
+  onClick={() => onDelete(row)}
+  className="
+    group
+    p-2 
+    rounded-lg 
+    transition-all 
+    duration-200
+    hover:bg-red-600
+    hover:scale-105
+  "
+  title="Delete"
+>
+  <Trash2
+    className="
+      w-4 h-4 
+      text-red-600 
+      transition-colors 
+      duration-200
+      group-hover:text-white
+      group-hover:rotate-6
+    "
+  />
+</button>
+
+      )}
+    </div>
+  </td>
+)}
+
                   </tr>
                 ))
               ) : (

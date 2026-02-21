@@ -4,30 +4,58 @@ import SaveRoute from "../Auth/SaveRoute";
 import AdminLayout from "../Layout/AdminLayout";
 import Home from "../pages/Home/Home";
 
-import Admin from "../pages/Admin/Admin/Admin";
-import AddAdmin from "../pages/Admin/Admin/AddAdmin";
-import EditAdmin from "../pages/Admin/Admin/EditAdmin";
+import Admin from "../pages/Admin/Admins/Admin/Admin";
+import AddAdmin from "../pages/Admin/Admins/Admin/AddAdmin";
+import EditAdmin from "../pages/Admin/Admins/Admin/EditAdmin";
 
-import Student from "../pages/Admin/Student/Student";
-import AddStudent from "../pages/Admin/Student/AddStudent";
-import EditStudent from "../pages/Admin/Student/EditStudent";
+import Student from "../pages/Admin/User/Student/Student";
+import AddStudent from "../pages/Admin/User/Student/AddStudent";
+import EditStudent from "../pages/Admin/User/Student/EditStudent";
 
-import Category from '../pages/Admin/Category/Category'
-import AddCategory from '../pages/Admin/Category/AddCategory'
-import EditCategory from '../pages/Admin/Category/EditCategory'
+import Category from '../pages/Admin/Course/Category/Category'
+import AddCategory from '../pages/Admin/Course/Category/AddCategory'
+import EditCategory from '../pages/Admin/Course/Category/EditCategory'
 
-import Semester from '../pages/Admin/Semester/Semester'
-import AddSemester from '../pages/Admin/Semester/AddSemester'
-import EditSemester from '../pages/Admin/Semester/EditSemester'
+import Semester from '../pages/Admin/Course/Semester/Semester'
+import AddSemester from '../pages/Admin/Course/Semester/AddSemester'
+import EditSemester from '../pages/Admin/Course/Semester/EditSemester'
 
-import Teacher from '../pages/Admin/Teacher/Teachers'
-import AddTeacher from '../pages/Admin/Teacher/AddTeachers'
-import EditTeacher from '../pages/Admin/Teacher/EditTeachers'
+import Teacher from '../pages/Admin/User/Teacher/Teachers'
+import AddTeacher from '../pages/Admin/User/Teacher/AddTeachers'
+import EditTeacher from '../pages/Admin/User/Teacher/EditTeachers'
 
-import Parent from '../pages/Admin/Parent/Parent'
-import AddParent from '../pages/Admin/Parent/AddParent'
-import EditParent from '../pages/Admin/Parent/EditParent'
+import Parent from '../pages/Admin/User/Parent/Parent'
+import AddParent from '../pages/Admin/User/Parent/AddParent'
+import EditParent from '../pages/Admin/User/Parent/EditParent'
 
+
+import ExamCode from '../pages/Admin/Settings/ExamCode/ExamCode'
+import Addexamcode from '../pages/Admin/Settings/ExamCode/AddExamCode'
+import Editexamcode from '../pages/Admin/Settings/ExamCode/EditExamCode'
+
+import Courses from '../pages/Admin/Course/Courses/Courses'
+import AddCourse from '../pages/Admin/Course/Courses/AddCourses'
+import EditCourse from '../pages/Admin/Course/Courses/EditCourses'
+
+import Chapters from '../pages/Admin/Course/Chapters/Chapters'
+import AddChapter from '../pages/Admin/Course/Chapters/AddChapters'
+import EditChapter from '../pages/Admin/Course/Chapters/EditChapters'
+
+import Lessons from '../pages/Admin/Course/Lessons/Lessons'
+import AddLesson from '../pages/Admin/Course/Lessons/AddLessons'
+import EditLesson from '../pages/Admin/Course/Lessons/EditLessons'
+
+import Section from '../pages/Admin/Settings/Section/Section'
+import AddSection from '../pages/Admin/Settings/Section/AddSection'
+import EditSection from '../pages/Admin/Settings/Section/EditSection'
+
+import RawScore from '../pages/Admin/Settings/RawScore/RawScore'
+import AddRawScore from '../pages/Admin/Settings/RawScore/AddRawScore'
+import EditRawScore from '../pages/Admin/Settings/RawScore/EditRawScore'  
+
+import Currency from '../pages/Admin/Settings/Currency/Currency'
+import AddCurrency from '../pages/Admin/Settings/Currency/AddCurrency'
+import EditCurrency from '../pages/Admin/Settings/Currency/EditCurrency'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -51,10 +79,7 @@ const router = createBrowserRouter([
       { path: "users/students/add", element: <AddStudent /> },
       { path: "users/students/edit/:id", element: <EditStudent /> },
 
-      { path: "courses/categories", element: <Category /> },
-      { path: "courses/categories/add", element: <AddCategory /> },
-      { path: "courses/categories/edit/:id", element: <EditCategory /> },
-
+      
       { path: "courses/semester", element: <Semester /> },
       { path: "courses/semester/add", element: <AddSemester /> },
       { path: "courses/semester/edit/:id", element: <EditSemester /> },
@@ -62,10 +87,43 @@ const router = createBrowserRouter([
       { path: "users/teachers", element: <Teacher /> },
       { path: "users/teachers/add", element: <AddTeacher /> },
       { path: "users/teachers/edit/:id", element: <EditTeacher /> },
-
+      
       { path: "users/parents", element: <Parent /> },
       { path: "users/parents/add", element: <AddParent /> },
       { path: "users/parents/edit/:id", element: <EditParent /> },
+      
+      {path: "settings/examcode", element: <ExamCode />},
+      {path: "settings/examcode/add", element: <Addexamcode />},
+      {path: "settings/examcode/edit/:id", element: <Editexamcode />},
+
+      { path: "courses/categories", element: <Category /> },
+      { path: "courses/categories/add", element: <AddCategory /> },
+      { path: "courses/categories/edit/:id", element: <EditCategory /> },
+
+      { path: "courses/courses/:categoryId", element: <Courses /> },
+      { path: "courses/courses/add", element: <AddCourse /> },
+      { path: "courses/courses/edit/:id", element: <EditCourse /> },
+
+      { path: "courses/chapters/:courseId", element: <Chapters /> },
+      { path: "courses/chapters/add", element: <AddChapter /> },
+      { path: "courses/chapters/edit/:id", element: <EditChapter /> },
+
+
+      {path:"courses/lessons/:chapterId", element: <Lessons />},
+      {path:"courses/lessons/add", element: <AddLesson />},
+      {path:"courses/lessons/edit/:id", element: <EditLesson />},
+
+      {path:"settings/section", element: <Section />},
+      {path:"settings/section/add", element: <AddSection />},
+      {path:"settings/section/edit/:id", element: <EditSection />},
+
+      {path:"settings/rawscore", element: <RawScore />},
+      {path:"settings/rawscore/add", element: <AddRawScore />},
+      {path:"settings/rawscore/edit/:id", element: <EditRawScore />},
+
+      {path:"settings/currency", element: <Currency />},
+      {path:"settings/currency/add", element: <AddCurrency />},
+      {path:"settings/currency/edit/:id", element: <EditCurrency />},
 
 
     ],
