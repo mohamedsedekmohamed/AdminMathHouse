@@ -147,7 +147,6 @@ const AddTeachers = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/users/teachers")}
-      loading={saving}
       initialData={initialFormValues}
     />
   );

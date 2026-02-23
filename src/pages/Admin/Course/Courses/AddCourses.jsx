@@ -4,16 +4,18 @@ import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
 import toast from "react-hot-toast";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage"
 const AddCourses = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   // لو جاي من صفحة الكاتيجوري
   const { categoryId } = location.state || {};
-
+console.log(categoryId);
   const { postData, loading: saving } = usePost("/api/admin/courses");
-  const { data: teachersRes } = useGet("/api/admin/teacher");
-  const { data: categoriesRes } = useGet("/api/admin/teacher/selectionCategories");
+  const { data: teachersRes , loading: loadingTeachers , error: errorTeachers } = useGet("/api/admin/teacher");
+  const { data: categoriesRes , loading: loadingCats ,error: error} = useGet("/api/admin/teacher/selectionCategories");
 
   const teacherOptions = useMemo(() => {
     return (
@@ -71,7 +73,7 @@ const AddCourses = () => {
       {
         name: "duration",
         label: "Duration (Days)",
-        type: "number",
+        type: "text",
         required: true,
         placeholder: "30",
         section: "Details",
@@ -109,6 +111,14 @@ const AddCourses = () => {
         helperText: "leave empty for no what you will gain",
       },
       {
+        name: "isHaveSemester",
+        label: "Is Have Semester",
+        type: "switch",
+                section: "Relations",
+        placeholder: "Skills, knowledge...",
+        helperText: "leave empty for no what you will gain",
+      },
+      {
         name: "image",
         label: "Course Image (Optional)",
         type: "file",
@@ -139,6 +149,7 @@ const AddCourses = () => {
       image: "",
       price: "",
       discount: "",
+      isHaveSemester: false,
     }),
     [categoryId],
   );
@@ -163,19 +174,26 @@ const AddCourses = () => {
       description: formData.description || "",
       price: Number(formData.price),
       discount: Number(formData.discount || 0),
+      isHaveSemester: formData.isHaveSemester
     };
 
     await postData(payload, "/api/admin/courses", "Course added successfully");
     navigate(`/admin/courses/courses/${formData.categoryId}`);
   };
-
+if ( loadingTeachers || loadingCats) {
+    return <Loader />;
+  }
+  if (  error || errorTeachers ) {
+    return <Errorpage  />;
+  }
+  
   return (
     <AddPage
       title="Add Course"
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(-1)}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

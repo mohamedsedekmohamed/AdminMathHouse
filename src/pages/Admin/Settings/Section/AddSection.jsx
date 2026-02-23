@@ -72,7 +72,7 @@ const AddSection = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/section")}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

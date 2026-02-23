@@ -47,7 +47,7 @@ const AddExam = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/examcode")}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

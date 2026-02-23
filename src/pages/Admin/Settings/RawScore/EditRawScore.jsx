@@ -97,7 +97,7 @@ const EditRawScore = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/rawscore")}
-      loading={saving}
+       
       initialData={{
         name: raw?.name || "",
         courseId: raw?.courseId || "",

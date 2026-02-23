@@ -4,18 +4,16 @@ import { toast } from "react-hot-toast";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
-
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage"
 const AddChapters = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // courseId جاي من صفحة Chapters
-  const { courseId } = location.state || {};
-console.log(courseId);
+const { courseId, semesterId } = location.state || {};
   const { postData, loading: saving } = usePost("/api/admin/chapters");
-  const { data: teachersRes } = useGet("/api/admin/teacher/selectionTeachers");
-const { data: coursesRes } = useGet("/api/admin/teacher/selectionCourses");
-
+  const { data: teachersRes  , loading: loadingTeachers, error: errorTeachers} = useGet("/api/admin/teacher/selectionTeachers");
+const { data: coursesRes , loading: loadingCours ,error: error } = useGet("/api/admin/teacher/selectionCourses");
 const courseOptions = useMemo(() => {
   return (
     coursesRes?.data?.courses?.map((c) => ({
@@ -43,6 +41,7 @@ const courseOptions = useMemo(() => {
         required: true,
         placeholder: "Enter chapter name",
         section: "General Information",
+        
       },
       {
         name: "teacherId",
@@ -92,6 +91,7 @@ const courseOptions = useMemo(() => {
         placeholder: "Chapter description",
         section: "Content",
         fullWidth: true,
+        helperText  : "leave empty for no description",
       },
       {
         name: "preRequisition",
@@ -99,6 +99,7 @@ const courseOptions = useMemo(() => {
         type: "text",
         placeholder: "Basics you should know",
         section: "Content",
+        helperText: "leave empty for no pre-requisition",
       },
       {
         name: "whatYouGain",
@@ -106,12 +107,14 @@ const courseOptions = useMemo(() => {
         type: "text",
         placeholder: "Skills you will gain",
         section: "Content",
+        helperText: "leave empty for no what you will gain",
       },
       {
         name: "image",
         label: "Chapter Image (Optional)",
         type: "file",
         section: "Media",
+        helperText: "leave empty for no image",
       },
     ],
     [teacherOptions]
@@ -136,39 +139,66 @@ const courseOptions = useMemo(() => {
       discount: "",
       description: "",
       image: "",
+      whatYouGain: "",
+      preRequisition: "",
     }),
     []
   );
 
-  const onSave = async (formData) => {
-  
+const onSave = async (formData) => {
 
-    if (Number(formData.discount || 0) > Number(formData.price)) {
-      toast.error("Discount can't be greater than price");
-      return;
-    }
+  if (Number(formData.discount || 0) > Number(formData.price)) {
+    toast.error("Discount can't be greater than price");
+    return;
+  }
 
-    let imageBase64 = null;
-    if (formData.image instanceof File) {
-      imageBase64 = await fileToBase64(formData.image);
-    }
+  let imageBase64 = null;
+  if (formData.image instanceof File) {
+    imageBase64 = await fileToBase64(formData.image);
+  }
 
-    const payload = {
-      name: formData.name,
-      courseId:formData.courseId,
-      teacherId: formData.teacherId,
-      duration: formData.duration,
-      price: Number(formData.price),
-      discount: Number(formData.discount || 0),
-      description: formData.description || "",
-      image: imageBase64,
-      preRequisition: formData.preRequisition || "",
-      whatYouGain: formData.whatYouGain || "",
-    };
-
-    await postData(payload, "/api/admin/chapters", "Chapter added successfully");
-    navigate(`/admin/courses/chapters/${courseId}`);
+  const payload = {
+    name: formData.name,
+    courseId: formData.courseId,
+    teacherId: formData.teacherId,
+    duration: formData.duration,
+    price: Number(formData.price),
+    // discount: Number(formData.discount || 0),
+    // description: formData.description || "",
   };
+
+  if (semesterId) {
+    payload.semesterId = semesterId;
+  }
+  if (formData.description) {
+    payload.description = formData.description;
+  }
+if (Number(formData.discount) > 0) {
+  payload.discount = Number(formData.discount);
+}
+  if (formData.preRequisition) {
+    payload.preRequisition = formData.preRequisition;
+  }
+  if (formData.whatYouGain) {
+    payload.whatYouGain = formData.whatYouGain;
+  }
+  if (imageBase64) {
+    payload.image = imageBase64;
+  }
+
+  await postData(payload, "/api/admin/chapters", "Chapter added successfully");
+  navigate(`/admin/courses/chapters/${formData.courseId}`,{state: { 
+        courseId: courseId, 
+        semesterId: semesterId 
+      }});
+};
+
+if ( loadingTeachers || loadingCours) {
+    return <Loader />;
+  }
+  if (  error || errorTeachers ) {
+    return <Errorpage  />;
+  }
 
   return (
     <AddPage
@@ -176,7 +206,7 @@ const courseOptions = useMemo(() => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(-1)}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

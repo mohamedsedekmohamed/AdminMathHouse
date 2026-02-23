@@ -75,22 +75,27 @@ const ReusableTable = ({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-muted/30 text-muted-foreground border-b border-border">
+              <th className="p-1 font-bold text-one uppercase text-[11px] tracking-widest">
+                #
+              </th>
                 {columns.map((col, index) => (
                   <th key={index} className="p-4 font-bold text-one uppercase text-[11px] tracking-widest">
                     {col.header}
                   </th>
                 ))}
 {(onEdit || onDelete || extraActions || showStatusInActions) && (
-                  <th className="p-4 font-bold text-one uppercase text-[11px] tracking-widest text-center">
+                  <th className="p-1 font-bold text-one uppercase text-[11px] tracking-widest text-center">
                     Actions
                   </th>
                 )}
+
               </tr>
             </thead>
             <tbody>
               {currentRows.length > 0 ? (
                 currentRows.map((row, rowIndex) => (
                   <tr key={rowIndex} className="hover:bg-one/5 transition-colors border-b border-border last:border-0">
+                    <td className="p-1 text-foreground text-sm">{(currentPage - 1) * rowsPerPage + rowIndex + 1}</td>
                     {columns.map((col, colIndex) => (
                       <td key={colIndex} className="p-4 text-foreground text-sm">
                         {col.render ? (
@@ -104,8 +109,8 @@ const ReusableTable = ({
                     {/* Actions Column */}
             {/* Actions Column */}
 {(onEdit || onDelete || extraActions || showStatusInActions) && (
-  <td className="p-4">
-    <div className="flex justify-center items-center gap-2 flex-wrap">
+  <td className="p-1">
+    <div className="flex justify-center items-center gap-1 flex-wrap">
       
       {/* Status Badge / Toggle */}
       {showStatusInActions && (
@@ -126,7 +131,7 @@ const ReusableTable = ({
 
         ) : (
           <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
+            className={`px-1 py-1 rounded-full text-xs font-medium ${
               row[statusKey] === "active"
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"

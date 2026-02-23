@@ -4,7 +4,7 @@ import { ArrowLeft, Save, X, Upload, AlertCircle, Info } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
-
+import toast from "react-hot-toast";  
 const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,10 +92,17 @@ useEffect(() => {
     }
   };
 
-  const handleCancel = () => {
+ const handleCancel = () => {
     if (isDirty) {
-      if (window.confirm("You have unsaved changes. Are you sure you want to exit?")) onCancel();
+      if (window.confirm("You have unsaved changes. Are you sure you want to exit?")) {
+        onCancel();
+      }
     } else {
+      // إظهار الرسالة
+      toast("No changes were made", {
+        icon: '📝',
+      });
+      // العودة للصفحة السابقة
       onCancel();
     }
   };
@@ -269,18 +276,25 @@ value={
                       />
                     )}
 
-                    {field.type === 'select' && (
-                      <select
-                        name={field.name}
-                        value={formData[field.name] || ''}
-                        className="p-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:border-one outline-none cursor-pointer"
-                        onChange={handleChange}
-                      >
-                        <option value="">Select from list...</option>
-                        {field.options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
-                    )}
-
+{field.type === 'select' && (
+  <Select
+    options={field.options}
+    value={field.options?.find(opt => String(opt.value) === String(formData[field.name])) || null}
+    onChange={(selected) => {
+      const selectedValue = selected ? selected.value : ""; 
+      
+      setFormData(prev => ({ ...prev, [field.name]: selectedValue }));
+      
+      if (errors[field.name]) setErrors(prev => ({ ...prev, [field.name]: "" }));
+      
+      
+      if (field.onChange) {
+        field.onChange(selectedValue); 
+      }
+    }}
+    placeholder="Select..."
+  />
+)}
                     {field.type === 'file' && (
                       <div className={`relative group border-2 border-dashed rounded-xl p-4 transition-all ${previews[field.name] ? 'border-one bg-one/5' : 'border-slate-200 hover:border-one/50'}`}>
                         <input 

@@ -5,12 +5,14 @@ import AddPage from "@/components/AddPage";
 import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
 import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
+
 const EditCategory = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data: categoriesRes, loading: loadingCats } = useGet("/api/admin/category");
-  const { data: categoryRes, loading: loadingOne } = useGet(`/api/admin/category/${id}`);
+  const { data: categoriesRes, loading: loadingCats ,error } = useGet("/api/admin/category");
+  const { data: categoryRes, loading: loadingOne ,error: errorOne } = useGet(`/api/admin/category/${id}`);
   const { putData, loading: saving } = usePut(`/api/admin/category/${id}`);
 
   // كل الـ Categories ما عدا الحالية (عشان ما ينفعش تختار نفسها Parent)
@@ -99,6 +101,10 @@ const EditCategory = () => {
 
   if (loadingCats || loadingOne) {
     return <div className=""><Loader /></div>;
+  }
+
+  if (error || errorOne) {
+    return <Errorpage />;
   }
 
   const category = categoryRes?.data?.data;

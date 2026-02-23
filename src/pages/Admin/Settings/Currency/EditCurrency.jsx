@@ -86,7 +86,7 @@ const EditCurrency = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/currency")}
-      loading={saving}
+       
       initialData={({
       name: currency?.name || "",
       symbol: currency?.symbol || "",

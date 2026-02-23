@@ -1,14 +1,18 @@
-import { useNavigate } from "react-router-dom";
+  import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
 import React, { useMemo, useState } from "react";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
+  import NavChild from "@/components/NavChild";
 
 const Semester = () => {
   const navigate = useNavigate();
+    const { coursesId } = useParams();
 
-  const { data, loading, refetch } = useGet("/api/admin/semester");
+  const { data, loading, refetch ,error} = useGet(`/api/admin/semester/course/${coursesId}`);
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -32,7 +36,7 @@ const Semester = () => {
 
   const columns = [
     { header: "Name", key: "name" },
-    { header: "Category", key: "categoryName" },
+    // { header: "Course", key: "course" },
   ];
 
   const tableData = useMemo(() => {
@@ -40,15 +44,22 @@ const Semester = () => {
       data?.data?.data?.map((sem) => ({
         id: sem.id,
         name: sem.name,
-        categoryName: sem.category?.name || "—",
+        course: sem.course?.name || "—",
         raw: sem,
       })) || []
     );
   }, [data]);
 
   const handleEdit = (row) => {
-    navigate(`/admin/courses/semester/edit/${row.id}`);
+    navigate(`/admin/courses/semester/edit/${row.id}`, { state: coursesId});
   };
+
+  if (loading) {
+    return <Loader />;
+  }
+  if (error) {
+    return <Errorpage  />;
+  }
 
   return (
     <div>
@@ -58,9 +69,17 @@ const Semester = () => {
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-        onAddClick={() => navigate("/admin/courses/semester/add")}
+        onAddClick={() => navigate("/admin/courses/semester/add",{ state: coursesId})}
         onEdit={handleEdit}
         onDelete={handleDelete}
+         extraActions={(row) => (
+                  <div className="flex gap-2">
+    <NavChild 
+      route={`/admin/courses/chapters/${coursesId}`} 
+      state={row.id} 
+    />                   
+  </div>
+                  )}
       />
 
       <ConfirmDeleteModal

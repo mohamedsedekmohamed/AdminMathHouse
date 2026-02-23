@@ -79,7 +79,7 @@ const AddParent = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/users/parents")}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

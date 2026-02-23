@@ -1,15 +1,15 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
-
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
 const AddCategory = () => {
   const navigate = useNavigate();
   
   const { postData, loading: saving } = usePost("/api/admin/category");
-  const { data: categoriesRes, loading: loadingCats } = useGet("/api/admin/category");
+  const { data: categoriesRes, loading: loadingCats ,error } = useGet("/api/admin/category");
 
 
   const parentOptions = useMemo(() => {
@@ -96,6 +96,12 @@ const AddCategory = () => {
       throw error;
     }
   };
+  if (loadingCats) {
+    return <Loader />;
+  }
+  if (error) {
+    return <Errorpage />;
+  }
 
   return (
     <AddPage
@@ -103,7 +109,7 @@ const AddCategory = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/courses/categories")}
-      loading={saving} 
+        
       initialData={initialFormValues} 
     />
   );

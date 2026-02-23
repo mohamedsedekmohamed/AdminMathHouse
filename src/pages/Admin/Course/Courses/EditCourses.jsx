@@ -5,14 +5,27 @@ import AddPage from "@/components/AddPage";
 import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
 import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
 
 const EditCourses = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data: courseRes, loading: loadingOne } = useGet(`/api/admin/courses/${id}`);
-  const { data: teachersRes } = useGet("/api/admin/teacher");
-  const { data: categoriesRes } = useGet("/api/admin/teacher/selectionCategories");
+  const {
+    data: courseRes,
+    loading: loadingOne,
+    error: errorOne,
+  } = useGet(`/api/admin/courses/${id}`);
+  const {
+    data: teachersRes,
+    loading: loadingTeachers,
+    error: errorTeachers,
+  } = useGet("/api/admin/teacher");
+  const {
+    data: categoriesRes,
+    loading: loadingCats,
+    error: error,
+  } = useGet("/api/admin/teacher/selectionCategories");
   const { putData, loading: saving } = usePut(`/api/admin/courses/${id}`);
 
   const teacherOptions = useMemo(() => {
@@ -58,7 +71,7 @@ const EditCourses = () => {
         options: categoryOptions,
         section: "Relations",
       },
-       {
+      {
         name: "teacherIds",
         label: "Teacher",
         type: "multipleSelect",
@@ -69,7 +82,7 @@ const EditCourses = () => {
       {
         name: "duration",
         label: "Duration (Days)",
-        type: "number",
+        type: "text",
         required: true,
         section: "Details",
       },
@@ -92,21 +105,32 @@ const EditCourses = () => {
         label: "Pre-requisition (Optional)",
         type: "text",
         section: "Content",
+        helperText: "leave empty for no pre-requisition",
       },
       {
         name: "whatYouGain",
         label: "What You Will Gain (Optional)",
         type: "text",
         section: "Content",
+        helperText: "leave empty for no what you will gain",
       },
       {
         name: "image",
         label: "Course Image (Optional)",
         type: "file",
         section: "Media",
+        helperText: "leave empty for no image",
+      },
+      {
+        name: "isHaveSemester",
+        label: "Is Have Semester",
+        type: "switch",
+                section: "Relations",
+        placeholder: "Skills, knowledge...",
+        helperText: "leave empty for no what you will gain",
       },
     ],
-    [teacherOptions, categoryOptions]
+    [teacherOptions, categoryOptions],
   );
 
   const fileToBase64 = (file) =>
@@ -118,8 +142,6 @@ const EditCourses = () => {
     });
 
   const onSave = async (formData) => {
-  
-
     if (Number(formData.discount) > Number(formData.price)) {
       toast.error("Discount can't be greater than price");
       return;
@@ -129,9 +151,8 @@ const EditCourses = () => {
 
     if (formData.image instanceof File) {
       imageBase64 = await fileToBase64(formData.image);
-    }
-    else if (typeof formData.image === "string" && formData.image) {
-      imageBase64 = formData.image; 
+    } else if (typeof formData.image === "string" && formData.image) {
+      imageBase64 = formData.image;
     }
 
     const payload = {
@@ -140,19 +161,28 @@ const EditCourses = () => {
       teacherIds: formData.teacherIds,
       preRequisition: formData.preRequisition || "",
       whatYouGain: formData.whatYouGain || "",
-      duration: String(formData.duration),
+      duration:formData.duration,
       image: imageBase64, // ممكن تبقى null لو ما غيّرش الصورة
       description: formData.description || "",
       price: Number(formData.price),
       discount: Number(formData.discount || 0),
+            isHaveSemester: formData.isHaveSemester
+
     };
 
-    await putData(payload, `/api/admin/courses/${id}`, "Course updated successfully");
+    await putData(
+      payload,
+      `/api/admin/courses/${id}`,
+      "Course updated successfully",
+    );
     navigate(`/admin/courses/courses/${formData.categoryId}`);
   };
 
-  if (loadingOne) {
+  if (loadingOne || loadingTeachers || loadingCats) {
     return <Loader />;
+  }
+  if (errorOne || errorTeachers || error) {
+    return <Errorpage />;
   }
 
   const course = courseRes?.data;
@@ -163,18 +193,19 @@ const EditCourses = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(-1)}
-      loading={saving}
       initialData={{
         name: course?.name || "",
         description: course?.description || "",
         categoryId: course?.categoryId || "",
-  teacherIds: course?.teachers?.map((t) => t.teacherId) || [], // الاسم صح الآن
+        teacherIds: course?.teachers?.map((t) => t.teacherId) || [], // الاسم صح الآن
         preRequisition: course?.preRequisition || "",
         whatYouGain: course?.whatYouGain || "",
         duration: course?.duration || "",
         image: course?.image || "", // URL الصورة القديمة
         price: course?.price || "",
         discount: course?.discount || "",
+              isHaveSemester: course?.isHaveSemester,
+
       }}
     />
   );

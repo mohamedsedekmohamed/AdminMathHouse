@@ -82,7 +82,7 @@ const AddCurrency = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/currency")}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

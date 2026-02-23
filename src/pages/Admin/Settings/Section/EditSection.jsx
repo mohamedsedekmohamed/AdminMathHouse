@@ -71,7 +71,7 @@ const EditSection = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/section")}
-      loading={saving}
+       
       initialData={{
         sectionName: section?.sectionName || "",
         sectionDescription: section?.sectionDescription || "",

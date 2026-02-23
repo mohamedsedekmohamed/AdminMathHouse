@@ -103,7 +103,7 @@ const AddRawScore = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/settings/rawscore")}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

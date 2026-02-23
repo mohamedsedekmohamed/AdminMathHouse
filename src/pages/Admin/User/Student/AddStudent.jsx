@@ -170,7 +170,7 @@ const AddStudent = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/users/students")}
-      loading={saving} // 👈 تمرير حالة الحفظ للـ AddPage
+        // 👈 تمرير حالة الحفظ للـ AddPage
       initialData={initialFormValues} // 👈 استخدام المتغير المحفوظ في الذاكرة
     />
   );

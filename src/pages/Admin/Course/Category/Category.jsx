@@ -5,10 +5,12 @@ import React, { useMemo, useState } from "react";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
 import NavChild from "../../../../components/NavChild";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
 const Category = () => {
   const navigate = useNavigate();
 
-  const { data, loading, refetch } = useGet("/api/admin/category");
+  const { data, loading, refetch ,error } = useGet("/api/admin/category");
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -60,6 +62,7 @@ const Category = () => {
         level: cat.ancestors?.length || 0,
         image: cat.image,
         raw: cat,
+        isLeaf: cat.isLeaf,
       })) || []
     );
   }, [data]);
@@ -67,7 +70,12 @@ const Category = () => {
   const handleEdit = (row) => {
     navigate(`/admin/courses/categories/edit/${row.id}`);
   };
-
+if (loading ) {
+  return <Loader />;
+}
+if (error) {
+  return <Errorpage />;
+}
   return (
     <div>
       <ReusableTable
@@ -80,7 +88,8 @@ const Category = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         extraActions={(row) => (
-       <NavChild route={`/admin/courses/courses/${row.id}`}/>
+          row.isLeaf &&( <NavChild route={`/admin/courses/courses/${row.id}`}/>)
+      
         )}
       />
 

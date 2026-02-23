@@ -119,7 +119,7 @@ const EditAdmin = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/admin")}
-      loading={saving} 
+        
       initialData={initialFormValues}
     />
   );

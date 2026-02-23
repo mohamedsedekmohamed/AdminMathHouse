@@ -60,7 +60,7 @@ const menuItems = [
     path: "/admin/courses",
     module: "courses",
     children: [
-      { title: "Semester", path: "/admin/courses/semester", icon: <BsBookHalf size={18} /> },
+      // { title: "Semester", path: "/admin/courses/semester", icon: <BsBookHalf size={18} /> },
       { title: "Categories", path: "/admin/courses/categories", icon: <MdGridView size={18} /> },
       // { title: "Courses", path: "/admin/courses/courses", icon: <FaBook size={18} /> },
       // { title: "Chapters", path: "/admin/courses/chapters", icon: <MdLayers size={18} /> },

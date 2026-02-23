@@ -4,6 +4,8 @@ import { toast } from "react-hot-toast";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
 
 const AddLessons = () => {
   const navigate = useNavigate();
@@ -13,7 +15,8 @@ const AddLessons = () => {
   const { chapterId } = location.state || {};
 
   const { postData, loading: saving } = usePost("/api/admin/lessons");
-  const { data: teachersRes } = useGet("/api/admin/teacher");
+  const { data: teachersRes , loading: loadingTeachers , error: error } = useGet("/api/admin/teacher");
+  const { data: selectchaper , loading: loadingselectchaper, error: errorchaper } = useGet("/api/admin/lessons/select-chapters");
 
   const teacherOptions = useMemo(() => {
     return (
@@ -23,6 +26,14 @@ const AddLessons = () => {
       })) || []
     );
   }, [teachersRes]);
+const chaperOptions = useMemo(() => {
+  return (
+    selectchaper?.data?.data?.map((t) => ({
+      value: t.id,
+      label: t.label,
+    })) || []
+  );
+}, [selectchaper]);
 
   const fields = useMemo(
     () => [
@@ -41,14 +52,19 @@ const AddLessons = () => {
         required: true,
         options: teacherOptions,
         section: "Relations",
+        helperText: "select teacher",
+
       },
       {
         name: "chapterId",
         label: "Chapter",
-        type: "text",
+        type: "select",
         required: true,
+        options: chaperOptions  ,
         section: "Relations",
         defaultValue: chapterId || "",
+                helperText: "select chapter",
+
       },
       {
         name: "price",
@@ -73,6 +89,7 @@ const AddLessons = () => {
         placeholder: "Lesson description",
         section: "Content",
         fullWidth: true,
+        helperText: "optional",
       },
       {
         name: "preRequisition",
@@ -80,6 +97,7 @@ const AddLessons = () => {
         type: "text",
         placeholder: "What students should know first",
         section: "Content",
+        helperText: "leave empty for no pre-requisition",
       },
       {
         name: "whatYouGain",
@@ -87,12 +105,14 @@ const AddLessons = () => {
         type: "text",
         placeholder: "Skills you will gain",
         section: "Content",
+        helperText: "leave empty for no what you will gain",
       },
       {
         name: "image",
         label: "Lesson Image (Optional)",
         type: "file",
         section: "Media",
+              helperText: "leave empty for no image",
       },
     ],
     [teacherOptions, chapterId]
@@ -149,13 +169,16 @@ const AddLessons = () => {
     navigate(`/admin/courses/lessons/${chapterId}`);
   };
 
+  if (loadingTeachers || loadingselectchaper) return <Loader />;
+  if (error  || errorchaper) return <Errorpage />
+
   return (
     <AddPage
       title="Add Lesson"
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(-1)}
-      loading={saving}
+       
       initialData={initialFormValues}
     />
   );

@@ -52,7 +52,7 @@ const EditExam = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/exams")}
-      loading={saving}
+       
       initialData={{
         code: exam?.code || "",
       }}

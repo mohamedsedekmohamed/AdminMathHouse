@@ -56,6 +56,26 @@ import EditRawScore from '../pages/Admin/Settings/RawScore/EditRawScore'
 import Currency from '../pages/Admin/Settings/Currency/Currency'
 import AddCurrency from '../pages/Admin/Settings/Currency/AddCurrency'
 import EditCurrency from '../pages/Admin/Settings/Currency/EditCurrency'
+
+import Questions from '../pages/Admin/Course/Questions/Questions'
+import AddQuestions from '../pages/Admin/Course/Questions/AddQuestions'
+import EditQuestions from '../pages/Admin/Course/Questions/EditQuestions'
+
+import Packages from '../pages/Admin/Package/Packages/Packages'
+import AddPackages from '../pages/Admin/Package/Packages/AddPackages'
+import EditPackages from '../pages/Admin/Package/Packages/EditPackages'
+
+import Grouos from '../pages/Admin/Live/Groups/Groups'
+import AddGroups from '../pages/Admin/Live/Groups/AddGroups'
+import EditGroups from '../pages/Admin/Live/Groups/EditGroups'
+
+import Sessions from '../pages/Admin/Live/Sessions/Sessions'
+import AddSessions from '../pages/Admin/Live/Sessions/AddSessions'
+import EditSessions from '../pages/Admin/Live/Sessions/EditSessions'
+
+import Popup from '../pages/Admin/Marketing/Popup/Popup'
+import AddPopup from '../pages/Admin/Marketing/Popup/AddPopup'
+import EditPopup from '../pages/Admin/Marketing/Popup/EditPopup'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -80,7 +100,7 @@ const router = createBrowserRouter([
       { path: "users/students/edit/:id", element: <EditStudent /> },
 
       
-      { path: "courses/semester", element: <Semester /> },
+      { path: "courses/semester/:coursesId", element: <Semester /> },
       { path: "courses/semester/add", element: <AddSemester /> },
       { path: "courses/semester/edit/:id", element: <EditSemester /> },
 
@@ -112,6 +132,10 @@ const router = createBrowserRouter([
       {path:"courses/lessons/:chapterId", element: <Lessons />},
       {path:"courses/lessons/add", element: <AddLesson />},
       {path:"courses/lessons/edit/:id", element: <EditLesson />},
+      
+      {path:"courses/questions", element: <Questions />},
+      {path:"courses/questions/add", element: <AddQuestions />},
+      {path:"courses/questions/edit/:id", element: <EditQuestions />},
 
       {path:"settings/section", element: <Section />},
       {path:"settings/section/add", element: <AddSection />},
@@ -125,7 +149,21 @@ const router = createBrowserRouter([
       {path:"settings/currency/add", element: <AddCurrency />},
       {path:"settings/currency/edit/:id", element: <EditCurrency />},
 
+      {path:"packages/packages", element: <Packages />},
+      {path:"packages/packages/add", element: <AddPackages />},
+      {path:"packages/packages/edit/:id", element: <EditPackages />},
 
+      {path:"live/groups", element: <Grouos />},
+      {path:"live/groups/add", element: <AddGroups />},
+      {path:"live/groups/edit/:id", element: <EditGroups />},
+
+      {path:"live/sessions", element: <Sessions />},
+      {path:"live/sessions/add", element: <AddSessions />},
+      {path:"live/sessions/edit/:id", element: <EditSessions />},
+
+      {path:"marketing/popup", element: <Popup />},
+      {path:"marketing/popup/add", element: <AddPopup />},
+      {path:"marketing/popup/edit/:id", element: <EditPopup />},
     ],
   },
 ]);

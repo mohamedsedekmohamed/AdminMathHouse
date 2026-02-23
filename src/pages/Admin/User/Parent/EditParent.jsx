@@ -87,7 +87,7 @@ const EditParent = () => {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/users/parents")}
-      loading={saving}
+       
       initialData={{
         name: parent?.name || "",
         email: parent?.email || "",

@@ -14,6 +14,12 @@ import { getToken } from "../../../../utils/auth";
 const Currency = () => {
   const navigate = useNavigate();
   const { data, loading, refetch, error } = useGet("/api/admin/currency");
+  const {
+  data: liveRates,
+  loading: liveLoading,
+  error: liveError,
+  refetch: refetchLiveRates,
+} = useGet("/api/admin/currency/rates/live");
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -67,7 +73,9 @@ const Currency = () => {
           },
         }
       );
+      
       refetch();
+      refetchLiveRates();
     } catch (err) {
       toast.error(err.response?.data?.message || err.message);
     }
@@ -104,8 +112,81 @@ const Currency = () => {
   if (loading) return <Loader />;
   if (error) return <Errorpage />;
 
+
+
+
   return (
     <div>
+       {!liveLoading && liveRates?.data?.data && (
+    <div className="relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-5 mb-6 shadow-sm">
+  {/* decorative glow */}
+  <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-200/30 rounded-full blur-2xl" />
+
+  <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    {/* Base Currency */}
+    <div className="flex items-center gap-3">
+      <div className="w-11 h-11 rounded-xl bg-blue-600/10 text-one flex items-center justify-center font-bold">
+        $
+      </div>
+      <div>
+        <p className="text-xs uppercase tracking-wide text-gray-500">
+          Base Currency
+        </p>
+        <p className="text-xl font-extrabold text-gray-900">
+          {liveRates.data.data.base}
+        </p>
+      </div>
+    </div>
+
+    {/* Last Updated */}
+    <div className="flex items-center gap-3">
+      <div className="w-11 h-11 rounded-xl bg-indigo-600/10 text-one flex items-center justify-center">
+        ⏱️
+      </div>
+      <div>
+        <p className="text-xs uppercase tracking-wide text-gray-500">
+          Last Updated
+        </p>
+        <p className="text-sm font-semibold text-gray-800">
+          {new Date(liveRates.data.data.lastUpdated).toLocaleString()}
+        </p>
+      </div>
+    </div>
+
+    {/* Actions */}
+    <div className="flex items-center gap-2">
+      <button
+        onClick={refetchLiveRates}
+        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-one text-white text-sm font-medium shadow hover:bg-one/90 active:scale-[0.98] transition"
+      >
+        🔄 Refresh Rates
+      </button>
+    </div>
+  </div>
+</div>
+    )}
+
+    {/* Boxes */}
+    {liveLoading ? (
+      <Loader />
+    ) : (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+        {liveRates?.data?.data?.rates?.map((rate) => (
+          <div
+            key={rate.code}
+            className="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center border"
+          >
+            <span className="text-sm text-gray-500">Code</span>
+            <span className="font-bold text-lg">{rate.code}</span>
+
+            <span className="text-sm text-gray-500 mt-2">Rate</span>
+            <span className="font-semibold text-one/80">
+              {rate.rate.toFixed(4)}
+            </span>
+          </div>
+        ))}
+      </div>
+    )}
       <ReusableTable
         title="Currencies"
         titleAdd="Currency"
