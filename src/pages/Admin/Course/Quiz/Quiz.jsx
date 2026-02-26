@@ -1,0 +1,100 @@
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ReusableTable from "@/components/ReusableTable";
+import useGet from "@/hooks/useGet";
+import useDelete from "@/hooks/useDelete";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+
+const Quiz = () => {
+  const navigate = useNavigate();
+
+  const { data, loading, refetch, error } = useGet("/api/admin/quiz");
+  const { deleteData, loading: deleteLoading } = useDelete();
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const handleDelete = (row) => {
+    setSelectedRow(row);
+    setOpenDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteData(`/api/admin/quiz/${selectedRow.id}`);
+      setOpenDeleteModal(false);
+      setSelectedRow(null);
+      refetch();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+ 
+
+  const handleEdit = (row) => {
+    navigate(`/admin/courses/quiz/edit/${row.id}`);
+  };
+
+  const columns = [
+    { header: "Title", key: "title" },
+    { header: "Category", key: "categoryName" },
+    { header: "Course", key: "courseName" },
+    { header: "Chapter", key: "chapterName" },
+    { header: "Lesson", key: "lessonName" },
+    { header: "Description", key: "description" },
+    { header: "Duration (min)", key: "durationMinutes" },
+    { header: "Total Score", key: "totalScore" },
+    { header: "Pass Score", key: "passScore" },
+    { header: "Questions", key: "questionsCount" },
+   
+  ];
+
+  const tableData = useMemo(() => {
+    return (data?.data?.data || []).map((quiz) => ({
+      id: quiz.id,
+      title: quiz.title,
+      categoryName: quiz.category?.name || "-",
+      courseName: quiz.course?.name || "-",
+      chapterName: quiz.chapter?.name || "-",
+      lessonName: quiz.lesson?.name || "-",
+      description: quiz.description,
+      durationMinutes: quiz.durationMinutes,
+      totalScore: quiz.totalScore,
+      passScore: quiz.passScore,
+      questionsCount: quiz.questionsCount,
+      isActive: quiz.isActive,
+      raw: quiz,
+    }));
+  }, [data]);
+
+  if (loading) return <Loader />;
+  if (error) return <Errorpage />;
+
+  return (
+    <div>
+      <ReusableTable
+        title="Quizzes"
+        titleAdd="Quiz"
+        columns={columns}
+        data={tableData}
+        loading={loading || deleteLoading }
+        onAddClick={() => navigate("/admin/courses/quiz/add")}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      <ConfirmDeleteModal
+        open={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        onConfirm={confirmDelete}
+        title="Delete Quiz"
+        description={`Are you sure you want to delete "${selectedRow?.title}"?`}
+      />
+    </div>
+  );
+};
+
+export default Quiz;

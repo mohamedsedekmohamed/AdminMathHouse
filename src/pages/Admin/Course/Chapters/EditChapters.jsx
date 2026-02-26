@@ -64,14 +64,14 @@ useEffect(() => {
         options: teacherOptions,
         section: "Relations",
       },
-      {
-        name: "courseId",
-        label: "Course",
-        type: "select",
-        required: true,
-        options: courseOptions,
-        section: "Relations",
-      },
+      // {
+      //   name: "courseId",
+      //   label: "Course",
+      //   type: "select",
+      //   required: true,
+      //   options: courseOptions,
+      //   section: "Relations",
+      // },
       {
         name: "duration",
         label: "Duration",

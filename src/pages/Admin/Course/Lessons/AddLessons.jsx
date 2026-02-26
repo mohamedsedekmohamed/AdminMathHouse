@@ -11,12 +11,11 @@ const AddLessons = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // chapterId جاي من صفحة Lessons
   const { chapterId } = location.state || {};
 
   const { postData, loading: saving } = usePost("/api/admin/lessons");
   const { data: teachersRes , loading: loadingTeachers , error: error } = useGet("/api/admin/teacher");
-  const { data: selectchaper , loading: loadingselectchaper, error: errorchaper } = useGet("/api/admin/lessons/select-chapters");
+  // const { data: selectchaper , loading: loadingselectchaper, error: errorchaper } = useGet("/api/admin/lessons/select-chapters");
 
   const teacherOptions = useMemo(() => {
     return (
@@ -26,14 +25,14 @@ const AddLessons = () => {
       })) || []
     );
   }, [teachersRes]);
-const chaperOptions = useMemo(() => {
-  return (
-    selectchaper?.data?.data?.map((t) => ({
-      value: t.id,
-      label: t.label,
-    })) || []
-  );
-}, [selectchaper]);
+// const chaperOptions = useMemo(() => {
+//   return (
+//     selectchaper?.data?.data?.map((t) => ({
+//       value: t.id,
+//       label: t.label,
+//     })) || []
+//   );
+// }, [selectchaper]);
 
   const fields = useMemo(
     () => [
@@ -55,17 +54,17 @@ const chaperOptions = useMemo(() => {
         helperText: "select teacher",
 
       },
-      {
-        name: "chapterId",
-        label: "Chapter",
-        type: "select",
-        required: true,
-        options: chaperOptions  ,
-        section: "Relations",
-        defaultValue: chapterId || "",
-                helperText: "select chapter",
+      // {
+      //   name: "chapterId",
+      //   label: "Chapter",
+      //   type: "select",
+      //   required: true,
+      //   options: chaperOptions  ,
+      //   section: "Relations",
+      //   defaultValue: chapterId || "",
+      //           helperText: "select chapter",
 
-      },
+      // },
       {
         name: "price",
         label: "Price",
@@ -115,7 +114,7 @@ const chaperOptions = useMemo(() => {
               helperText: "leave empty for no image",
       },
     ],
-    [teacherOptions, chapterId]
+    [teacherOptions]
   );
 
   // تحويل File إلى Base64
@@ -131,7 +130,7 @@ const chaperOptions = useMemo(() => {
     () => ({
       name: "",
       teacherId: "",
-      chapterId: chapterId || "",
+      // chapterId: chapterId || "",
       price: "",
       discount: "",
       description: "",
@@ -139,7 +138,7 @@ const chaperOptions = useMemo(() => {
       whatYouGain: "",
       image: "",
     }),
-    [chapterId]
+    []
   );
 
   const onSave = async (formData) => {
@@ -155,7 +154,7 @@ const chaperOptions = useMemo(() => {
 
     const payload = {
       name: formData.name,
-      chapterId: formData.chapterId,
+      chapterId: chapterId,
       teacherId: formData.teacherId,
       price: Number(formData.price),
       discount: Number(formData.discount || 0),
@@ -164,13 +163,17 @@ const chaperOptions = useMemo(() => {
       preRequisition: formData.preRequisition || "",
       whatYouGain: formData.whatYouGain || "",
     };
+     try {
 
     await postData(payload, "/api/admin/lessons", "Lesson added successfully");
     navigate(`/admin/courses/lessons/${chapterId}`);
+      } catch (error) {
+      throw error;
+    } 
   };
 
-  if (loadingTeachers || loadingselectchaper) return <Loader />;
-  if (error  || errorchaper) return <Errorpage />
+  if (loadingTeachers ) return <Loader />;
+  if (error  ) return <Errorpage />
 
   return (
     <AddPage

@@ -65,9 +65,9 @@ const menuItems = [
       // { title: "Courses", path: "/admin/courses/courses", icon: <FaBook size={18} /> },
       // { title: "Chapters", path: "/admin/courses/chapters", icon: <MdLayers size={18} /> },
       // { title: "Lessons", path: "/admin/courses/lessons", icon: <FaPlayCircle size={18} /> },
-      { title: "Questions", path: "/admin/courses/questions", icon: <FaQuestionCircle size={18} /> },
+      // { title: "Questions", path: "/admin/courses/questions", icon: <FaQuestionCircle size={18} /> },
       { title: "Quiz", path: "/admin/courses/quiz", icon: <MdOutlineQuestionMark size={18} /> },
-      { title: "Diagnostic Exam", path: "/admin/courses/diagnostic-exam", icon: <MdTimeline size={18} /> },
+      { title: "Diagnostic Exam", path: "/admin/courses/diagnosticexam", icon: <MdTimeline size={18} /> },
       { title: "Exam", path: "/admin/courses/exam", icon: <FaClipboardList size={18} /> },
     ],
   },
@@ -150,7 +150,7 @@ const menuItems = [
     module: "marketing",
     children: [
       { title: "Popup", path: "/admin/marketing/popup", icon: <FaExternalLinkAlt size={18} /> },
-      { title: "Promo Codes", path: "/admin/marketing/promo-codes", icon: <FaTicketAlt size={18} /> },
+      { title: "Promo Codes", path: "/admin/marketing/promocodes", icon: <FaTicketAlt size={18} /> },
     ],
   },
 ];

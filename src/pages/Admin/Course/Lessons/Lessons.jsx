@@ -7,7 +7,9 @@ import useDelete from "@/hooks/useDelete";
 import usePatch from "@/hooks/usePatch";
 // import NavChild from "@/components/NavChild";
 import LessonIdeasModal from "@/components/LessonIdeasModal";
-import Loader from "@/components/Loader";
+import Loader from "@/components/Loader"; 
+ import NavChild from "@/components/NavChild";
+
 import Errorpage from "@/components/Errorpage";
 const Lessons = () => {
   const navigate = useNavigate();
@@ -181,7 +183,7 @@ const Lessons = () => {
   }
 
   if (error) {
-    return <Error  />;
+    return <Errorpage  />;
   }
 
   return (
@@ -198,6 +200,7 @@ const Lessons = () => {
         extraActions={(row) => (
           <>
        
+                <NavChild route={`/admin/courses/questions/${row.id}`} />
 
           </>
         )}

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useParams } from "react-router-dom";
 import ReusableTableSearch from "@/components/ReusableTableSearch";
 import useGet from "@/hooks/useGet";
 import React, { useMemo, useState, useEffect } from "react";
@@ -6,16 +6,23 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import ParallelModal from "../Parallel/Parallel";
 
 const Questions = () => {
   const navigate = useNavigate();
-
+const { lessonId } = useParams();
   // 1. States للتحكم في الترقيم والبحث
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+const [openParallel, setOpenParallel] = useState(false);
+const [originalQuestionId, setOriginalQuestionId] = useState(null);
 
+const handleParallel = (row) => {
+  setOriginalQuestionId(row.id);
+  setOpenParallel(true);
+};
   // 2. تطبيق الـ Debouncing للبحث (تأخير 500ms)
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -28,7 +35,7 @@ const Questions = () => {
 
   // 3. تحديث الـ URL ليرسل الـ search parameter للسيرفر
   const { data, loading, error, refetch } = useGet(
-    `/api/admin/questions?page=${page}&limit=${limit}${debouncedSearch ? `&search=${encodeURIComponent(debouncedSearch)}` : ""}`
+    `/api/admin/questions/lesson/${lessonId}?page=${page}&limit=${limit}${debouncedSearch ? `&search=${encodeURIComponent(debouncedSearch)}` : ""}`
   );
   
   const { deleteData, loading: deleteLoading } = useDelete();
@@ -69,7 +76,7 @@ const Questions = () => {
   const tableData = useMemo(() => {
     return (
       data?.data?.data?.map((q) => ({
-        id: q.id || q._id, 
+        id: q.id , 
         question: q.question,
         answerType: q.answerType,
         difficulty: q.difficulty,
@@ -99,10 +106,23 @@ const Questions = () => {
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-        onAddClick={() => navigate("/admin/courses/questions/add")}
+        onAddClick={() => navigate("/admin/courses/questions/add" ,
+        {
+          state: {
+            lessonId: lessonId,
+          },
+        }
+        )}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        
+         extraActions={(row) => (
+          <button
+  onClick={() => handleParallel(row)}
+  className="px-3 py-1 rounded bg-indigo-500 text-white hover:bg-indigo-600"
+>
+  Parallel
+</button>
+         )}
         // الربط مع الـ Pagination والبحث
         currentPage={page}
         totalPages={paginationData.totalPages || 1}
@@ -124,6 +144,11 @@ const Questions = () => {
         title="Delete Question"
         description={`Are you sure you want to delete this question?`}
       />
+      <ParallelModal
+  open={openParallel}
+  onClose={() => setOpenParallel(false)}
+  originalQuestionId={originalQuestionId}
+/>
     </div>
   );
 };

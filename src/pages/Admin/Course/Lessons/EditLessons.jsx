@@ -50,14 +50,14 @@ const EditLessons = () => {
         options: teacherOptions,
         section: "Relations",
       },
-      {
-        name: "chapterId",
-        label: "Chapter",
-        type: "text",
-        required: true,
-        section: "Relations",
-        disabled: true, // علشان مايتغيرش من هنا
-      },
+      // {
+      //   name: "chapterId",
+      //   label: "Chapter",
+      //   type: "text",
+      //   required: true,
+      //   section: "Relations",
+      //   disabled: true, // علشان مايتغيرش من هنا
+      // },
       {
         name: "price",
         label: "Price",

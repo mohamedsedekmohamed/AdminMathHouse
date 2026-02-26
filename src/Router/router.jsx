@@ -76,6 +76,26 @@ import EditSessions from '../pages/Admin/Live/Sessions/EditSessions'
 import Popup from '../pages/Admin/Marketing/Popup/Popup'
 import AddPopup from '../pages/Admin/Marketing/Popup/AddPopup'
 import EditPopup from '../pages/Admin/Marketing/Popup/EditPopup'
+
+import PaymentMethod from '../pages/Admin/Payments/PaymentMethod/PaymentMethod'
+import AddPaymentMethod from '../pages/Admin/Payments/PaymentMethod/AddPaymentMethod'
+import EditPaymentMethod from '../pages/Admin/Payments/PaymentMethod/EditPaymentMethod'
+
+import Diagnosticexam from '../pages/Admin/Course/Diagnosticexam/Diagnosticexam'
+import AddDiagnosticexam from "../pages/Admin/Course/Diagnosticexam/AddDiagnosticexam";
+import EditDiagnosticexam from "../pages/Admin/Course/Diagnosticexam/EditDiagnosticexam";
+
+import Exam from '../pages/Admin/Course/Exam/Exam'
+import AddExam from '../pages/Admin/Course/Exam/AddExam'
+import EditExam from '../pages/Admin/Course/Exam/EditExam'
+
+import Quiz from '../pages/Admin/Course/Quiz/Quiz'
+import AddQuiz from '../pages/Admin/Course/Quiz/AddQuiz'
+import EditQuiz from '../pages/Admin/Course/Quiz/EditQuiz'
+
+import Promocodes from '../pages/Admin/Marketing/PromoCodes/PromoCodes'
+import Addpromocodes from '../pages/Admin/Marketing/PromoCodes/AddPromoCodes'
+import Editpromocodes from '../pages/Admin/Marketing/PromoCodes/EditPromoCodes'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -133,7 +153,7 @@ const router = createBrowserRouter([
       {path:"courses/lessons/add", element: <AddLesson />},
       {path:"courses/lessons/edit/:id", element: <EditLesson />},
       
-      {path:"courses/questions", element: <Questions />},
+      {path:"courses/questions/:lessonId", element: <Questions />},
       {path:"courses/questions/add", element: <AddQuestions />},
       {path:"courses/questions/edit/:id", element: <EditQuestions />},
 
@@ -164,6 +184,28 @@ const router = createBrowserRouter([
       {path:"marketing/popup", element: <Popup />},
       {path:"marketing/popup/add", element: <AddPopup />},
       {path:"marketing/popup/edit/:id", element: <EditPopup />},
+
+      {path:"payment/payment-method", element: <PaymentMethod />},
+      {path:"payment/payment-method/add", element: <AddPaymentMethod />},
+      {path:"payment/payment-method/edit/:id", element: <EditPaymentMethod />},
+    
+    
+      {path:"courses/diagnosticexam", element: <Diagnosticexam />},
+      {path:"courses/diagnosticexam/add", element: <AddDiagnosticexam />},
+      {path:"courses/diagnosticexam/edit/:id", element: <EditDiagnosticexam />},
+      
+      {path:"courses/exam", element: <Exam />},
+      {path:"courses/exam/add", element: <AddExam />},
+      {path:"courses/exam/edit/:id", element: <EditExam />},
+      
+      
+      {path:"courses/quiz", element: <Quiz />},
+      {path:"courses/quiz/add", element: <AddQuiz />},
+      {path:"courses/quiz/edit/:id", element: <EditQuiz />},
+      
+      {path:"marketing/promocodes", element: <Promocodes />},
+      {path:"marketing/promocodes/add", element: <Addpromocodes />},
+      {path:"marketing/promocodes/edit/:id", element: <Editpromocodes />},
     ],
   },
 ]);

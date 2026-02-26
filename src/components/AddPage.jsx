@@ -5,6 +5,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
 import toast from "react-hot-toast";  
+import { FaPlusSquare } from "react-icons/fa";
+
 const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -266,6 +268,16 @@ value={
   }}
   />
 )}
+                    {field.type === "datemin" && (
+                      <DatePicker
+                        selected={formData[field.name] ? new Date(formData[field.name]) : null}
+                        onChange={(date) => setFormData(prev => ({ ...prev, [field.name]: date ? date.toISOString() : "" }))}
+                        dateFormat="yyyy-MM-dd"
+                        minDate={new Date()}
+                        placeholderText={field.placeholder}
+                        className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:border-one focus:ring-4 focus:ring-one/10 outline-none"
+                      />
+                    )}
                     {field.type === "date" && (
                       <DatePicker
                         selected={formData[field.name] ? new Date(formData[field.name]) : null}
@@ -298,7 +310,7 @@ value={
                     {field.type === 'file' && (
                       <div className={`relative group border-2 border-dashed rounded-xl p-4 transition-all ${previews[field.name] ? 'border-one bg-one/5' : 'border-slate-200 hover:border-one/50'}`}>
                         <input 
-                          type="file" 
+accept="image/png, image/jpeg, image/jpg, image/webp"                          type="file" 
                           onChange={(e) => handleFileChange(e, field.name)} 
                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
                         />
@@ -317,6 +329,57 @@ value={
                         </div>
                       </div>
                     )}
+  
+{field.type === 'dynamic-list' && (
+  <div className="flex flex-col gap-3">
+    {(formData[field.name] || []).map((val, index) => {
+      const orderLabel = String.fromCharCode(65 + index); // تحويل 0 لـ A و 1 لـ B وهكذا
+      return (
+        <div key={index} className="flex gap-2 items-center">
+          <span className="font-bold text-slate-500 w-6">{orderLabel}-</span>
+          <input
+            type="text"
+            value={val}
+            placeholder={`Enter Option ${orderLabel}`}
+            className="flex-1 p-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:border-one focus:ring-4 focus:ring-one/10 outline-none transition-all"
+            onChange={(e) => {
+              const newValues = [...(formData[field.name] || [])];
+              newValues[index] = e.target.value;
+              setFormData(prev => ({ ...prev, [field.name]: newValues }));
+            }}
+          />
+          {/* زر الحذف - يظهر فقط إذا كان هناك أكثر من اختيارين */}
+          {(formData[field.name] || []).length > 2 && (
+            <button
+              type="button"
+              onClick={() => {
+                const newValues = (formData[field.name] || []).filter((_, i) => i !== index);
+                setFormData(prev => ({ ...prev, [field.name]: newValues }));
+              }}
+              className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+            >
+              <X size={20} />
+            </button>
+          )}
+        </div>
+      );
+    })}
+    
+    <button
+      type="button"
+      onClick={() => {
+        setFormData(prev => ({ 
+          ...prev, 
+          [field.name]: [...(prev[field.name] || []), ""] 
+        }));
+      }}
+      className="flex items-center justify-center gap-2 p-3 mt-2 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-one hover:text-one hover:bg-one/5 transition-all font-medium"
+    >
+      <FaPlusSquare size={18} />
+      <span>Add Option</span>
+    </button>
+  </div>
+)}
 
                     {field.type === 'switch' && (
                       <div className="flex items-center gap-3 py-2 justify-start">
@@ -331,6 +394,32 @@ value={
                       </div>
                     )}
 
+{field.type === 'custom' && field.render && (
+  <div className="w-full">
+    {/* هنا بننادي الدالة اللي انت بعتها ونبعتلها الداتا عشان تتحكم فيها */}
+    {field.render({
+      value: formData[field.name], // القيمة الحالية
+      
+      // دالة لتحديث القيمة
+      onChange: (newValue) => {
+        setFormData(prev => ({ ...prev, [field.name]: newValue }));
+        // مسح الخطأ لو موجود
+        if (errors[field.name]) setErrors(prev => ({ ...prev, [field.name]: "" }));
+      },
+      
+      error: errors[field.name], // الخطأ لو موجود
+      formData: formData,        // كل الداتا لو احتاجتها
+      field: field               // خصائص الحقل نفسه
+    })}
+    
+    {/* عرض رسالة الخطأ تحت الـ Custom Component */}
+    {errors[field.name] && (
+      <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-1">
+        <AlertCircle size={14} /> {errors[field.name]}
+      </p>
+    )}
+  </div>
+)}
                     {/* Helper Text & Errors */}
                     {field.helperText && !errors[field.name] && (
                       <p className="text-[11px] text-slate-400 flex items-center gap-1 justify-start">
