@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import SideBar from "../Components/SideBar";
-import Navbar from "../Components/Navbar";
+import SideBar from "../components/SideBar";
+import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 import { 
   FaHome, FaUsers, FaUserGraduate, FaHeart, FaBookOpen, FaBook, 
