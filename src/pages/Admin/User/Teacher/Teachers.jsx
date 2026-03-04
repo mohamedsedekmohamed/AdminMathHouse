@@ -27,7 +27,7 @@ const Teachers = () => {
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 

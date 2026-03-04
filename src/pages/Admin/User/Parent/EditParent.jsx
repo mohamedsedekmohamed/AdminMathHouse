@@ -68,7 +68,7 @@ const EditParent = () => {
       await putData(payload, `/api/admin/parent/${id}`, "Parent updated successfully");
       navigate("/admin/users/parents");
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 

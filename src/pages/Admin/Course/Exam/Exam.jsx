@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
 import useDelete from "@/hooks/useDelete";
@@ -8,10 +8,11 @@ import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
+
 const Exam = () => {
   const navigate = useNavigate();
-
-  const { data, loading, refetch, error } = useGet("/api/admin/exams");
+  const {courseId} = useParams();
+  const { data, loading, refetch, error } = useGet(`/api/admin/exams/course/${courseId}`);
   const { deleteData, loading: deleteLoading } = useDelete();
   const { putData, loading: usePutLoading } = usePut();
 
@@ -31,7 +32,7 @@ const Exam = () => {
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 
@@ -54,12 +55,12 @@ const Exam = () => {
 
   const tableData = useMemo(() => {
     let exams = [
-      ...(data?.data?.data?.static || []),
-      ...(data?.data?.data?.adaptive || []),
+      ...(data?.data?.data?.exams?.static || []),
+      ...(data?.data?.data?.exams?.adaptive || []),
     ];
 
-    if (filterType === "static") exams = data?.data?.data?.static || [];
-    if (filterType === "adaptive") exams = data?.data?.data?.adaptive || [];
+    if (filterType === "static") exams = data?.data?.data?.exams?.static || [];
+    if (filterType === "adaptive") exams = data?.data?.data?.exams?.adaptive || [];
 
     return exams.map((exam) => ({
       id: exam.id,
@@ -117,7 +118,7 @@ const Exam = () => {
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading || usePutLoading}
-        onAddClick={() => navigate("/admin/courses/exam/add")}
+        onAddClick={() => navigate("/admin/courses/exam/add", { state: { courseId } })}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
 import useDelete from "@/hooks/useDelete";
@@ -9,8 +9,8 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
 const Quiz = () => {
   const navigate = useNavigate();
-
-  const { data, loading, refetch, error } = useGet("/api/admin/quiz");
+const { lessonId }=useParams();
+  const { data, loading, refetch, error } = useGet(`/api/admin/quiz/lesson/${lessonId}`);
   const { deleteData, loading: deleteLoading } = useDelete();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -28,7 +28,7 @@ const Quiz = () => {
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 
@@ -40,9 +40,6 @@ const Quiz = () => {
 
   const columns = [
     { header: "Title", key: "title" },
-    { header: "Category", key: "categoryName" },
-    { header: "Course", key: "courseName" },
-    { header: "Chapter", key: "chapterName" },
     { header: "Lesson", key: "lessonName" },
     { header: "Description", key: "description" },
     { header: "Duration (min)", key: "durationMinutes" },
@@ -56,9 +53,7 @@ const Quiz = () => {
     return (data?.data?.data || []).map((quiz) => ({
       id: quiz.id,
       title: quiz.title,
-      categoryName: quiz.category?.name || "-",
-      courseName: quiz.course?.name || "-",
-      chapterName: quiz.chapter?.name || "-",
+    
       lessonName: quiz.lesson?.name || "-",
       description: quiz.description,
       durationMinutes: quiz.durationMinutes,
@@ -81,7 +76,7 @@ const Quiz = () => {
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading }
-        onAddClick={() => navigate("/admin/courses/quiz/add")}
+        onAddClick={() => navigate("/admin/courses/quiz/add" , { state: { lessonId } })}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

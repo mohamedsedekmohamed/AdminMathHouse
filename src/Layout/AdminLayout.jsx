@@ -66,9 +66,9 @@ const menuItems = [
       // { title: "Chapters", path: "/admin/courses/chapters", icon: <MdLayers size={18} /> },
       // { title: "Lessons", path: "/admin/courses/lessons", icon: <FaPlayCircle size={18} /> },
       // { title: "Questions", path: "/admin/courses/questions", icon: <FaQuestionCircle size={18} /> },
-      { title: "Quiz", path: "/admin/courses/quiz", icon: <MdOutlineQuestionMark size={18} /> },
-      { title: "Diagnostic Exam", path: "/admin/courses/diagnosticexam", icon: <MdTimeline size={18} /> },
-      { title: "Exam", path: "/admin/courses/exam", icon: <FaClipboardList size={18} /> },
+      // { title: "Quiz", path: "/admin/courses/quiz", icon: <MdOutlineQuestionMark size={18} /> },
+      // { title: "Diagnostic Exam", path: "/admin/courses/diagnosticexam", icon: <MdTimeline size={18} /> },
+      // { title: "Exam", path: "/admin/courses/exam", icon: <FaClipboardList size={18} /> },
     ],
   },
   {
@@ -93,8 +93,8 @@ const menuItems = [
     module: "packages",
     children: [
       { title: "Packages", path: "/admin/packages/packages", icon: <FaBox size={18} /> },
-      { title: "Packages Reports", path: "/admin/packages/reports", icon: <FaChartBar size={18} /> },
-      { title: "Packages History", path: "/admin/packages/history", icon: <FaHistory size={18} /> },
+      // { title: "Packages Reports", path: "/admin/packages/reports", icon: <FaChartBar size={18} /> },
+      // { title: "Packages History", path: "/admin/packages/history", icon: <FaHistory size={18} /> },
     ],
   },
   {
@@ -127,7 +127,6 @@ const menuItems = [
       { title: "Exam Code", path: "/admin/settings/examcode", icon: <FaRegEdit size={18} /> },
       { title: "Section", path: "/admin/settings/section", icon: <FaPlayCircle size={18} /> },
       { title: "Currency", path: "/admin/settings/currency", icon: <FaDollarSign size={18} /> },
-      { title: "Logout Users", path: "/admin/settings/logout-users", icon: <FaUserTimes size={18} /> },
     ],
   },
   {
@@ -136,10 +135,10 @@ const menuItems = [
     path: "/admin/payment",
     module: "payment",
     children: [
-      { title: "Pending Payment", path: "/admin/payment/pandding-payment", icon: <FaRegClock size={18} /> },
-      { title: "Wallet Pending", path: "/admin/payment/pandding-wallet", icon: <FaPiggyBank size={18} /> },
-      { title: "Payment History", path: "/admin/payment/payment-history", icon: <FaReceipt size={18} /> },
-      { title: "Wallet History", path: "/admin/payment/wallet-history", icon: <FaWallet size={18} /> },
+      // { title: "Pending Payment", path: "/admin/payment/pandding-payment", icon: <FaRegClock size={18} /> },
+      // { title: "Wallet Pending", path: "/admin/payment/pandding-wallet", icon: <FaPiggyBank size={18} /> },
+      // { title: "Payment History", path: "/admin/payment/payment-history", icon: <FaReceipt size={18} /> },
+      // { title: "Wallet History", path: "/admin/payment/wallet-history", icon: <FaWallet size={18} /> },
       { title: "Payment Method", path: "/admin/payment/payment-method", icon: <MdSettingsSuggest size={18} /> },
     ],
   },

@@ -9,6 +9,7 @@
   import Errorpage from "@/components/Errorpage";
   import usePost from "@/hooks/usePost";
 import { GiTeacher } from "react-icons/gi";
+import { PiExamFill } from "react-icons/pi";
 
   const Courses = () => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ import { GiTeacher } from "react-icons/gi";
     const { data, loading, refetch, error } = useGet(
       `/api/admin/courses/category/${categoryId}`
     );
+const [optionPopup, setOptionPopup] = useState({ open: false, row: null });
 
     const { data: teachersData, loading: teachersLoading } = useGet(
       "/api/admin/teacher"
@@ -44,7 +46,7 @@ import { GiTeacher } from "react-icons/gi";
         setSelectedRow(null);
         refetch();
       } catch (e) {
-        console.error(e);
+          throw e
       }
     };
 
@@ -180,7 +182,27 @@ import { GiTeacher } from "react-icons/gi";
               
               >
                 <GiTeacher   className="px-1 py-1 text-3xl rounded bg-one text-white hover:bg-one/80"/> 
+
+
               </button>
+        <button
+  onClick={() => setOptionPopup({ open: true, row })}
+  className="
+    relative flex items-center justify-center p-2.5 
+    text-black
+    rounded-xl shadow-md hover:shadow-red-500/50 
+    transition-all duration-300 ease-in-out
+    hover:scale-105 active:scale-95 group
+  "
+>
+  {/* الأيقونة */}
+  <span className="relative z-10 text-xl drop-shadow-sm transition-transform duration-300 group-hover:rotate-6">
+    <PiExamFill />
+  </span>
+
+  {/* طبقة إضاءة داخلية خفيفة */}
+  <span className="absolute inset-0 rounded-xl bg-white/0 group-hover:bg-white/10 transition-colors duration-300"></span>
+</button>
             </div>
           )}
         />
@@ -293,6 +315,45 @@ import { GiTeacher } from "react-icons/gi";
       </div>
     </div>
   )}
+  {optionPopup.open && (
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg w-full max-w-sm p-5">
+      <h2 className="text-lg font-semibold mb-4">Choose an Option</h2>
+      <div className="flex flex-col gap-3">
+
+        {/* Exam */}
+        <button
+          className="px-4 py-2 rounded bg-one text-white hover:bg-one/80"
+          onClick={() => {
+            navigate(`/admin/courses/exam/${optionPopup.row.id}`);
+            setOptionPopup({ open: false, row: null });
+          }}
+        >
+          Exam
+        </button>
+
+        {/* Diagnostic Exam */}
+        <button
+          className="px-4 py-2 rounded bg-one text-white hover:bg-one/80"
+          onClick={() => {
+            navigate(`/admin/courses/diagnosticexam/${optionPopup.row.id}`);
+            setOptionPopup({ open: false, row: null });
+          }}
+        >
+          Diagnostic Exam
+        </button>
+      </div>
+
+      {/* Close button */}
+      <button
+        onClick={() => setOptionPopup({ open: false, row: null })}
+        className="mt-4 px-4 py-2 rounded border"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
       </div>
     );
   };

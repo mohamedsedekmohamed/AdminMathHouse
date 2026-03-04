@@ -96,6 +96,14 @@ import EditQuiz from '../pages/Admin/Course/Quiz/EditQuiz'
 import Promocodes from '../pages/Admin/Marketing/PromoCodes/PromoCodes'
 import Addpromocodes from '../pages/Admin/Marketing/PromoCodes/AddPromoCodes'
 import Editpromocodes from '../pages/Admin/Marketing/PromoCodes/EditPromoCodes'
+
+import Notifications from '../pages/Admin/Notifications/Notifications'
+import AddNotifications from '../pages/Admin/Notifications/AddNotifications'
+import EditNotifications from '../pages/Admin/Notifications/EditNotifications'
+
+import Parallel from '../pages/Admin/Course/Parallel/Parallel'
+import AddParallel from '../pages/Admin/Course/Parallel/AddParallel'
+import EditParallel from '../pages/Admin/Course/Parallel/EditParallel'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -190,22 +198,31 @@ const router = createBrowserRouter([
       {path:"payment/payment-method/edit/:id", element: <EditPaymentMethod />},
     
     
-      {path:"courses/diagnosticexam", element: <Diagnosticexam />},
+      {path:"courses/diagnosticexam/:courseId", element: <Diagnosticexam />},
       {path:"courses/diagnosticexam/add", element: <AddDiagnosticexam />},
       {path:"courses/diagnosticexam/edit/:id", element: <EditDiagnosticexam />},
       
-      {path:"courses/exam", element: <Exam />},
+      {path:"courses/exam/:courseId", element: <Exam />},
       {path:"courses/exam/add", element: <AddExam />},
       {path:"courses/exam/edit/:id", element: <EditExam />},
       
       
-      {path:"courses/quiz", element: <Quiz />},
+      {path:"courses/quiz/:lessonId", element: <Quiz />},
       {path:"courses/quiz/add", element: <AddQuiz />},
       {path:"courses/quiz/edit/:id", element: <EditQuiz />},
       
       {path:"marketing/promocodes", element: <Promocodes />},
       {path:"marketing/promocodes/add", element: <Addpromocodes />},
       {path:"marketing/promocodes/edit/:id", element: <Editpromocodes />},
+
+      {path:"notifications", element: <Notifications />},
+      {path:"notifications/add", element: <AddNotifications />},
+      {path:"notifications/edit/:id", element: <EditNotifications />},
+
+
+      {path:"courses/questions/parallel/:id", element: <Parallel />},
+      {path:"courses/questions/parallel/add", element: <AddParallel />},
+      {path:"courses/questions/parallel/edit/:id", element: <EditParallel />},
     ],
   },
 ]);

@@ -29,7 +29,7 @@ const { putData, loading: usePutLoading } = usePut();
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 

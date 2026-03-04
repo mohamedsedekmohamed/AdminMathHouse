@@ -1,71 +1,106 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
+import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
-import ReusableTableSearch from "@/components/ReusableTableSearch";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
-const ParallelModal = ({ open, onClose, originalQuestionId }) => {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
+const Parallel = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+const { id } = useParams();
+  const { lessonId } = location.state || {};
 
-  const { data, loading, error } = useGet(
-   `/api/admin/questions/parallel?origianlQuestionId=${originalQuestionId}&page=${page}&limit=${limit}${searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ""}`
-    
+  const {
+    data,
+    loading,
+    error,
+    refetch,
+  } = useGet(
+      `/api/admin/questions/parallel/original/${id}`
   );
 
-  const paginationData = data?.data?.pagination || {};
+  const { deleteData, loading: deleteLoading } = useDelete();
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const handleDelete = (row) => {
+    setSelectedRow(row);
+    setOpenDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteData(`/api/admin/questions/${selectedRow.id}`);
+      setOpenDeleteModal(false);
+      setSelectedRow(null);
+      refetch();
+    } catch (e) {
+        throw e
+    }
+  };
+
+  const handleEdit = (row) => {
+    navigate(`/admin/courses/questions/parallel/edit/${row.id}`, {
+      state: { lessonId },
+    });
+  };
 
   const columns = [
     { header: "Question", key: "question" },
-    { header: "Type", key: "answerType" },
+    { header: "Original Question", key: "originalQuestion" },
+    { header: "Lesson", key: "lessonName" },
+    { header: "Answer Type", key: "answerType" },
     { header: "Difficulty", key: "difficulty" },
+    { header: "Created At", key: "createdAt" },
   ];
 
   const tableData = useMemo(() => {
-    return (
-      data?.data?.data?.map((q) => ({
-        id: q.id,
-        question: q.question,
-        answerType: q.answerType,
-        difficulty: q.difficulty,
-        raw: q,
-      })) || []
-    );
+    return (data?.data?.data || []).map((item) => ({
+      id: item.id,
+      question: item.question,
+      originalQuestion:
+        item.originalQuestion?.question || "-",
+      lessonName: item.lesson?.name || "-",
+      answerType: item.answerType,
+      difficulty: item.difficulty,
+      createdAt: new Date(item.createdAt).toLocaleDateString(),
+      raw: item,
+    }));
   }, [data]);
 
-  if (!open) return null;
   if (loading) return <Loader />;
   if (error) return <Errorpage />;
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white w-[90%] max-w-5xl rounded-xl p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Parallel Questions</h2>
-          <button onClick={onClose} className="text-red-500 font-bold">✕</button>
-        </div>
+    <div>
+      <ReusableTable
+        title="Parallel Questions"
+        titleAdd="Parallel Question"
+        columns={columns}
+        data={tableData}
+        loading={loading || deleteLoading}
+        onAddClick={() =>
+          navigate("/admin/courses/questions/parallel/add", {
+            state: { lessonId , originalQuestionId: id },
+          })
+        }
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
-        <ReusableTableSearch
-          title="Parallel Questions"
-          columns={columns}
-          data={tableData}
-          loading={loading}
-          currentPage={page}
-          totalPages={paginationData.totalPages || 1}
-          totalResults={paginationData.total || 0}
-          rowsPerPage={limit}
-          onPageChange={(newPage) => setPage(newPage)}
-          onRowsPerPageChange={(newLimit) => {
-            setLimit(newLimit);
-            setPage(1);
-          }}
-          searchTerm={searchTerm}
-          onSearchChange={(val) => setSearchTerm(val)}
-        />
-      </div>
+      <ConfirmDeleteModal
+        open={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        onConfirm={confirmDelete}
+        title="Delete Parallel Question"
+        description={`Are you sure you want to delete "${selectedRow?.question}"?`}
+      />
     </div>
   );
 };
 
-export default ParallelModal;
+export default Parallel;

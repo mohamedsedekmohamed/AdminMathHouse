@@ -30,7 +30,7 @@ const PaymentMethod = () => {
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 
@@ -43,7 +43,7 @@ const PaymentMethod = () => {
     );
     refetch();
   } catch (e) {
-    console.error(e);
+      throw e
   }
 };
 

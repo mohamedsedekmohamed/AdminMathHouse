@@ -1,9 +1,122 @@
-import React from 'react'
+import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import AddPage from "@/components/AddPage";
+import usePost from "@/hooks/usePost";
+import useGet from "@/hooks/useGet";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
 
 const AddGroups = () => {
-  return (
-    <div>AddGroups</div>
-  )
-}
+  const navigate = useNavigate();
+  const { postData } = usePost("/api/admin/groups");
 
-export default AddGroups
+  const { data: selectData, loading, error } = useGet("/api/admin/groups/select");
+
+  const teacherOptions = useMemo(
+    () => selectData?.data?.teachers || [],
+    [selectData]
+  );
+
+  const studentOptions = useMemo(
+    () => selectData?.data?.students || [],
+    [selectData]
+  );
+
+  const dayOptions = [
+    { value: "Sun", label: "Sunday" },
+    { value: "Mon", label: "Monday" },
+    { value: "Tue", label: "Tuesday" },
+    { value: "Wed", label: "Wednesday" },
+    { value: "Thu", label: "Thursday" },
+    { value: "Fri", label: "Friday" },
+    { value: "Sat", label: "Saturday" },
+  ];
+
+  const fields = useMemo(
+    () => [
+      {
+        name: "name",
+        label: "Group Name",
+        type: "text",
+        required: true,
+        fullWidth: true,
+        section: "General Information",
+      },
+      {
+        name: "teacherId",
+        label: "Teacher",
+        type: "select",
+        required: true,
+        options: teacherOptions,
+        section: "Relations",
+        helperText: "Select a teacher",
+      },
+      {
+        name: "days",
+        label: "Days",
+        type: "multipleSelect",
+        required: true,
+        options: dayOptions,
+        fullWidth: true,
+        section: "Schedule",
+      },
+      {
+        name: "timeFrom",
+        label: "From",
+        type: "time",
+        required: true,
+        section: "Schedule",
+      },
+      {
+        name: "timeTo",
+        label: "To",
+        type: "time",
+        required: true,
+        section: "Schedule",
+      },
+      {
+        name: "studentIds",
+        label: "Students",
+        type: "multipleSelect",
+        options: studentOptions,
+        section: "Relations",
+        helperText: "Select at least one student",
+      },
+      {
+        name: "isActive",
+        label: "Active",
+        type: "switch",
+        section: "Settings",
+        defaultValue: true,
+      },
+    ],
+    [teacherOptions, studentOptions]
+  );
+
+  const onSave = async (formData) => {
+    const payload = {
+      ...formData,
+      days: formData.days || [],
+      studentIds: formData.studentIds || [],
+      isActive: formData.isActive ?? true,
+    };
+
+    await postData(payload, "/api/admin/groups", "Group added successfully");
+    navigate(-1);
+  };
+
+  if (loading) return <Loader />;
+  if (error) return <Errorpage />;
+
+  return (
+    <AddPage
+      title="Add Group"
+      fields={fields}
+      onSave={onSave}
+      onCancel={() => navigate(-1)}
+      initialData={{ }}
+    />
+  );
+};
+
+export default AddGroups;

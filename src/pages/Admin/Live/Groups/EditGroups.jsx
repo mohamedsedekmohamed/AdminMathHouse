@@ -1,9 +1,139 @@
-import React from 'react'
+import React, { useMemo, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import AddPage from "@/components/AddPage";
+import useGet from "@/hooks/useGet";
+import usePut from "@/hooks/usePut";
+import Loader from "@/components/Loader";
+import Errorpage from "@/components/Errorpage";
 
 const EditGroups = () => {
-  return (
-    <div>EditGroups</div>
-  )
-}
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-export default EditGroups
+  const { putData, loading: saving } = usePut(`/api/admin/groups/${id}`);
+
+  // 🔹 Get group data
+  const { data: groupRes, loading: loadingOne, error: errorOne } =
+    useGet(`/api/admin/groups/${id}`);
+
+  // 🔹 Get select options
+  const { data: selectData, loading: loadingSelect, error: errorSelect } =
+    useGet("/api/admin/groups/select");
+
+  const teacherOptions = useMemo(
+    () => selectData?.data?.teachers || [],
+    [selectData]
+  );
+
+  const studentOptions = useMemo(
+    () => selectData?.data?.students || [],
+    [selectData]
+  );
+
+  const dayOptions = [
+    { value: "Sun", label: "Sunday" },
+    { value: "Mon", label: "Monday" },
+    { value: "Tue", label: "Tuesday" },
+    { value: "Wed", label: "Wednesday" },
+    { value: "Thu", label: "Thursday" },
+    { value: "Fri", label: "Friday" },
+    { value: "Sat", label: "Saturday" },
+  ];
+
+  const fields = useMemo(
+    () => [
+      {
+        name: "name",
+        label: "Group Name",
+        type: "text",
+        required: true,
+        fullWidth: true,
+        section: "General Information",
+        helperText: "Enter group name",
+      },
+      {
+        name: "teacherId",
+        label: "Teacher",
+        type: "select",
+        required: true,
+        options: teacherOptions,
+        section: "Relations",
+      },
+      {
+        name: "days",
+        label: "Days",
+        type: "multipleSelect",
+        required: true,
+        options: dayOptions,
+        section: "Schedule",
+        fullWidth: true,
+      },
+      {
+        name: "timeFrom",
+        label: "From",
+        type: "time",
+        required: true,
+        section: "Schedule",
+      },
+      {
+        name: "timeTo",
+        label: "To",
+        type: "time",
+        required: true,
+        section: "Schedule",
+      },
+      {
+        name: "studentIds",
+        label: "Students",
+        type: "multipleSelect",
+        options: studentOptions,
+        section: "Relations",
+        helperText: "Select at least one student",
+      },
+      {
+        name: "isActive",
+        label: "Active",
+        type: "switch",
+        section: "Settings",
+      },
+    ],
+    [teacherOptions, studentOptions]
+  );
+
+  const onSave = async (formData) => {
+    const payload = {
+      ...formData,
+      days: formData.days || [],
+      studentIds: formData.studentIds || [],
+      isActive: formData.isActive ?? true,
+    };
+
+    await putData(payload, `/api/admin/groups/${id}`, "Group updated successfully");
+    navigate(-1);
+  };
+
+  if (loadingOne || loadingSelect || saving) return <Loader />;
+  if (errorOne || errorSelect) return <Errorpage />;
+
+ const group = groupRes?.data || {};
+
+return (
+  <AddPage
+    title="Edit Group"
+    fields={fields}
+    onSave={onSave}
+    onCancel={() => navigate(-1)}
+    initialData={{
+      name: group.name || "",
+      teacherId: group.teacherId || "",
+      days: group.days || [],            // ✅ دلوقتي Array جاهزة
+      timeFrom: group.timeFrom || "",
+      timeTo: group.timeTo || "",
+      studentIds: group.students?.map((s) => s.id) || [],
+      isActive: group.isActive ?? true,
+    }}
+  />
+);
+};
+
+export default EditGroups;

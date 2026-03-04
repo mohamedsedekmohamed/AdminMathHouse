@@ -1,24 +1,33 @@
 import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import useGet from "@/hooks/useGet";
+import QuestionsTableSelect from "../../../../components/QuestionsTableSelect";
 
 const AddExam = () => {
   const navigate = useNavigate();
   const { postData, loading: saving } = usePost();
-  
-  // جلب Raw Scores لاختيارها
-  const { data: rawScoresRes, loading: loadingRawScores, error: errorRawScores } = useGet("/api/admin/rawScore");
+  const location = useLocation();
+  const courseId = location.state?.courseId;
+  const { data: rawScoresRes, loading: loadingRawScores, error: errorRawScores } = useGet("/api/admin/diagnosticExam/selection");
 
   const rawScoreOptions = useMemo(() => {
     return (
-      rawScoresRes?.data?.rawScores?.map((r) => ({
+      rawScoresRes?.data?.data?.rawScores?.map((r) => ({
         value: r.id,
         label: r.name,
+      })) || []
+    );
+  }, [rawScoresRes]);
+  const questionsOptions = useMemo(() => {
+    return (
+      rawScoresRes?.data?.data?.questions?.map((r) => ({
+        value: r.id,
+        label: r.questionText,
       })) || []
     );
   }, [rawScoresRes]);
@@ -78,14 +87,23 @@ const AddExam = () => {
       type: "switch",
       section: "General Information",
     },
-    {
-      name: "questionIds",
-      label: "Question IDs (Optional)",
-      type: "text",
-      placeholder: "Comma separated UUIDs",
-      section: "Details",
-      helperText: "Enter question UUIDs separated by commas",
-    },
+     {
+  name: "questionIds",
+  label: "Select Questions",
+  type: "custom",
+  fullWidth: true,
+  required: true,
+  section: "Questions",
+  render: ({ value, onChange, error }) => (
+    <QuestionsTableSelect
+      name="course"
+      lessonId={courseId}
+      value={value}
+      onChange={onChange}
+      error={error}
+    />
+  )
+}
   ], [rawScoreOptions]);
 
   const initialFormValues = useMemo(() => ({
@@ -96,10 +114,11 @@ const AddExam = () => {
     numberOfQuestions: "",
     passScore: "",
     isActive: false,
-    questionIds: "",
+    questionIds: [],
   }), []);
 
   const onSave = async (formData) => {
+    
     try {
       const payload = {
         title: formData.title,
@@ -109,17 +128,16 @@ const AddExam = () => {
         numberOfQuestions: Number(formData.numberOfQuestions),
         passScore: Number(formData.passScore),
         isActive: formData.isActive,
-        questionIds: formData.questionIds
-          ? formData.questionIds.split(",").map((q) => q.trim())
-          : [],
+        questionIds: formData.questionIds ,
+        courseId: courseId,
+          
       };
 
       await postData(payload, "/api/admin/diagnosticExam", "Exam added successfully");
-      toast.success("Exam added successfully");
-      navigate("/admin/diagnosticExam");
+      navigate(`/admin/courses/diagnosticexam/${courseId}`);
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to add exam");
+           throw error;
+
     }
   };
 

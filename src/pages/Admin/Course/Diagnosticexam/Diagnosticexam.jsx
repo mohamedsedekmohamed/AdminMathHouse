@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useParams } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
 import useDelete from "@/hooks/useDelete";
@@ -10,8 +10,8 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
 const Diagnosticexam = () => {
   const navigate = useNavigate();
-
-  const { data, loading, refetch, error } = useGet("/api/admin/diagnosticExam");
+const { courseId } = useParams();
+  const { data, loading, refetch, error } = useGet(`/api/admin/diagnosticExam/course/${courseId}`);
   const { deleteData, loading: deleteLoading } = useDelete();
   const { putData, loading: usePutLoading } = usePut();
 
@@ -30,7 +30,7 @@ const Diagnosticexam = () => {
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 
@@ -75,7 +75,7 @@ const Diagnosticexam = () => {
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading || usePutLoading}
-        onAddClick={() => navigate("/admin/courses/diagnosticexam/add")}
+        onAddClick={() => navigate("/admin/courses/diagnosticexam/add" , { state: { courseId } })}
         onEdit={handleEdit}
         onDelete={handleDelete}
         

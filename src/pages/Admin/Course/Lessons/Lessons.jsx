@@ -41,7 +41,7 @@ const Lessons = () => {
       setSelectedRow(null);
       refetch();
     } catch (e) {
-      console.error(e);
+        throw e
     }
   };
 
@@ -201,7 +201,12 @@ const Lessons = () => {
           <>
        
                 <NavChild route={`/admin/courses/questions/${row.id}`} />
-
+  <button
+        onClick={() => navigate(`/admin/courses/quiz/${row.id}`)}
+        className="px-3 py-1 bg-white/80 text-one rounded hover:bg-one/10 hover:text-white transition duration-300"
+      >
+        Quiz
+      </button>
           </>
         )}
         onEdit={handleEdit}

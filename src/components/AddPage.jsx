@@ -268,6 +268,60 @@ value={
   }}
   />
 )}
+
+
+{field.type === "datetime" && (
+  <DatePicker
+    selected={
+      formData[field.name] ? new Date(formData[field.name]) : null
+    }
+    onChange={(date) =>
+      setFormData((prev) => ({
+        ...prev,
+        [field.name]: date
+          ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+              .toISOString()
+              .slice(0, 19) // yyyy-MM-ddTHH:mm:ss
+          : "",
+      }))
+    }
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={5}
+    dateFormat="yyyy-MM-dd HH:mm"
+    minDate={new Date()}
+    placeholderText={field.placeholder || "Select date & time"}
+    className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:border-one focus:ring-4 focus:ring-one/10 outline-none"
+  />
+)}
+{field.type === "time" && (
+  <DatePicker
+    selected={
+      formData[field.name]
+        ? new Date(`1970-01-01T${formData[field.name]}`)
+        : null
+    }
+    onChange={(date) =>
+      setFormData((prev) => ({
+        ...prev,
+        [field.name]: date
+          ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+              .toISOString()
+              .slice(11, 19) // HH:mm:ss
+          : "",
+      }))
+    }
+    showTimeSelect
+    showTimeSelectOnly
+    timeIntervals={5}
+    timeFormat="HH:mm"
+    dateFormat="HH:mm"
+    placeholderText={field.placeholder || "Select time"}
+    className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:border-one focus:ring-4 focus:ring-one/10 outline-none"
+  />
+)}
+
+
                     {field.type === "datemin" && (
                       <DatePicker
                         selected={formData[field.name] ? new Date(formData[field.name]) : null}
@@ -396,7 +450,7 @@ accept="image/png, image/jpeg, image/jpg, image/webp"                          t
 
 {field.type === 'custom' && field.render && (
   <div className="w-full">
-    {/* هنا بننادي الدالة اللي انت بعتها ونبعتلها الداتا عشان تتحكم فيها */}
+    
     {field.render({
       value: formData[field.name], // القيمة الحالية
       

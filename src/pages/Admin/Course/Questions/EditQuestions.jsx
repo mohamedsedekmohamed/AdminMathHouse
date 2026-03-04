@@ -207,12 +207,9 @@ if (!hasCorrect) {
 
   try {
     await putData(payload, `/api/admin/questions/${id}`, "Question updated successfully");
-    toast.success("Question updated successfully");
     navigate(-1);
   } catch (error) {
-    toast.error("Failed to update question");
-    console.error(error);
-  }
+throw error; }
 };
 
   if (loadingQuestion || loadingLessons || loadingSections || loadingExamCode) return <Loader />;

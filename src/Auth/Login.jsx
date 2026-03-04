@@ -121,13 +121,29 @@ const { postData, loading } = usePost();
               />
             </div>
 
-            <button className="w-full group relative overflow-hidden bg-one text-three font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">
-              <span className="relative z-10 flex items-center justify-center gap-2 tracking-widest">
-                SIGN IN TO SYSTEM
-              </span>
-              {/* تأثير الـ Hover الخلفي */}
-              <div className="absolute inset-0 bg-four translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            </button>
+<button
+  disabled={loading}
+  className={`w-full group relative overflow-hidden bg-one text-three font-bold py-4 rounded-xl shadow-lg transition-all 
+  active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed`}
+>
+  <span className="relative z-10 flex items-center justify-center gap-3 tracking-widest">
+  {loading ? (
+  <div className="flex items-center gap-3">
+    <div className="relative w-6 h-6">
+      <span className="absolute inset-0 bg-current animate-[spin_1.2s_linear_infinite] rounded-sm"></span>
+      <span className="absolute inset-1 bg-current opacity-70 animate-[ping_1.2s_ease-in-out_infinite] rounded-full"></span>
+    </div>
+    <span>LOADING...</span>
+  </div>
+) : (
+  "SIGN IN TO SYSTEM"
+)}
+  </span>
+
+  {!loading && (
+    <div className="absolute inset-0 bg-four translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+  )}
+</button>
             
            
           </form>

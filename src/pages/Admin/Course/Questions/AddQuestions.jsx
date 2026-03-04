@@ -297,7 +297,6 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
 
   try {
     await postData(payload, `/api/admin/questions`, "Question added successfully");
-    toast.success("Question added successfully");
     navigate(-1);
   } catch (error) {
 
