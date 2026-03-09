@@ -42,21 +42,20 @@ const EditCategory = () => {
         type: "text",
         placeholder: "Optional description",
         section: "General Information",
-        fullWidth: true,
       },
       {
         name: "parentCategoryId",
         label: "Parent Category (Optional)",
         type: "select",
         options: parentOptions,
-        section: "Hierarchy",
+        section: "General Information",
         helperText: "Leave empty if this is a main category",
       },
       {
         name: "image",
         label: "Category Image (Optional)",
         type: "file",
-        section: "Media",
+        section: "General Information",
       },
     ],
     [parentOptions]

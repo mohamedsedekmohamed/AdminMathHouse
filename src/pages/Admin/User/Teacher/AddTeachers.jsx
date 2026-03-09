@@ -62,13 +62,13 @@ const AddTeachers = () => {
         type: "password",
         required: true,
         placeholder: "Enter password",
-        section: "Security",
+        section: "General Information",
       },
       {
         name: "avatar",
         label: "Avatar (Optional)",
         type: "file",
-        section: "Media",
+        section: "General Information",
       },
       {
         name: "categoryId",

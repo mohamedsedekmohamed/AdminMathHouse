@@ -20,52 +20,49 @@ const AddPopup = () => {
         label: "Popup Name",
         type: "text",
         required: true,
-        fullWidth: true,
         placeholder: "Enter popup name",
-        section: "Popup Information",
+      section: "General Information",
       },
       {
         name: "destination",
         label: "Destination",
         type: "select",
-        fullWidth: true,
         options: [
           { value: "student", label: "Student" },
           { value: "parent", label: "Parent" },
           { value: "teacher", label: "Teacher" },
         ],
         required: true,
-        section: "Popup Information",
-      },
-      {
-        fullWidth: true,
-        name: "image",
-        label: "Popup Image",
-        type: "file",
-        required: true,
-        section: "Popup Information",
-        helperText: "Upload an image (PNG/JPG)",
+      section: "General Information",
       },
       {
         name:"isActive",
         label:"Active",
         type:"switch",
-        section:"Popup Information"
+        section:"General Information"
       },
-      {
+        {
         name: "startDate",
         label: "Start Date",
         type: "datemin",
         required: true,
-        section: "Popup Duration",
+      section: "General Information",
       },
       {
         name: "endDate",
         label: "End Date",
         type: "datemin",
         required: true,
-        section: "Popup Duration",
-      },
+      section: "General Information",
+      }, 
+      {
+        name: "image",
+        label: "Popup Image",
+        type: "file",
+        required: true,
+      section: "General Information",
+        helperText: "Upload an image (PNG/JPG)",
+      }
     ],
     [],
   );

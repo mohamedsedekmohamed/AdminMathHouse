@@ -118,12 +118,11 @@ useEffect(() => {
   }, {});
 
   return (
-    <div className="p-1 md:p-2 bg-[#f8fafc] min-h-screen text-left" dir="ltr">
+    <div className=" md:p-1 bg-[#f8fafc] min-h-screen text-left" dir="ltr">
       {/* Header */}
-      <div className=" mx-auto mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className=" mx-auto mb-2 flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">{title}</h1>
-          <p className="text-slate-500 mt-1">Please fill in the required information accurately.</p>
         </div>
         <button
           onClick={() => navigate(-1)}
@@ -148,7 +147,7 @@ useEffect(() => {
       setIsSubmitting(false);
     }
   }}
-        className=" mx-auto space-y-8"
+        className=" mx-auto space-y-2"
       >
         {Object.entries(sections).map(([sectionTitle, sectionFields]) => (
           <div key={sectionTitle} className="bg-white rounded-2xl shadow-sm border border-slate-100 ">
@@ -156,12 +155,12 @@ useEffect(() => {
               <h2 className="text-lg font-bold text-slate-700">{sectionTitle}</h2>
             </div>
             
-            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-left">
+            <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 text-left">
               {sectionFields.map((field) => {
                 if (typeof field.hidden === "function" && field.hidden(formData)) return null;
 
                 return (
-                  <div key={field.name} className={`flex flex-col gap-1.5 ${field.fullWidth ? 'md:col-span-2' : ''}`}>
+                  <div key={field.name} className={`flex flex-col gap-1.5 ${field.fullWidth ? 'md:col-span-3' : ''}`}>
                     <label className="text-sm font-bold text-slate-700 flex items-center gap-1 justify-start">
                       {field.label}
                       {field.required && <span className="text-red-500">*</span>}
@@ -334,6 +333,8 @@ value={
                     )}
                     {field.type === "date" && (
                       <DatePicker
+                                              minDate={new Date()}
+                      
                         selected={formData[field.name] ? new Date(formData[field.name]) : null}
                         onChange={(date) => setFormData(prev => ({ ...prev, [field.name]: date ? date.toISOString() : "" }))}
                         dateFormat="yyyy-MM-dd"

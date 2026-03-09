@@ -1,50 +1,39 @@
 import React, { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import AddPage from "@/components/AddPage";
 import useGet from "@/hooks/useGet";
-import usePut from "@/hooks/usePut";
+import usePost from "@/hooks/usePost";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import toast from "react-hot-toast";
 
-const EditQuestions = () => {
+const SameQuestions = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { putData, loading: saving } = usePut(`/api/admin/questions/${id}`);
+  const location = useLocation();
+  const lessonId = location.state?.lessonId;
 
-  // Fetch existing question
+  const { postData } = usePost("/api/admin/questions");
+
+  // fetch question
   const {
     data: questionRes,
     loading: loadingQuestion,
     error: errorQuestion,
   } = useGet(`/api/admin/questions/${id}`);
 
-  // Fetch selection data
-  const {
-    data: Lessons,
-    loading: loadingLessons,
-    error: errorLessons,
-  } = useGet("/api/admin/questions/selectionLesson");
+  // selections
   const {
     data: Sections,
     loading: loadingSections,
     error: errorSections,
   } = useGet("/api/admin/sections/selectionSections");
+
   const {
     data: ExamCode,
     loading: loadingExamCode,
     error: errorExamCode,
   } = useGet("/api/admin/questions/selectionExamCode");
-
-  // Prepare select options
-  const LessonsOptions = useMemo(
-    () =>
-      Lessons?.data?.data?.map((lesson) => ({
-        value: lesson.value,
-        label: lesson.label,
-      })) || [],
-    [Lessons],
-  );
 
   const SectionsOptions = useMemo(
     () =>
@@ -52,7 +41,7 @@ const EditQuestions = () => {
         value: s.id,
         label: s.sectionName,
       })) || [],
-    [Sections],
+    [Sections]
   );
 
   const ExamCodeOptions = useMemo(
@@ -61,17 +50,16 @@ const EditQuestions = () => {
         value: code.id,
         label: code.code,
       })) || [],
-    [ExamCode],
+    [ExamCode]
   );
 
   const currentYear = new Date().getFullYear();
   const startYear = 2000;
+
   const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
     const y = startYear + i;
     return { value: y.toString(), label: y.toString() };
   });
-
-  const answerOrders = ["A", "B", "C", "D"];
 
   const fields = useMemo(
     () => [
@@ -80,9 +68,15 @@ const EditQuestions = () => {
         label: "Question",
         type: "text",
         required: true,
+      section: "General Information",
+        fullWidth: true,
+      },
+      {
+        name: "image",
+        label: "Question Image (Optional)",
+        type: "file",
         section: "General Information",
       },
-      
       {
         name: "answerType",
         label: "Answer Type",
@@ -103,25 +97,15 @@ const EditQuestions = () => {
           { value: "Trail", label: "Trail" },
         ],
         required: true,
-        section: "General Information",
+      section: "General Information",
       },
       {
         name: "month",
         label: "Month",
         type: "select",
         options: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
+          "Jan","Feb","Mar","Apr","May","Jun",
+          "Jul","Aug","Sep","Oct","Nov","Dec"
         ].map((m) => ({ value: m, label: m })),
         required: true,
       section: "General Information",
@@ -130,15 +114,10 @@ const EditQuestions = () => {
         name: "difficulty",
         label: "Difficulty",
         type: "select",
-        options: ["A", "B", "C", "D", "E"].map((d) => ({ value: d, label: d })),
-        required: true,
-      section: "General Information",
-      },
-      {
-        name: "lessonId",
-        label: "Lesson",
-        type: "select",
-        options: LessonsOptions,
+        options: ["A","B","C","D","E"].map((d) => ({
+          value: d,
+          label: d,
+        })),
         required: true,
       section: "General Information",
       },
@@ -171,8 +150,7 @@ const EditQuestions = () => {
         label: "Answer Options",
         type: "dynamic-list",
         required: true,
-        section: "Questions",
-        helperText: "Add as many options as you need.",
+        section: "Options",
         fullWidth: true,
       },
       {
@@ -180,54 +158,47 @@ const EditQuestions = () => {
         label: "Correct Option",
         type: "custom",
         required: true,
-        section: "Questions",
-        render: ({ value, onChange, formData, error }) => {
-          const currentOptionsCount = formData.options?.length || 4;
-          const availableLetters = Array.from(
-            { length: currentOptionsCount },
-            (_, i) => String.fromCharCode(65 + i),
+        section: "Options",
+        render: ({ value, onChange, formData }) => {
+          const count = formData.options?.length || 4;
+
+          const letters = Array.from(
+            { length: count },
+            (_, i) => String.fromCharCode(65 + i)
           );
 
           return (
-            <div className="flex flex-wrap flex-col gap-3">
-              {availableLetters.map((letter) => {
-                const isSelected = value === letter;
-                return (
-                  <button
-                    key={letter}
-                    type="button"
-                    onClick={() => onChange(letter)}
-                    className={`
-                w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold transition-all duration-200 border-2
-                ${
-                  isSelected
-                    ? "bg-one text-white border-one shadow-lg scale-110"
-                    : "bg-white text-slate-500 border-slate-200 hover:border-one/50 hover:bg-slate-50"
-                }
-                ${error ? "border-red-500" : ""}
-              `}
-                  >
-                    {letter}
-                  </button>
-                );
-              })}
+            <div className="flex gap-3 flex-wrap">
+              {letters.map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => onChange(l)}
+                  className={`w-12 h-12 rounded-xl border-2 font-bold
+                  ${
+                    value === l
+                      ? "bg-one text-white border-one"
+                      : "bg-white border-slate-200"
+                  }`}
+                >
+                  {l}
+                </button>
+              ))}
             </div>
           );
         },
       },
       {
         name: "answerPdf",
-        label: "Answer PDF (Optional)",
+        label: "Answer PDF",
         type: "text",
-      section: "General Information",
-        helperText: "Enter the PDF URL",
+        section: "Resources",
       },
       {
         name: "answerVideo",
-        label: "Answer Video (Optional)",
+        label: "Answer Video",
         type: "text",
-      section: "General Information",
-        helperText: "Enter the video URL",
+        section: "Resources",
       },
       {
         name: "image",
@@ -236,14 +207,18 @@ const EditQuestions = () => {
         section: "General Information",
       },
     ],
-    [LessonsOptions, SectionsOptions, ExamCodeOptions],
+    [SectionsOptions, ExamCodeOptions]
   );
 
+  // clone question data
   const initialData = useMemo(() => {
     if (!questionRes?.data?.data) return {};
+
     const q = questionRes.data.data;
-    const options = q.options?.map((opt) => opt.answer) || [];
-    const correctOption = q.options?.find((opt) => opt.isCorrect)?.order || "";
+
+    const options = q.options?.map((o) => o.answer) || [];
+    const correctOption =
+      q.options?.find((o) => o.isCorrect)?.order || "";
 
     return {
       question: q.question || "",
@@ -252,7 +227,6 @@ const EditQuestions = () => {
       questionType: q.questionType || "",
       month: q.month || "",
       difficulty: q.difficulty || "",
-      lessonId: q.lessonId || "",
       sectionId: q.section?.id || "",
       year: q.year?.toString() || "",
       codeId: q.codeId || "",
@@ -264,79 +238,76 @@ const EditQuestions = () => {
   }, [questionRes]);
 
   const onSave = async (formData) => {
-    // تحويل الصورة Base64 لو المستخدم غيّرها
-    let imageBase64 = formData.image;
-    if (formData.image instanceof File) {
+
+    const { image, ...rest } = formData;
+
+    let imageBase64;
+
+    // لو المستخدم غيّر الصورة فقط
+    if (image instanceof File) {
       imageBase64 = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
-        reader.readAsDataURL(formData.image);
+        reader.readAsDataURL(image);
       });
     }
 
-    // تجهيز الـ Options من dynamic-list
     const options = (formData.options || [])
       .map((answer, index) => ({
         answer: answer?.trim(),
-        isCorrect: formData.correctOption === String.fromCharCode(65 + index),
+        isCorrect:
+          formData.correctOption ===
+          String.fromCharCode(65 + index),
         order: String.fromCharCode(65 + index),
       }))
-      .filter((opt) => opt.answer);
+      .filter((o) => o.answer);
 
-    // 🛑 Validation قبل الإرسال
     if (options.length < 2) {
       toast.error("Please add at least two answer options");
       return;
     }
 
-    if (!formData.correctOption) {
-      toast.error("Please select the correct answer");
-      return;
-    }
-
-    const hasCorrect = options.some((opt) => opt.isCorrect);
-    if (!hasCorrect) {
-      toast.error("The correct answer must be one of the provided options");
-      return;
-    }
-
-    const numyear = Number(formData.year);
-    const { year, ...rest } = formData;
-
     const payload = {
       ...rest,
-      year: numyear,
-      image: imageBase64,
+      lessonId: lessonId,
+      year: Number(formData.year),
       options,
     };
 
+    // أضف الصورة فقط لو اتغيرت
+    if (imageBase64) {
+      payload.image = imageBase64;
+    }
+
     try {
-      await putData(
+      await postData(
         payload,
-        `/api/admin/questions/${id}`,
-        "Question updated successfully",
+        "/api/admin/questions",
+        "Question duplicated successfully"
       );
+
       navigate(-1);
     } catch (error) {
       throw error;
     }
   };
 
-  if (loadingQuestion || loadingLessons || loadingSections || loadingExamCode)
+  if (loadingQuestion || loadingSections || loadingExamCode)
     return <Loader />;
-  if (errorQuestion || errorLessons || errorSections || errorExamCode)
+
+  if (errorQuestion || errorSections || errorExamCode)
     return <Errorpage />;
 
   return (
     <AddPage
-      title="Edit Question"
+      title="Duplicate Question"
       fields={fields}
+      initialData={initialData}
       onSave={onSave}
       onCancel={() => navigate(-1)}
-      initialData={initialData}
     />
   );
 };
 
-export default EditQuestions;
+export default SameQuestions;

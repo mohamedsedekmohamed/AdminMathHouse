@@ -52,7 +52,6 @@ const EditDiagnosticexam = () => {
       type: "text",
       placeholder: "Enter description",
       section: "General Information",
-      fullWidth: true,
     },
     {
       name: "duration",
@@ -60,7 +59,7 @@ const EditDiagnosticexam = () => {
       type: "number",
       required: true,
       placeholder: "60",
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "rawScoreId",
@@ -68,7 +67,7 @@ const EditDiagnosticexam = () => {
       type: "select",
       required: true,
       options: rawScoreOptions,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "numberOfQuestions",
@@ -76,7 +75,7 @@ const EditDiagnosticexam = () => {
       type: "number",
       required: true,
       placeholder: "20",
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "passScore",
@@ -84,7 +83,7 @@ const EditDiagnosticexam = () => {
       type: "number",
       required: true,
       placeholder: "70",
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "isActive",
@@ -152,7 +151,7 @@ const EditDiagnosticexam = () => {
 
   return (
     <AddPage
-      title="Edit Exam"
+      title="Edit Diagnostic Exam"
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(`/admin/courses/diagnosticexam/${initialData.courseId}`)}

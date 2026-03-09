@@ -58,56 +58,56 @@ const EditPromoCodes = () => {
         label: "Promo Name",
         type: "text",
         required: true,
-        section: "Basic Information",
+        section:"General Information"
       },
       {
         name: "code",
         label: "Promo Code",
         type: "text",
         required: true,
-        section: "Basic Information",
+        section:"General Information"
       },
       {
         name: "discountAmount",
         label: "Discount (%)",
         type: "number",
         required: true,
-        section: "Discount",
+        section:"General Information"
       },
       {
         name: "numberOfUsages",
         label: "Number Of Usages",
         type: "number",
         required: true,
-        section: "Usage",
+        section:"General Information"
       },
       {
         name: "courseIds",
         label: "Courses",
         type: "multipleSelect",
         options: courseOptions,
-        section: "Relations",
+        section:"General Information"
       },
       {
         name: "packageIds",
         label: "Packages",
         type: "multipleSelect",
         options: packageOptions,
-        section: "Relations",
+        section:"General Information"
       },
       {
         name: "startDate",
         label: "Start Date",
         type: "datemin",
         required: true,
-        section: "Duration",
+        section:"General Information"
       },
       {
         name: "endDate",
         label: "End Date",
         type: "datemin",
         required: true,
-        section: "Duration",
+        section:"General Information"
       },
     ],
     [courseOptions, packageOptions],

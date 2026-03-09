@@ -58,16 +58,8 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
       required: true,
       placeholder: "Enter the question",
       section: "General Information",
-      fullWidth: true,
     },
-    {
-      name: "image",
-      label: "Question Image (Optional)",
-      type: "file",
-            fullWidth: true,
-
-      section: "General Information",
-    },
+   
     {
       name: "answerType",
       label: "Answer Type",
@@ -77,7 +69,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
         { value: "Grid in", label:"Grid in" },
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "questionType",
@@ -89,7 +81,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
     
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
   name: "month",
@@ -110,7 +102,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
     { value: "Dec", label: "Dec" },
   ],
   required: true,
-  section: "Details",
+      section: "General Information",
 },
     {
       name: "difficulty",
@@ -124,7 +116,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
         { value: "E", label: "E" },
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     // {
     //   name: "lessonId",
@@ -141,7 +133,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
       options: SectionsOptions,
       required: true,
       placeholder: "Enter the section",
-      section: "Details",
+      section: "General Information",
     },
    {
   name: "year",
@@ -149,8 +141,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
   type: "select",
   options: years,
   required: true,
-  section: "Details",
-  fullWidth: true,
+      section: "General Information",
 },
     {
       name: "codeId",
@@ -158,23 +149,23 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
       type: "select",
       options: ExamCodeOptions,
       required: true,
-      section: "Relations",
+      section: "General Information",
     },
    {
       name: "options", 
       label: "Answer Options",
       type: "dynamic-list", 
       required: true,
-      section: "Options",
+      section: "Questions",
       helperText: "Add as many options as you need.",
-      fullWidth: true, // لتأخذ عرض الشاشة
+      
     },
   {
       name: "correctOption",
       label: "Correct Option",
       type: "custom", // غيرنا النوع هنا
       required: true,
-      section: "Options",
+      section: "Questions",
       
       // دالة الرسم (Render Function)
       render: ({ value, onChange, formData, error }) => {
@@ -183,7 +174,7 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
         const availableLetters = Array.from({ length: currentOptionsCount }, (_, i) => String.fromCharCode(65 + i));
 
         return (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap flex-col gap-3">
             {availableLetters.map((letter) => {
               const isSelected = value === letter;
               return (
@@ -212,16 +203,23 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
       name: "answerPdf",
       label: "Answer PDF (Optional)",
       type: "text",
-      section: "Resources",
+      section: "General Information",
       helperText: "Enter the PDF URL",
     },
     {
       name: "answerVideo",
       label: "Answer Video (Optional)",
       type: "text",
-      section: "Resources",
+      section: "General Information",
       helperText: "Enter the video URL",
     },
+     {
+      name: "image",
+      label: "Question Image (Optional)",
+      type: "file",
+
+      section: "General Information",
+    }
   ], [LessonsOptions, ExamCodeOptions]);
 
   const initialFormValues = {

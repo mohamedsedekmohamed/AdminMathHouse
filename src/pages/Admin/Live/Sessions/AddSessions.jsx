@@ -17,6 +17,10 @@ const AddSessions = () => {
     () => selectData?.data?.groups || [],
     [selectData]
   );
+  const courseOptions = useMemo(
+    () => selectData?.data?.courses || [],
+    [selectData]
+  );
 
   const teacherOptions = useMemo(
     () => selectData?.data?.teachers || [],
@@ -40,7 +44,6 @@ const AddSessions = () => {
         label: "Session Name",
         type: "text",
         required: true,
-        fullWidth: true,
         section: "General Information",
       },
       {
@@ -48,7 +51,7 @@ const AddSessions = () => {
         label: "Session Date",
         type: "date",
         required: true,
-        section: "Schedule",
+        section: "General Information",
         helperText: "YYYY-MM-DD",
       },
       {
@@ -56,51 +59,73 @@ const AddSessions = () => {
         label: "From",
         type: "time",
         required: true,
-        section: "Schedule",
+        section: "General Information",
       },
       {
         name: "timeTo",
         label: "To",
         type: "time",
         required: true,
-        section: "Schedule",
+        section: "General Information",
       },
-      {
-        name: "categoryId",
-        label: "Category",
-        type: "text", // لو عندك select للـ categories بعدين نربطه
-        required: true,
-        section: "Relations",
-      },
+      // {
+      //   name: "categoryId",
+      //   label: "Category",
+      //   type: "text", // لو عندك select للـ categories بعدين نربطه
+      //   required: true,
+      //   section: "Relations",
+      // },
       {
         name: "courseId",
         label: "Course",
-        type: "text", // نفس الفكرة
+        type: "select", // نفس الفكرة
         required: true,
-        section: "Relations",
+        options: courseOptions,
+        section: "General Information",
       },
       {
         name: "lessonName",
         label: "Lesson Name",
         type: "text",
-        fullWidth: true,
         required: true,
-        section: "Details",
+        section: "General Information",
       },
+      {
+        name: "session_link",
+        label: "Session Link",
+        type: "text",
+          section: "Links",
+      },
+      {
+        name: "material_link",
+        label: "Material Link",
+        type: "text",
+        section: "Links",
+      },
+      {
+        name: "teacher_material_link",
+        label: "Teacher Material Link",
+        type: "text",
+        section: "Links",
+      },
+    
+
       {
         name: "type",
         label: "Type",
         type: "select",
         required: true,
         options: typeOptions,
-        section: "Relations",
+        section: "General Information",
       },
       {
         name: "groupId",
         label: "Group",
         type: "select",
+                required: true,
+
         options: groupOptions,
-        section: "Relations",
+        section: "General Information",
       },
       {
         name: "teacherId",
@@ -108,7 +133,7 @@ const AddSessions = () => {
         type: "select",
         required: true,
         options: teacherOptions,
-        section: "Relations",
+        section: "General Information",
       },
       {
         name: "userIds",

@@ -57,7 +57,6 @@ const AddPackages = () => {
       label: "Package Name",
       type: "text",
       required: true,
-           fullWidth: true,
       section: "General Information",
     },
     {
@@ -66,7 +65,7 @@ const AddPackages = () => {
       type: "select",
       required: true,
       options: typeOptions,
-      section: "Relations",
+      section: "General Information",
     },
     {
       name: "categoryId",
@@ -74,7 +73,7 @@ const AddPackages = () => {
       type: "select",
       required: true,
       options: categoryOptions,
-      section: "Relations",
+      section: "General Information",
       onChange: (val) => setSelectedCategoryId(val) 
     },
     {
@@ -83,7 +82,7 @@ const AddPackages = () => {
       type: "select",
       required: true,
       options: courseOptions,
-      section: "Relations",
+      section: "General Information",
       placeholder: loadingCourses ? "Loading..." : "Select Course",
     },
    
@@ -92,21 +91,21 @@ const AddPackages = () => {
       label: "Number of Items",
       type: "number",
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "price",
       label: "Price",
       type: "numberdecimal",
       required: true,
-      section: "Pricing",
+      section: "General Information",
     },
     {
       name: "duration",
       label: "Duration (Days)",
       type: "number",
       required: true,
-      section: "Details",
+      section: "General Information",
     },
   ], [typeOptions, categoryOptions, courseOptions, loadingCourses]);
 

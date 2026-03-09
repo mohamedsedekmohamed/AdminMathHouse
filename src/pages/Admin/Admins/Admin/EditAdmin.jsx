@@ -59,7 +59,9 @@ const EditAdmin = () => {
         required: false, 
         placeholder: "Leave blank to keep current password",
         helperText: "Only fill this if you want to change the password.",
-        section: "Security",
+        section: "Personal Information",
+                section: "Personal Information",
+
       },
       {
         name: "roleId",
@@ -67,7 +69,7 @@ const EditAdmin = () => {
         type: "select",
         required: true,
         options: roleOptions,
-        section: "Permissions",
+        section: "Personal Information",
       },
     ],
     [roleOptions]

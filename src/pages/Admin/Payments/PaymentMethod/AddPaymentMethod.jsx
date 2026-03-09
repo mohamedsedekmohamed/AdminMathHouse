@@ -61,8 +61,7 @@ const AddPaymentMethod = () => {
         type: "multipleSelect",
         options: currenciesOptionsMemo,
         required: true,
-        fullWidth: true,
-        section: "Currencies",
+        section: "General Information",
       },
       {
         name: "logo",

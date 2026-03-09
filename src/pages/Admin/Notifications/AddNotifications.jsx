@@ -25,28 +25,21 @@ const AddNotifications = () => {
         label: "Notification Text",
         type: "text",
         required: true,
-        fullWidth: true,
-        section: "Notification Info",
+      section: "General Information",
       },
-      {
-        name: "sendToAll",
-        label: "Send To All Users",
-        type: "switch",
-        section: "Notification Info",
-      },
+      
       {
         name: "materialLink",
         label: "Material Link",
         type: "text",
-        fullWidth: true,
-        section: "Material",
+      section: "General Information",
       },
       {
         name: "dateTime",
         label: "Date & Time",
         type: "datetime",
         required: true,
-        section: "Schedule",
+      section: "General Information",
       },
 
       // 👇 multipleSelect بدل Custom
@@ -55,7 +48,7 @@ const AddNotifications = () => {
         label: "Parents",
         type: "multipleSelect",
         options: parentsOptions,
-        section: "Recipients",
+      section: "General Information",
         disabled: false,
       },
       {
@@ -63,7 +56,7 @@ const AddNotifications = () => {
         label: "Students",
         type: "multipleSelect",
         options: studentsOptions,
-        section: "Recipients",
+      section: "General Information",
         disabled: false,
       },
       {
@@ -71,9 +64,14 @@ const AddNotifications = () => {
         label: "Teachers",
         type: "multipleSelect",
         options: teachersOptions,
-        section: "Recipients",
+      section: "General Information",
         disabled: false,
-      },
+      },{
+        name: "sendToAll",
+        label: "Send To All Users",
+        type: "switch",
+      section: "General Information",
+      }
     ],
     [parentsOptions, studentsOptions, teachersOptions]
   );

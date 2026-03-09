@@ -97,6 +97,15 @@
     const handleEdit = (row) => {
       navigate(`/admin/courses/questions/edit/${row.id}`);
     };
+    const handleSame = (row) => {
+      navigate(`/admin/courses/questions/same/${row.id}`,
+  {
+            state: {
+              lessonId: lessonId,
+            },
+          }
+      );
+    };
 
     if (loading && !tableData.length) return <Loader />;
     if (error) return <Errorpage />;
@@ -119,12 +128,20 @@
           onEdit={handleEdit}
           onDelete={handleDelete}
           extraActions={(row) => (
+            <>
             <button
     onClick={() => handleParallel(row)}
     className="px-3 py-1 rounded bg-one/90 text-white hover:bg-one hover:scale-105 transition"
-  >
+    >
     Parallel
   </button>
+              <button
+    onClick={() => handleSame(row)}
+    className="px-3 py-1 rounded bg-yellow-700 text-white hover:bg-yellow-500 hover:scale-105 transition"
+    >
+    Same
+  </button>
+    </>
           )}
           // الربط مع الـ Pagination والبحث
           currentPage={page}

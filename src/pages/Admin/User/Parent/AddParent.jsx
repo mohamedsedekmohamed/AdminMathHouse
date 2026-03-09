@@ -16,7 +16,7 @@ const AddParent = () => {
         type: "text",
         required: true,
         placeholder: "Enter parent name",
-        section: "General Information",
+        section: "Contact Information",
       },
       {
         name: "email",
@@ -24,7 +24,7 @@ const AddParent = () => {
         type: "email",
         required: true,
         placeholder: "example@email.com",
-        section: "General Information",
+        section: "Contact Information",
       },
       {
         name: "phoneNumber",
@@ -40,7 +40,7 @@ const AddParent = () => {
         type: "text",
         required: true,
         placeholder: "Enter password",
-        section: "Security",
+        section: "Contact Information",
       },
     ],
     []

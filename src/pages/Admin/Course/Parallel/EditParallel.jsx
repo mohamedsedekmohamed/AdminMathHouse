@@ -37,7 +37,6 @@ const EditParallel = () => {
       required: true,
       placeholder: "Edit parallel question",
       section: "General Information",
-      fullWidth: true,
     },
     {
       name: "answerType",
@@ -48,7 +47,7 @@ const EditParallel = () => {
         { value: "Grid in", label: "Grid in" },
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "difficulty",
@@ -62,7 +61,7 @@ const EditParallel = () => {
         { value: "E", label: "E" },
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "lessonId",
@@ -70,7 +69,7 @@ const EditParallel = () => {
       type: "select",
       options: LessonsOptions,
       required: true,
-      section: "Relations",
+      section: "General Information",
     },
     {
       name: "options",
@@ -95,7 +94,7 @@ const EditParallel = () => {
         );
 
         return (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap flex-col gap-3">
             {availableLetters.map((letter) => {
               const isSelected = value === letter;
               return (
@@ -122,21 +121,26 @@ const EditParallel = () => {
     },
   ], [LessonsOptions]);
 
-  const initialData = useMemo(() => {
-    if (!questionRes?.data?.data?.[0]) return {};
-    const q = questionRes.data.data[0];
-    const options = q.options?.map(opt => opt.answer) || [];
-    const correctOption = q.options?.find(opt => opt.isCorrect)?.order || "";
+ const initialData = useMemo(() => {
+  const rows = questionRes?.data?.data;
+  if (!rows || rows.length === 0) return {};
 
-    return {
-      question: q.question || "",
-      answerType: q.answerType || "",
-      difficulty: q.difficulty || "",
-      lessonId: q.lessonId || "",
-      options,
-      correctOption,
-    };
-  }, [questionRes]);
+  const first = rows[0];
+
+  const options = rows.map((row) => row.options?.answer || "");
+
+  const correctOption =
+    rows.find((row) => row.options?.isCorrect)?.options?.order || "";
+
+  return {
+    question: first.question || "",
+    answerType: first.answerType || "",
+    difficulty: first.difficulty || "",
+    lessonId: first.lessonId || "",
+    options,
+    correctOption,
+  };
+}, [questionRes]);
 
   const onSave = async (formData) => {
     // تجهيز الـ Options

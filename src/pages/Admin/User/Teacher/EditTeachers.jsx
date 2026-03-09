@@ -67,13 +67,13 @@ const EditTeachers = () => {
         label: "Password (Optional)",
         type: "password",
         placeholder: "Leave empty to keep current password",
-        section: "Security",
+        section: "General Information",
       },
       {
         name: "avatar",
         label: "Avatar (Optional)",
         type: "file",
-        section: "Media",
+        section: "General Information",
       },
        {
         name: "categoryId",

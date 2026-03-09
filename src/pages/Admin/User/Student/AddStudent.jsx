@@ -42,7 +42,7 @@ const AddStudent = () => {
         type: "text",
         required: true,
         placeholder: "Enter first name",
-        section: "Personal Information",
+        section: "Account Information",
       },
       {
         name: "lastname",
@@ -50,7 +50,7 @@ const AddStudent = () => {
         type: "text",
         required: true,
         placeholder: "Enter last name",
-        section: "Personal Information",
+        section: "Account Information",
       },
       {
         name: "nickname",
@@ -58,7 +58,7 @@ const AddStudent = () => {
         type: "text",
         required: true,
         placeholder: "Optional nickname",
-        section: "Personal Information",
+        section: "Account Information",
       },
       {
         name: "email",
@@ -83,7 +83,7 @@ const AddStudent = () => {
         pattern: /^[0-9]{10,15}$/,
         required: true,
         placeholder: "Student phone",
-        section: "Contact Information",
+        section: "Account Information",
       },
       {
         name: "parentphone",
@@ -92,7 +92,7 @@ const AddStudent = () => {
         required: true,
         pattern: /^[0-9]{10,15}$/,
         placeholder: "Parent phone",
-        section: "Contact Information",
+        section: "Account Information",
       },
       {
         name: "category",
@@ -100,7 +100,7 @@ const AddStudent = () => {
         required: true,
         type: "select",
         options: categoriesOptions,
-        section: "Academic Information",
+        section: "Account Information",
         helperText: "Choose the student's category",
       },
       {
@@ -109,8 +109,8 @@ const AddStudent = () => {
         required: true,
         type: "select",
         options: gradesOptions,
-        section: "Academic Information",
-        helperText: "Choose the student's grade",
+        section: "Account Information",
+          helperText: "Choose the student's grade",
       },
     ],
     [categoriesOptions, gradesOptions]

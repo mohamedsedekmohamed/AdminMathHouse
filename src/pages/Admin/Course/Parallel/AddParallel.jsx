@@ -27,7 +27,6 @@ const AddParallel = () => {
       required: true,
       placeholder: "Enter the parallel question",
       section: "General Information",
-      fullWidth: true,
     },
     {
       name: "answerType",
@@ -38,7 +37,7 @@ const AddParallel = () => {
         { value: "Grid in", label: "Grid in" },
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "difficulty",
@@ -52,7 +51,7 @@ const AddParallel = () => {
         { value: "E", label: "E" },
       ],
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     
     {
@@ -75,7 +74,7 @@ const AddParallel = () => {
         const availableLetters = Array.from({ length: currentOptionsCount }, (_, i) => String.fromCharCode(65 + i));
 
         return (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap flex-col gap-3">
             {availableLetters.map((letter) => {
               const isSelected = value === letter;
               return (

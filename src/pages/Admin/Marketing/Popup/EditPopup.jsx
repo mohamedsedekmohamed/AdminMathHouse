@@ -37,51 +37,51 @@ const EditPopup = () => {
         label: "Popup Name",
         type: "text",
         required: true,
-        fullWidth: true,
-        section: "Popup Information",
+        section:"General Information"
       },
-      {
-        name: "image",
-        label: "Popup Image",
-        type: "file",
-        fullWidth: true,
-        section: "Popup Information",
-        helperText: "Upload a new image to replace the old one",
-        // preview: currentImage, // 👈 عرض الصورة الحالية كـ preview
-      },
+   
       {
         name: "destination",
         label: "Destination",
         type: "select",
-        fullWidth: true,
         options: [
           { value: "student", label: "Student" },
           { value: "parent", label: "Parent" },
           { value: "teacher", label: "Teacher" },
         ],
         required: true,
-        section: "Popup Information",
+        section:"General Information"
       },
       {
         name: "isActive",
         label: "Active",
         type: "switch",
-        section: "Popup Information",
+        section:"General Information"
       },
-      {
+       {
         name: "startDate",
         label: "Start Date",
         type: "datemin",
         required: true,
-        section: "Popup Duration",
+        section:"General Information"
       },
       {
         name: "endDate",
         label: "End Date",
         type: "datemin",
         required: true,
-        section: "Popup Duration",
+        section:"General Information"
       },
+      
+         {
+        name: "image",
+        label: "Popup Image",
+        type: "file",
+        section:"General Information",
+        helperText: "Upload a new image to replace the old one",
+        // preview: currentImage, // 👈 عرض الصورة الحالية كـ preview
+      },
+     
     ],
     [currentImage]
   );

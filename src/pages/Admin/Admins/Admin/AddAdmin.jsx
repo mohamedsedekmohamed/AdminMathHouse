@@ -19,13 +19,16 @@ const AddAdmin = () => {
       })) || []
     );
   }, [rolesRes]);
-  const initialFormValues = useMemo(() => ({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    roleId: "",
-  }), []);
+  const initialFormValues = useMemo(
+    () => ({
+      name: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+      roleId: "",
+    }),
+    [],
+  );
 
   const fields = useMemo(
     () => [
@@ -59,7 +62,7 @@ const AddAdmin = () => {
         type: "password",
         required: true,
         placeholder: "Enter password",
-        section: "Security",
+        section: "Personal Information",
       },
       {
         name: "roleId",
@@ -67,10 +70,10 @@ const AddAdmin = () => {
         type: "select",
         required: true,
         options: roleOptions,
-        section: "Permissions",
+        section: "Personal Information",
       },
     ],
-    [roleOptions]
+    [roleOptions],
   );
 
   const onSave = async (formData) => {
@@ -83,11 +86,11 @@ const AddAdmin = () => {
     };
 
     try {
-    await postData(payload, "/api/admin/admin", "Admin added successfully");
-    navigate("/admin/admin"); 
-  } catch (err) {
- throw err
-  }
+      await postData(payload, "/api/admin/admin", "Admin added successfully");
+      navigate("/admin/admin");
+    } catch (err) {
+      throw err;
+    }
   };
   return (
     <AddPage
@@ -96,7 +99,7 @@ const AddAdmin = () => {
       onSave={onSave}
       onCancel={() => navigate("/admin/admin")}
       loading={loading}
-     initialData={initialFormValues}
+      initialData={initialFormValues}
     />
   );
 };

@@ -43,7 +43,7 @@ const EditRawScore = () => {
         type: "select",
         required: true,
         options: courseOptions,
-        section: "Assignment",
+        section: "General Information",
       },
       {
         name: "score",
@@ -51,24 +51,24 @@ const EditRawScore = () => {
         type: "number",
         required: true,
         placeholder: "Enter total score (e.g. 100)",
-        section: "Scoring",
+        section: "General Information",
         min: 0,
       },
-      {
-        name: "is_giftingScore",
-        label: "Include Gifting Score?",
-        type: "switch",
-        section: "Scoring",
-      },
+     
       {
         name: "giftingScore",
         label: "Gifting Score",
         type: "number",
         required: true,
         placeholder: "Enter gifting score",
-        section: "Scoring",
+        section: "General Information",
         min: 0,
-      },
+      }, {
+        name: "is_giftingScore",
+        label: "Include Gifting Score?",
+        type: "switch",
+        section: "General Information",
+      }
     ],
     [courseOptions]
   );

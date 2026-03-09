@@ -47,7 +47,6 @@ const AddExam = () => {
       type: "text",
       placeholder: "Enter description",
       section: "General Information",
-      fullWidth: true,
     },
     {
       name: "duration",
@@ -55,7 +54,7 @@ const AddExam = () => {
       type: "number",
       required: true,
       placeholder: "60",
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "rawScoreId",
@@ -63,7 +62,7 @@ const AddExam = () => {
       type: "select",
       required: true,
       options: rawScoreOptions,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "numberOfQuestions",
@@ -71,7 +70,7 @@ const AddExam = () => {
       type: "number",
       required: true,
       placeholder: "20",
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "passScore",
@@ -79,7 +78,7 @@ const AddExam = () => {
       type: "number",
       required: true,
       placeholder: "70",
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "isActive",
@@ -146,7 +145,7 @@ const AddExam = () => {
 
   return (
     <AddPage
-      title="Add Exam"
+      title="Add Diagnostic Exam"
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(-1)}

@@ -64,7 +64,6 @@ const EditPackages = () => {
       label: "Package Name",
       type: "text",
       required: true,
-      fullWidth: true,
       section: "General Information",
     },
     {
@@ -73,7 +72,7 @@ const EditPackages = () => {
       type: "select",
       required: true,
       options: typeOptions,
-      section: "Relations",
+      section: "General Information",
     },
     {
       name: "categoryId",
@@ -81,7 +80,7 @@ const EditPackages = () => {
       type: "select",
       required: true,
       options: categoryOptions,
-      section: "Relations",
+      section: "General Information",
       onChange: (val) => setSelectedCategoryId(val)
     },
     {
@@ -90,7 +89,7 @@ const EditPackages = () => {
       type: "select",
       required: true,
       options: courseOptions,
-      section: "Relations",
+      section: "General Information",
       placeholder: loadingCourses ? "Loading..." : "Select Course",
     },
     {
@@ -98,22 +97,22 @@ const EditPackages = () => {
       label: "Number of Items",
       type: "number",
       required: true,
-      section: "Details",
+      section: "General Information",
     },
     {
       name: "price",
       label: "Price",
       type: "numberdecimal",
       required: true,
-      section: "Pricing",
+      section: "General Information",
     },
     {
       name: "duration",
       label: "Duration (Days)",
       type: "number",
       required: true,
-      section: "Details",
-    },
+      section: "General Information",
+      },
   ], [typeOptions, categoryOptions, courseOptions, loadingCourses]);
 
   const onSave = async (formData) => {

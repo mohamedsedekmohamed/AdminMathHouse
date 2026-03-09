@@ -38,7 +38,7 @@ const AddCurrency = () => {
         label: "Exchange Rate (optional)",
         type: "numberdecimal",
         placeholder: "e.g. 1.0000",
-        section: "Rates",
+        section: "General Information",
         min: 0,
         helperText: "Rate relative to base (default 1.000000)",
       },
@@ -46,7 +46,7 @@ const AddCurrency = () => {
         name: "isBase",
         label: "Is Base Currency? (optional)",
         type: "switch",
-        section: "Rates",
+        section: "General Information",
       },
     ],
     []

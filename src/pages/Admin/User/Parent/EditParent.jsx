@@ -22,7 +22,7 @@ const EditParent = () => {
         type: "text",
         required: true,
         placeholder: "Enter parent name",
-        section: "General Information",
+        section: "Contact Information",
         
       },
       {
@@ -31,7 +31,7 @@ const EditParent = () => {
         type: "email",
         required: true,
         placeholder: "example@email.com",
-        section: "General Information",
+        section: "Contact Information",
       },
       {
         name: "phoneNumber",
@@ -46,6 +46,8 @@ const EditParent = () => {
         label: "Password",
         type: "text",
         placeholder: "Leave empty to keep current password",
+                section: "Contact Information",
+
         section: "Security",
       },
     ],

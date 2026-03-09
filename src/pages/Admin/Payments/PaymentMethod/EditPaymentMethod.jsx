@@ -66,8 +66,7 @@ const EditPaymentMethod = () => {
       type: "multipleSelect",
       options: currenciesOptions,
       required: true,
-      fullWidth: true,
-      section: "Currencies",
+        section: "General Information",
     },
     {
       name: "logo",

@@ -49,7 +49,7 @@ const courseOptions = useMemo(() => {
         type: "select",
         required: true,
         options: teacherOptions,
-        section: "Relations",
+        section: "General Information",
       },
       // {
       //   name: "courseId",
@@ -66,7 +66,7 @@ const courseOptions = useMemo(() => {
         type: "text",
         required: true,
         placeholder: "e.g. 2 weeks",
-        section: "Details",
+        section: "General Information",
       },
       {
         name: "price",
@@ -74,14 +74,14 @@ const courseOptions = useMemo(() => {
         type: "number",
         required: true,
         placeholder: "Enter price",
-        section: "Pricing",
+        section: "General Information",
       },
       {
         name: "discount",
         label: "Discount",
         type: "number",
         placeholder: "0",
-        section: "Pricing",
+        section: "General Information",
         helperText: "leave empty for no discount",
       },
       {
@@ -89,8 +89,7 @@ const courseOptions = useMemo(() => {
         label: "Description (Optional)",
         type: "text",
         placeholder: "Chapter description",
-        section: "Content",
-        fullWidth: true,
+        section: "General Information",
         helperText  : "leave empty for no description",
       },
       {
@@ -98,7 +97,7 @@ const courseOptions = useMemo(() => {
         label: "Pre-requisition (Optional)",
         type: "text",
         placeholder: "Basics you should know",
-        section: "Content",
+        section: "General Information",
         helperText: "leave empty for no pre-requisition",
       },
       {
@@ -106,7 +105,7 @@ const courseOptions = useMemo(() => {
         label: "What You Will Gain (Optional)",
         type: "text",
         placeholder: "Skills you will gain",
-        section: "Content",
+        section: "General Information",
         helperText: "leave empty for no what you will gain",
       },
       {
@@ -159,10 +158,10 @@ const onSave = async (formData) => {
 
   const payload = {
     name: formData.name,
-    courseId: formData.courseId,
     teacherId: formData.teacherId,
     duration: formData.duration,
     price: Number(formData.price),
+    
     courseId: courseId,
     // discount: Number(formData.discount || 0),
     // description: formData.description || "",

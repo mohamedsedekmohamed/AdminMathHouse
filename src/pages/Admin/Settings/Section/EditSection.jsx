@@ -41,7 +41,7 @@ const EditSection = () => {
         type: "number",
         required: true,
         placeholder: "Enter time in minutes",
-        section: "Details",
+        section: "General Information",
         min: 1,
         helperText: "Enter time in minutes only",
       },

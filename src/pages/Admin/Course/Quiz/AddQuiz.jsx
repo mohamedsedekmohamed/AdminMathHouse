@@ -34,7 +34,7 @@ const AddQuiz = () => {
         type: "number",
         required: true,
         placeholder: "0",
-        section: "Duration Settings",
+        section: "General Information",
       },
       {
         name: "durationMinutes",
@@ -42,7 +42,7 @@ const AddQuiz = () => {
         type: "number",
         required: true,
         placeholder: "30",
-        section: "Duration Settings",
+        section: "General Information",
       },
       {
         name: "totalScore",
@@ -50,7 +50,7 @@ const AddQuiz = () => {
         type: "number",
         required: true,
         placeholder: "100",
-        section: "Score Settings",
+        section: "General Information",
       },
       {
         name: "passScore",
@@ -58,7 +58,7 @@ const AddQuiz = () => {
         type: "number",
         required: true,
         placeholder: "60",
-        section: "Score Settings",
+        section: "General Information",
       },
       {
         name: "quizOrder",
@@ -66,14 +66,14 @@ const AddQuiz = () => {
         type: "number",
         required: true,
         placeholder: "1",
-        section: "General Settings",
+        section: "General Information",
       },
       {
         name: "isActive",
         label: "Active",
         type: "switch", 
         required: false,
-        section: "General Settings",
+        section: "General Information",
       },
    {
   name: "questionIds",

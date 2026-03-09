@@ -60,6 +60,7 @@ import EditCurrency from '../pages/Admin/Settings/Currency/EditCurrency'
 import Questions from '../pages/Admin/Course/Questions/Questions'
 import AddQuestions from '../pages/Admin/Course/Questions/AddQuestions'
 import EditQuestions from '../pages/Admin/Course/Questions/EditQuestions'
+import SameQuestions from '../pages/Admin/Course/Questions/SameQuestions'
 
 import Packages from '../pages/Admin/Package/Packages/Packages'
 import AddPackages from '../pages/Admin/Package/Packages/AddPackages'
@@ -163,6 +164,7 @@ const router = createBrowserRouter([
       
       {path:"courses/questions/:lessonId", element: <Questions />},
       {path:"courses/questions/add", element: <AddQuestions />},
+      {path:"courses/questions/same/:id", element: <SameQuestions />},
       {path:"courses/questions/edit/:id", element: <EditQuestions />},
 
       {path:"settings/section", element: <Section />},

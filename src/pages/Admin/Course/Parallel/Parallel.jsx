@@ -6,6 +6,7 @@ import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import usePost from "@/hooks/usePost";
 
 const Parallel = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const { id } = useParams();
   } = useGet(
       `/api/admin/questions/parallel/original/${id}`
   );
+  const { postData, loading: saving } = usePost("/api/admin/questions/parallel/generate");
 
   const { deleteData, loading: deleteLoading } = useDelete();
 
@@ -55,7 +57,7 @@ const { id } = useParams();
     { header: "Lesson", key: "lessonName" },
     { header: "Answer Type", key: "answerType" },
     { header: "Difficulty", key: "difficulty" },
-    { header: "Created At", key: "createdAt" },
+    // { header: "Created At", key: "createdAt" },
   ];
 
   const tableData = useMemo(() => {
@@ -72,6 +74,17 @@ const { id } = useParams();
     }));
   }, [data]);
 
+  const handlegenerate = async () => {
+    try{
+    await  postData( {origianlQuestionId: id},"/api/admin/questions/parallel/generate","Parallel added successfully")
+  refetch();  
+  }
+    catch(e){
+      throw e
+    }
+  }
+
+  
   if (loading) return <Loader />;
   if (error) return <Errorpage />;
 
@@ -88,6 +101,14 @@ const { id } = useParams();
             state: { lessonId , originalQuestionId: id },
           })
         }
+                extraActions={(row) => (
+          <button
+            onClick={() => handlegenerate()}
+            className="bg-green-600 hover:bg-green-700 text-[12px] text-white font-bold py-1 px-2 rounded"
+          >
+            Ai Generate
+          </button>
+        )}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
