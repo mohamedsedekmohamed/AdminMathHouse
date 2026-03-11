@@ -53,10 +53,10 @@ const { id } = useParams();
 
   const columns = [
     { header: "Question", key: "question" },
-    { header: "Original Question", key: "originalQuestion" },
+    // { header: "Original Question", key: "originalQuestion" },
     { header: "Lesson", key: "lessonName" },
-    { header: "Answer Type", key: "answerType" },
-    { header: "Difficulty", key: "difficulty" },
+    { header: "Answer Type", key: "answerType" , filterable: true, filterType: 'select' },
+    { header: "Difficulty", key: "difficulty" , filterable: true, filterType: 'select' },
     // { header: "Created At", key: "createdAt" },
   ];
 

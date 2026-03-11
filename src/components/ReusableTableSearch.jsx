@@ -23,10 +23,13 @@ const ReusableTableSearch = ({
   rowsPerPage = 10,
   onPageChange,
   onRowsPerPageChange,
-
-  // Search Props
+children,
+  // Search & Filter Props
   searchTerm = "",
   onSearchChange = () => {},
+  filters = [],          // مصفوفة إعدادات الفلاتر
+  filterValues = {},     // القيم الحالية للفلاتر
+  onFilterChange = () => {} // دالة تتنفذ عند تغيير أي فلتر
 }) => {
 
   return (
@@ -34,8 +37,13 @@ const ReusableTableSearch = ({
       
       {/* Header Section */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
+      <div className=' flex gap-2'>
           {title && <h2 className="text-xl text-one md:text-2xl font-semibold">{title}</h2>}
+          {children && (
+    <div className="w-full md:w-auto">
+      {children}
+    </div>
+  )}
         </div>
 
         <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -62,6 +70,33 @@ const ReusableTableSearch = ({
           )}
         </div>
       </div>
+
+      {/* Filters Section */}
+      {filters && filters.length > 0 && (
+        <div className="p-4 bg-muted/10 border border-border rounded-xl shadow-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filters.map((filter, index) => (
+              <div key={index} className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  {filter.label}
+                </label>
+                <select
+                  value={filterValues[filter.key] || ""}
+                  onChange={(e) => onFilterChange(filter.key, e.target.value)}
+                  className="w-full p-2 border border-border rounded-lg bg-card text-foreground text-sm outline-none focus:border-one focus:ring-1 focus:ring-one transition-colors cursor-pointer"
+                >
+                  <option value="">All</option>
+                  {filter.options.map((opt, i) => (
+                    <option key={i} value={opt.value || opt}>
+                      {opt.label || opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Table Section */}
       <div className="border border-border rounded-xl overflow-hidden bg-card shadow-sm">
@@ -180,7 +215,7 @@ const ReusableTableSearch = ({
             <input
               type="number"
               min={1}
-              max={totalPages}
+              max={totalPages || 1}
               value={currentPage}
               onChange={(e) => {
                 const val = parseInt(e.target.value);
@@ -188,7 +223,7 @@ const ReusableTableSearch = ({
               }}
               className="w-12 text-center border border-border rounded bg-card py-1 font-bold outline-none focus:ring-1 focus:ring-one"
             />
-            <span>of {totalPages}</span>
+            <span>of {totalPages || 1}</span>
           </div>
 
           <div className="flex gap-1">
@@ -201,7 +236,7 @@ const ReusableTableSearch = ({
             </button>
 
             <button
-              disabled={currentPage >= totalPages}
+              disabled={currentPage >= totalPages || totalPages === 0}
               onClick={() => onPageChange(currentPage + 1)}
               className="p-2 border border-border rounded bg-card hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >

@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { LogOut, ChevronRight, X, Search } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { TbMathSymbols } from "react-icons/tb";
+import { IoIosArrowDropleft } from "react-icons/io";
 
 const SideBar = ({ menuItems, isExpanded, setIsExpanded, isMobileOpen, setIsMobileOpen }) => {
   const location = useLocation();
@@ -63,20 +64,29 @@ const SideBar = ({ menuItems, isExpanded, setIsExpanded, isMobileOpen, setIsMobi
         `}
       >
         {/* Header */}
-        <div 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center p-4 h-20 border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors shrink-0 overflow-hidden"
-        >
-          <div className="flex items-center gap-x-4 min-w-max">
-            <div className="bg-one/10 p-2 rounded-xl text-one">
-              <TbMathSymbols size={28} />
-            </div>
-            <div className={`transition-all duration-300 ${!isExpanded ? "opacity-0 translate-x-10" : "opacity-100 translate-x-0"}`}>
-              <h1 className="font-bold text-xl text-gray-800 whitespace-nowrap">Math House</h1>
-              <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase text-left">Admin Panel</p>
-            </div>
-          </div>
-        </div>
+   <div 
+  onClick={() => setIsExpanded(!isExpanded)}
+  className="flex relative items-center  p-4 h-20 border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors shrink-0 overflow-hidden"
+>
+  <div className="flex items-center gap-x-4 min-w-max">
+    <div className="bg-one/10 p-2 rounded-xl text-one">
+      <TbMathSymbols size={28} />
+    </div>
+    <div className={`transition-all duration-300 ${!isExpanded ? "opacity-0 translate-x-10" : "opacity-100 translate-x-0"}`}>
+      <h1 className="font-bold text-xl text-gray-800 whitespace-nowrap">Math House</h1>
+      <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase text-left">Admin Panel</p>
+    </div>
+  </div>
+
+  {/* السهم يتحرك بدل opacity/translate */}
+  {isExpanded&&(
+    <IoIosArrowDropleft 
+      size={28} 
+      className={`transition-transform absolute text-one duration-300 transform right-0 ${isExpanded ? "rotate-0" : "rotate-180"}`} 
+    />
+
+  )}
+</div>
 
         {/* Search */}
         <div className="px-4 py-4 shrink-0">

@@ -257,7 +257,7 @@ const Lessons = () => {
       <IconButton
   icon={FaBook}
   color="bg-one"
-  navigateTo={`/admin/courses/courses/${chapter?.course?.id}`}
+  navigateTo={`/admin/courses/courses/${chapter?.category?.id}`}
   name="courses"
 />
 {chapter?.semester?.id && (

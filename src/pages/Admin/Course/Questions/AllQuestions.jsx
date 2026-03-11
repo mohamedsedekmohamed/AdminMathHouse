@@ -6,18 +6,8 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
-import { AiFillProduct } from "react-icons/ai";
 
-import { 
-MdGridView  ,MdLayers
-} from "react-icons/md";
-import { 
- FaBook ,FaPlayCircle
-} from "react-icons/fa";
-import IconButton from "@/components/IconButton";
-const Questions = () => {
-  const navigate = useNavigate();
-  const { lessonId } = useParams();
+const AllQuestions = () => {
 
   // 1. States للتحكم في الترقيم والبحث والفلاتر
   const [page, setPage] = useState(1);
@@ -33,18 +23,8 @@ const Questions = () => {
     year: "",
     month: "",
   });
-   const {
-      data: lessonRes,
-      loading: loadingLesson,
-      error: errorLesson,
-    } = useGet(`/api/admin/lessons/${lessonId}`);
- 
-    const lessondata = lessonRes?.data || {};
-  const handleParallel = (row) => {
-    navigate(`/admin/courses/questions/parallel/${row.id}`, {
-      state: { lessonId: lessonId },
-    });
-  };
+
+
 
   // 2. تطبيق الـ Debouncing للبحث (تأخير 2 ثانية)
   useEffect(() => {
@@ -71,7 +51,7 @@ const Questions = () => {
   };
 
   const { data, loading, error, refetch } = useGet(
-    `/api/admin/questions/lesson/${lessonId}?${buildQueryParams()}`
+    `/api/admin/questions?${buildQueryParams()}`
   );
   
   const { deleteData, loading: deleteLoading } = useDelete();
@@ -127,15 +107,7 @@ const Questions = () => {
     );
   }, [data]);
 
-  const handleEdit = (row) => {
-    navigate(`/admin/courses/questions/edit/${row.id}`);
-  };
 
-  const handleSame = (row) => {
-    navigate(`/admin/courses/questions/same/${row.id}`, {
-      state: { lessonId: lessonId },
-    });
-  };
 
   // إعدادات الفلاتر لكي تُعرض في الجدول
   const filterOptions = [
@@ -143,14 +115,15 @@ const Questions = () => {
     { key: "questionType", label: "Question Type", options: ["Trail", "Extra"] },
     { key: "answerType", label: "Answer Type", options: ["MCQ", "Grid in"] },
     { key: "month", label: "Month", options: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] },
-{
+  {
   key: "year",
   label: "Year",
   options: Array.from(
     { length: new Date().getFullYear() - 2000 + 1 },
     (_, i) => 2000 + i
   )
-}  ];
+}
+  ];
 
   // دالة للتعامل مع تغيير الفلاتر
   const handleFilterChange = (key, value) => {
@@ -158,36 +131,17 @@ const Questions = () => {
     setPage(1); // نرجع للصفحة الأولى لما الفلتر يتغير
   };
 
-  if (loading  && loadingLesson) return <Loader />;
-  if (error && errorLesson) return <Errorpage />;
+  if (loading && !tableData.length) return <Loader />;
+  if (error) return <Errorpage />;
 
   return (
     <div>
       <ReusableTableSearch
-        title={`Questions | ${lessondata?.lesson?.name }`}
-        titleAdd="Question"
+        title="Questions"
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-        onAddClick={() => navigate("/admin/courses/questions/add" , { state: { lessonId: lessonId } })}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        extraActions={(row) => (
-          <>
-            <button
-              onClick={() => handleParallel(row)}
-              className="px-3 py-1 rounded bg-one/90 text-white hover:bg-one hover:scale-105 transition"
-            >
-              Parallel
-            </button>
-            <button
-              onClick={() => handleSame(row)}
-              className="px-3 py-1 rounded bg-yellow-700 text-white hover:bg-yellow-500 hover:scale-105 transition"
-            >
-              Same
-            </button>
-          </>
-        )}
+       
         
         // ربط الفلاتر
         filters={filterOptions}
@@ -206,46 +160,11 @@ const Questions = () => {
         }}
         searchTerm={searchTerm}
         onSearchChange={(val) => setSearchTerm(val)}
-  >
-
-<div className="flex gap-2">
-   <IconButton
-  icon={MdGridView}
-  color="bg-one"
-  navigateTo={`/admin/courses/categories`}
-  name="Categories"
-/>
-      <IconButton
-  icon={FaBook}
-  color="bg-one"
-  navigateTo={`/admin/courses/courses/${lessondata?.category?.id}`}
-  name="courses"
-/>
-
-          <IconButton
-  icon={MdLayers}
-  color="bg-one"
-  navigateTo={`/admin/courses/chapters/${lessondata?.course?.id}`}
-  name="chapters"
-/>         
-          <IconButton
-  icon={FaPlayCircle}
-  color="bg-one"
-  navigateTo={`/admin/courses/lessons/${lessondata?.chapter?.id}`}
-  name="lessons"
-/>         
-              
-</div>
-      </ReusableTableSearch>
-      <ConfirmDeleteModal
-        open={openDeleteModal}
-        onClose={() => setOpenDeleteModal(false)}
-        onConfirm={confirmDelete}
-        title="Delete Question"
-        description={`Are you sure you want to delete this question?`}
       />
+
+     
     </div>
   );
 };
 
-export default Questions;
+export default AllQuestions;
