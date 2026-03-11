@@ -40,12 +40,12 @@ const { lessonId }=useParams();
 
   const columns = [
     { header: "Title", key: "title" },
-    { header: "Lesson", key: "lessonName" },
+    { header: "Lesson", key: "lessonName" , filterable: true, filterType: 'select' },
     { header: "Description", key: "description" },
     { header: "Duration (min)", key: "durationMinutes" },
-    { header: "Total Score", key: "totalScore" },
-    { header: "Pass Score", key: "passScore" },
-    { header: "Questions", key: "questionsCount" },
+    { header: "Total Score", key: "totalScore" , filterable: true, filterType: 'select' },
+    { header: "Pass Score", key: "passScore", filterable: true, filterType: 'select' },
+    { header: "Questions", key: "questionsCount" , filterable: true, filterType: 'select' },  
    
   ];
 

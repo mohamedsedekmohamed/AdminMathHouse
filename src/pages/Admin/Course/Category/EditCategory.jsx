@@ -11,8 +11,16 @@ const EditCategory = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data: categoriesRes, loading: loadingCats ,error } = useGet("/api/admin/category");
-  const { data: categoryRes, loading: loadingOne ,error: errorOne } = useGet(`/api/admin/category/${id}`);
+  const {
+    data: categoriesRes,
+    loading: loadingCats,
+    error,
+  } = useGet("/api/admin/category");
+  const {
+    data: categoryRes,
+    loading: loadingOne,
+    error: errorOne,
+  } = useGet(`/api/admin/category/${id}`);
   const { putData, loading: saving } = usePut(`/api/admin/category/${id}`);
 
   // كل الـ Categories ما عدا الحالية (عشان ما ينفعش تختار نفسها Parent)
@@ -58,7 +66,7 @@ const EditCategory = () => {
         section: "General Information",
       },
     ],
-    [parentOptions]
+    [parentOptions],
   );
 
   // تحويل File إلى Base64
@@ -81,9 +89,12 @@ const EditCategory = () => {
     // لو المستخدم رفع صورة جديدة
     if (formData.image instanceof File) {
       imageBase64 = await fileToBase64(formData.image);
-    } 
+    }
     // لو فيه صورة قديمة (جايه string من initialData)
-    else if (typeof formData.image === "string" && formData.image.startsWith("data:")) {
+    else if (
+      typeof formData.image === "string" &&
+      formData.image.startsWith("data:")
+    ) {
       imageBase64 = formData.image;
     }
 
@@ -94,12 +105,20 @@ const EditCategory = () => {
       parentCategoryId: formData.parentCategoryId || null,
     };
 
-    await putData(payload, `/api/admin/category/${id}`, "Category updated successfully");
+    await putData(
+      payload,
+      `/api/admin/category/${id}`,
+      "Category updated successfully",
+    );
     navigate("/admin/courses/categories");
   };
 
   if (loadingCats || loadingOne) {
-    return <div className=""><Loader /></div>;
+    return (
+      <div className="">
+        <Loader />
+      </div>
+    );
   }
 
   if (error || errorOne) {

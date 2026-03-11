@@ -38,13 +38,13 @@ const Sessions = () => {
 
   const columns = [
     { header: "Name", key: "name" },
-    { header: "Category", key: "categoryName" },
-    { header: "Course", key: "courseName" },
-    { header: "Lesson", key: "lessonName" },
-    { header: "Type", key: "type" },
-    { header: "Group", key: "groupName" },
-    { header: "Teacher", key: "teacherName" },
-    { header: "Date", key: "sessionDate" },
+    { header: "Category", key: "categoryName",filterable: true, filterType: 'select' },
+    { header: "Course", key: "courseName",filterable: true, filterType: 'select' },
+    { header: "Lesson", key: "lessonName" ,filterable: true, filterType: 'select'},
+    { header: "Type", key: "type" ,filterable: true, filterType: 'select'},
+    { header: "Group", key: "groupName" ,filterable: true, filterType: 'select'},
+    { header: "Teacher", key: "teacherName" ,filterable: true, filterType: 'select'},
+    { header: "Date", key: "sessionDate" ,filterable: true, filterType: 'select'  },
     { header: "From", key: "timeFrom" },
     { header: "To", key: "timeTo" },
   ];

@@ -7,10 +7,23 @@ import useDelete from "@/hooks/useDelete";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
   import NavChild from "@/components/NavChild";
-
+import { 
+MdGridView 
+} from "react-icons/md";
+import { 
+ FaBook
+} from "react-icons/fa";
+import IconButton from "@/components/IconButton";
 const Semester = () => {
   const navigate = useNavigate();
     const { coursesId } = useParams();
+const {
+    data: courseRes,
+    loading: loadingOne,
+    error: errorOne,
+  } = useGet(`/api/admin/courses/${coursesId}`);
+
+  const course = courseRes?.data || {};
 
   const { data, loading, refetch ,error} = useGet(`/api/admin/semester/course/${coursesId}`);
   const { deleteData, loading: deleteLoading } = useDelete();
@@ -54,17 +67,17 @@ const Semester = () => {
     navigate(`/admin/courses/semester/edit/${row.id}`, { state: coursesId});
   };
 
-  if (loading) {
+  if (loading && loadingOne) {
     return <Loader />;
   }
-  if (error) {
+  if (error && errorOne) {
     return <Errorpage  />;
   }
 
   return (
     <div>
-      <ReusableTable
-        title="Semesters"
+      <ReusableTable 
+        title={`Semesters | ${course.name}`}
         titleAdd="Semester"
         columns={columns}
         data={tableData}
@@ -80,8 +93,24 @@ const Semester = () => {
     />                   
   </div>
                   )}
-      />
+                  >
+<div className="flex gap-2">
+              <IconButton
+  icon={MdGridView}
+  color="bg-one"
+  navigateTo={`/admin/courses/categories`}
+  name="Categories"
+/>
+                    <IconButton
+  icon={FaBook}
+  color="bg-one"
+  navigateTo={`/admin/courses/courses/${course.categoryId}`}
+  name="courses"
+/>
 
+        
+</div>
+</ReusableTable>
       <ConfirmDeleteModal
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}

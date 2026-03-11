@@ -56,9 +56,9 @@ const Popups = () => {
      },
     { header: "Name", key: "name" },
     { header: "Destination", key: "destination" },
-    { header: "Start Date", key: "startDate" },
-    { header: "End Date", key: "endDate" },
-    { header: "Status", key: "isActive", },
+    { header: "Start Date", key: "startDate",filterable: true, filterType: 'select'},
+    { header: "End Date", key: "endDate",filterable: true, filterType: 'select'},
+    { header: "Status", key: "isActive",filterable: true, filterType: 'select'},
   ];
 
   const tableData = useMemo(() => {

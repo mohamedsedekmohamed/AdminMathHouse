@@ -37,7 +37,8 @@ const RawScore = () => {
     { header: "Score", key: "score" },
     {
       header: "Gifting?",
-      key: "is_giftingScore",
+      key: "is_giftingScore"
+      ,filterable: true, filterType: 'select',
       render: (value) => (
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -51,12 +52,12 @@ const RawScore = () => {
     {
       header: "Gifting Score",
       key: "giftingScore",
+      filterable: true, filterType: 'select',
       render: (value) => (value ? value : "-"),
     },
     {
       header: "Course",
-      key: "courseName",
-    },
+      key: "courseName",filterable: true, filterType: 'select'},
   ];
 
   const tableData = useMemo(() => {

@@ -39,12 +39,11 @@ const Groups = () => {
   const columns = [
     { header: "Name", key: "name" },
     { header: "Teacher", key: "teacherName" },
-    { header: "Days", key: "days" },
+    { header: "Days", key: "days",filterable: true, filterType: 'select' },
     { header: "From", key: "timeFrom" },
     { header: "To", key: "timeTo" },
-    { header: "Students", key: "studentsCount" },
-    { header: "Status", key: "isActive" },
-    { header: "Created At", key: "createdAt" },
+    { header: "Students", key: "studentsCount" ,filterable: true, filterType: 'select'},
+    { header: "Status", key: "isActive" ,filterable: true, filterType: 'select'},
   ];
 
   const tableData = useMemo(() => {

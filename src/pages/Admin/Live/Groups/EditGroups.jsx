@@ -105,9 +105,12 @@ const EditGroups = () => {
       studentIds: formData.studentIds || [],
       isActive: formData.isActive ?? true,
     };
-
+try {
     await putData(payload, `/api/admin/groups/${id}`, "Group updated successfully");
     navigate(-1);
+} catch (e) {
+    throw e
+}
   };
 
   if (loadingOne || loadingSelect || saving) return <Loader />;

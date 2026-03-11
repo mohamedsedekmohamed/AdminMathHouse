@@ -47,13 +47,13 @@ const PromoCodes = () => {
   const columns = [
     { header: "Promo Name", key: "promoName" },
     { header: "Code", key: "code" },
-    { header: "Discount (%)", key: "discountAmount" },
-    { header: "Start Date", key: "startDate" },
-    { header: "End Date", key: "endDate" },
-    { header: "Usages Allowed", key: "numberOfUsagesAllowed" },
-    { header: "Users Used", key: "numberOfUsers" },
-    { header: "Courses", key: "courses" },
-    { header: "Packages", key: "packages" },
+    { header: "Discount (%)", key: "discountAmount" ,filterable: true, filterType: 'select'},
+    { header: "Start Date", key: "startDate" ,filterable: true, filterType: 'select'},
+    { header: "End Date", key: "endDate" ,filterable: true, filterType: 'select'},
+    { header: "Usages Allowed", key: "numberOfUsagesAllowed" ,filterable: true, filterType: 'select'},
+    { header: "Users Used", key: "numberOfUsers" ,filterable: true, filterType: 'select'},
+    { header: "Courses", key: "courses" ,filterable: true, filterType: 'select'},
+    { header: "Packages", key: "packages" ,filterable: true, filterType: 'select'},
   ];
 
   const tableData = useMemo(() => {

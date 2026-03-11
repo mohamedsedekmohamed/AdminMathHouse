@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
+import { AiFillProduct } from "react-icons/ai";
+
 import { 
   FaHome, FaUsers, FaUserGraduate, FaHeart, FaBookOpen, FaBook, 
   FaPlayCircle, FaQuestionCircle, FaClipboardList, FaVideo, 
@@ -62,13 +64,14 @@ const menuItems = [
     children: [
       // { title: "Semester", path: "/admin/courses/semester", icon: <BsBookHalf size={18} /> },
       { title: "Categories", path: "/admin/courses/categories", icon: <MdGridView size={18} /> },
-      // { title: "Courses", path: "/admin/courses/courses", icon: <FaBook size={18} /> },
-      // { title: "Chapters", path: "/admin/courses/chapters", icon: <MdLayers size={18} /> },
-      // { title: "Lessons", path: "/admin/courses/lessons", icon: <FaPlayCircle size={18} /> },
+      { title: "All Courses", path: "/admin/courses/courses/allcourses", icon: <FaBook size={18} /> },
+      { title: "All Semesters", path: "/admin/courses/semester/allsemesters", icon: <AiFillProduct size={18} /> },
+      { title: "All Chapters", path: "/admin/courses/chapters/allchapters", icon: <MdLayers size={18} /> },
+      { title: "All Lessons", path: "/admin/courses/lessons/alllessons", icon: <FaPlayCircle size={18} /> },
       // { title: "Questions", path: "/admin/courses/questions", icon: <FaQuestionCircle size={18} /> },
-      // { title: "Quiz", path: "/admin/courses/quiz", icon: <MdOutlineQuestionMark size={18} /> },
-      // { title: "Diagnostic Exam", path: "/admin/courses/diagnosticexam", icon: <MdTimeline size={18} /> },
-      // { title: "Exam", path: "/admin/courses/exam", icon: <FaClipboardList size={18} /> },
+      { title: "All Quizzes", path: "/admin/courses/quiz/allquizzes", icon: <MdOutlineQuestionMark size={18} /> },
+      { title: "All Diagnostic Exams ", path: "/admin/courses/diagnosticexam/alldiagnosticexams", icon: <MdTimeline size={18} /> },
+      { title: "All Exams", path: "/admin/courses/exam/AllExams", icon: <FaClipboardList size={18} /> },
     ],
   },
   {

@@ -10,7 +10,10 @@
   import usePost from "@/hooks/usePost";
 import { GiTeacher } from "react-icons/gi";
 import { PiExamFill } from "react-icons/pi";
-
+import { 
+MdGridView
+} from "react-icons/md";
+import IconButton from "@/components/IconButton";
   const Courses = () => {
     const navigate = useNavigate();
     const { categoryId } = useParams();
@@ -18,6 +21,14 @@ import { PiExamFill } from "react-icons/pi";
     const { data, loading, refetch, error } = useGet(
       `/api/admin/courses/category/${categoryId}`
     );
+    const {
+        data: categoryRes,
+        loading: loadingOne,
+        error: errorOne,
+      } = useGet(`/api/admin/category/${categoryId}`);
+
+const category = categoryRes?.data?.data || {};
+
 const [optionPopup, setOptionPopup] = useState({ open: false, row: null });
 
     const { data: teachersData, loading: teachersLoading } = useGet(
@@ -114,11 +125,11 @@ const [optionPopup, setOptionPopup] = useState({ open: false, row: null });
       },
       { header: "Name", key: "name" },
       { header: "Description", key: "description" },
-      { header: "Price", key: "price" },
-      { header: "Discount", key: "discount" },
-      { header: "Total Price", key: "totalPrice" },
+      { header: "Price", key: "price" ,filterable: true, filterType: 'select'},
+      { header: "Discount", key: "discount" ,filterable: true, filterType: 'select'},
+      { header: "Total Price", key: "totalPrice" ,filterable: true, filterType: 'select'},
       { header: "Duration", key: "duration" },
-      { header: "isHaveSemester", key: "isHaveSemester" },
+      { header: "isHaveSemester", key: "isHaveSemester",filterable: true, filterType: 'select' },
     ];
 
     const tableData = useMemo(() => {
@@ -151,13 +162,13 @@ const [optionPopup, setOptionPopup] = useState({ open: false, row: null });
       (teacher) => !assignedTeacherIds.includes(teacher.id)
     );
 
-    if (loading) return <Loader />;
-    if (error) return <Errorpage />;
+    if (loading && loadingOne ) return <Loader />;
+    if (error || errorOne) return <Errorpage />;
 
     return (
       <div>
         <ReusableTable
-          title="Courses"
+          title={`Courses  | ${category.name}`}
           titleAdd="Course"
           columns={columns}
           data={tableData}
@@ -205,7 +216,15 @@ const [optionPopup, setOptionPopup] = useState({ open: false, row: null });
 </button>
             </div>
           )}
-        />
+        >
+<IconButton
+  icon={MdGridView}
+  color="bg-one"
+  navigateTo={`/admin/courses/categories`}
+  name="Categories"
+>
+</IconButton>
+          </ReusableTable>
 
         <ConfirmDeleteModal
           open={openDeleteModal}

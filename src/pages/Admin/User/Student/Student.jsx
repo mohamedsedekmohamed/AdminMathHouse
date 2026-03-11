@@ -35,9 +35,9 @@ const Student = () => {
 
   const columns = [
     { header: "Full Name", key: "name" },
-    { header: "Email", key: "email" },
-    { header: "Grade", key: "grade" },
-    { header: "Parent Phone", key: "parentphone" },
+    { header: "Email", key: "email"},
+    { header: "Grade", key: "grade" ,filterable: true, filterType: 'select'},
+    { header: "Parent Phone", key: "parentphone"},
   ];
 
   // 🔹 تحويل الداتا من شكل الـ API لشكل الجدول

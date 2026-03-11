@@ -45,8 +45,8 @@ const Category = () => {
     },
     { header: "Name", key: "name" },
     { header: "Description", key: "description" },
-    { header: "Parent", key: "parentName" },
-    { header: "Level", key: "level" },
+    { header: "Parent", key: "parentName",filterable: true, filterType: 'select' },
+    // { header: "Level", key: "level" ,filterable: true, filterType: 'select'},
   ];
 
   const tableData = useMemo(() => {

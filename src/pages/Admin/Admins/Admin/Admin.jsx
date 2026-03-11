@@ -16,9 +16,9 @@ const Admin = () => {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const columns = [
-    { header: "Full Name", key: "name" },
-    { header: "Email", key: "email" },
-    { header: "Role", key: "roleName" },
+    { header: "Full Name", key: "name" , filterable : true, filterType: 'select'},
+    { header: "Email", key: "email",filterable: true, filterType: 'select' },
+    { header: "Role", key: "roleName",filterable: true, filterType: 'select' },
   ];
 
   const tableData = useMemo(() => {

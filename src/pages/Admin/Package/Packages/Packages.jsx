@@ -38,12 +38,12 @@ const Packages = () => {
 
   const columns = [
     { header: "Name", key: "name" },
-    { header: "Type", key: "type" },
-    { header: "Category", key: "categoryName" },
-    { header: "Course", key: "courseName" },
-    { header: "Lessons", key: "number" },
-    { header: "Price", key: "price" },
-    { header: "Duration (days)", key: "duration" },
+    { header: "Type", key: "type" ,filterable: true, filterType: 'select'},
+    { header: "Category", key: "categoryName" ,filterable: true, filterType: 'select'},
+    { header: "Course", key: "courseName" ,filterable: true, filterType: 'select'},
+    { header: "Lessons", key: "number" ,filterable: true, filterType: 'select'},
+    { header: "Price", key: "price",filterable: true, filterType: 'select'},
+    { header: "Duration (days)", key: "duration",filterable: true, filterType: 'select'}, 
   ];
 
   const tableData = useMemo(() => {

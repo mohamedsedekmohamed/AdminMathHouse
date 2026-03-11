@@ -35,7 +35,7 @@ const Section = () => {
   const columns = [
     { header: "Name", key: "sectionName" },
     { header: "Description", key: "sectionDescription" },
-    { header: "Time (min)", key: "sectionTime" },
+    { header: "Time (min)", key: "sectionTime" ,filterable: true, filterType: 'select'},
    
   ];
 
