@@ -87,6 +87,7 @@ import PaymentMethod from '../pages/Admin/Payments/PaymentMethod/PaymentMethod'
 import AddPaymentMethod from '../pages/Admin/Payments/PaymentMethod/AddPaymentMethod'
 import EditPaymentMethod from '../pages/Admin/Payments/PaymentMethod/EditPaymentMethod'
 
+
 import Diagnosticexam from '../pages/Admin/Course/Diagnosticexam/Diagnosticexam'
 import AllDiagnosticExam from '../pages/Admin/Course/Diagnosticexam/AllDiagnosticExam'
 import AddDiagnosticexam from "../pages/Admin/Course/Diagnosticexam/AddDiagnosticexam";
@@ -113,6 +114,10 @@ import EditNotifications from '../pages/Admin/Notifications/EditNotifications'
 import Parallel from '../pages/Admin/Course/Parallel/Parallel'
 import AddParallel from '../pages/Admin/Course/Parallel/AddParallel'
 import EditParallel from '../pages/Admin/Course/Parallel/EditParallel'
+
+import PaymentRecharge from '../pages/Admin/Payments/PaymentRecharge/PaymentRecharge'
+import PaymentPackage from '../pages/Admin/Payments/PaymentPackage/PaymentPackage'
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -208,11 +213,8 @@ const router = createBrowserRouter([
       {path:"marketing/popup/add", element: <AddPopup />},
       {path:"marketing/popup/edit/:id", element: <EditPopup />},
 
-      {path:"payment/payment-method", element: <PaymentMethod />},
-      {path:"payment/payment-method/add", element: <AddPaymentMethod />},
-      {path:"payment/payment-method/edit/:id", element: <EditPaymentMethod />},
-    
-    
+      
+      
       {path:"courses/diagnosticexam/:courseId", element: <Diagnosticexam />},
       {path:"courses/diagnosticexam/alldiagnosticexams", element: <AllDiagnosticExam />},
       {path:"courses/diagnosticexam/add", element: <AddDiagnosticexam />},
@@ -232,15 +234,34 @@ const router = createBrowserRouter([
       {path:"marketing/promocodes", element: <Promocodes />},
       {path:"marketing/promocodes/add", element: <Addpromocodes />},
       {path:"marketing/promocodes/edit/:id", element: <Editpromocodes />},
-
+      
       {path:"notifications", element: <Notifications />},
       {path:"notifications/add", element: <AddNotifications />},
       {path:"notifications/edit/:id", element: <EditNotifications />},
-
-
+      
+      
       {path:"courses/questions/parallel/:id", element: <Parallel />},
       {path:"courses/questions/parallel/add", element: <AddParallel />},
       {path:"courses/questions/parallel/edit/:id", element: <EditParallel />},
+
+
+
+
+
+
+
+
+
+
+
+      {path:"payment/paymentrecharge", element: <PaymentRecharge />},
+      {path:"payment/paymentpackage", element: <PaymentPackage />},
+
+
+
+      {path:"payment/payment-method", element: <PaymentMethod />},
+      {path:"payment/payment-method/add", element: <AddPaymentMethod />},
+      {path:"payment/payment-method/edit/:id", element: <EditPaymentMethod />},
     ],
   },
 ]);

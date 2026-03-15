@@ -1,23 +1,70 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import AddPage from "@/components/AddPage";
 import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import api from "@/api/api";
 
 const EditTeachers = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // جلب المدرّس الواحد
-  const { data: teacherRes, loading: loadingOne , error } = useGet(`/api/admin/teacher/${id}`);
-  // جلب الكاتيجوريز للاختيار
-  const { data: categoriesRes, loading: loadingCats ,error: errorC } = useGet("/api/admin/teacher/selectionCategories");
-    const { data: courses } = useGet("/api/admin/teacher/selectionCourses");
-  
-  const { putData, loading: saving } = usePut(`/api/admin/teacher/${id}`);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [loadingCours, setLoadingCours] = useState(false);
+
+  // جلب المدرس
+  const {
+    data: teacherRes,
+    loading: loadingOne,
+    error,
+  } = useGet(`/api/admin/teacher/${id}`);
+
+  // جلب الكاتيجوريز
+  const {
+    data: categoriesRes,
+    loading: loadingCats,
+    error: errorC,
+  } = useGet("/api/admin/teacher/selectionCategories");
+
+  const { putData } = usePut(`/api/admin/teacher/${id}`);
+
+  const teacher = teacherRes?.data?.teacher;
+
+  // تحميل الكورسات حسب الكاتيجوري
+  useEffect(() => {
+    if (!selectedCategory) {
+      setCourses([]);
+      return;
+    }
+
+    const fetchCourses = async () => {
+      try {
+        setLoadingCours(true);
+
+        const res = await api.get(
+          `/api/admin/courses/category/${selectedCategory}`
+        );
+
+        setCourses(res.data?.data?.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingCours(false);
+      }
+    };
+
+    fetchCourses();
+  }, [selectedCategory]);
+
+  // عند تحميل المدرس نحدد الكاتيجوري الخاصة به
+  useEffect(() => {
+    if (teacher?.categoryId) {
+      setSelectedCategory(teacher.categoryId);
+    }
+  }, [teacher]);
 
   const categoryOptions = useMemo(() => {
     return (
@@ -27,11 +74,12 @@ const EditTeachers = () => {
       })) || []
     );
   }, [categoriesRes]);
+
   const couersOptions = useMemo(() => {
     return (
-      courses?.data?.courses?.map((cat) => ({
-        value: cat.id,
-        label: cat.name,
+      courses?.map((course) => ({
+        value: course.id,
+        label: course.name,
       })) || []
     );
   }, [courses]);
@@ -58,6 +106,7 @@ const EditTeachers = () => {
         name: "phoneNumber",
         label: "Phone Number",
         type: "text",
+        pattern: /^[0-9]{10,15}$/,
         required: true,
         placeholder: "Enter phone number",
         section: "General Information",
@@ -75,18 +124,24 @@ const EditTeachers = () => {
         type: "file",
         section: "General Information",
       },
-       {
-        name: "categoryId",
-        label: "Category (Optional)",
-        type: "select",
-        options: categoryOptions,
-        section: "Assignment",
-        helperText: "Optional: Assign teacher to a category",
-      },
-     {
-        name: "courseId",
+      {
+    name: "categoryId",
+    label: "Category",
+    type: "select",
+    options: categoryOptions,
+    section: "Assignment",
+    onChange: (value, setForm) => {
+      setSelectedCategory(value);
+      // ✅ فوراً نمسح الكورسات المختارة لأنها تنتمي لكاتيجوري قديم
+      if (setForm) {
+        setForm(prev => ({ ...prev, courseIds: [] }));
+      }
+    },
+  },
+      {
+        name: "courseIds",
         label: "Course (Optional)",
-        type: "select",
+        type: "multipleSelect",
         options: couersOptions,
         section: "Assignment",
         helperText: "Optional: Assign teacher to a course",
@@ -95,7 +150,6 @@ const EditTeachers = () => {
     [categoryOptions, couersOptions]
   );
 
-  // تحويل File إلى Base64
   const fileToBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -116,30 +170,44 @@ const EditTeachers = () => {
       email: formData.email,
       phoneNumber: formData.phoneNumber,
       categoryId: formData.categoryId || null,
-      courseId: formData.courseId || null,
+      courseIds: formData.courseIds || null,
     };
 
-    // لو كتب باسورد جديد
     if (formData.password?.trim()) {
       payload.password = formData.password;
     }
 
-    // لو رفع صورة جديدة
     if (avatarBase64) {
       payload.avatar = avatarBase64;
     }
 
-    await putData(payload, `/api/admin/teacher/${id}`, "Teacher updated successfully");
+    await putData(
+      payload,
+      `/api/admin/teacher/${id}`,
+      "Teacher updated successfully"
+    );
+
     navigate("/admin/users/teachers");
   };
-
-  if (loadingOne || loadingCats) {
+const memoizedInitialData = useMemo(() => {
+  if (!teacher) return null;
+  return {
+    name: teacher.name || "",
+    email: teacher.email || "",
+    phoneNumber: teacher.phoneNumber || "",
+    password: "",
+    avatar: teacher.avatar || "",
+    categoryId: teacher.categoryId || "",
+    courseIds: teacher.courses?.map((course) => course.id) || [],
+  };
+}, [teacher]);
+  if (loadingOne || loadingCats ) {
     return <Loader />;
   }
-if (error || errorC) {
+
+  if (error || errorC) {
     return <Errorpage />;
   }
-  const teacher = teacherRes?.data?.teacher 
 
   return (
     <AddPage
@@ -147,15 +215,7 @@ if (error || errorC) {
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate("/admin/users/teachers")}
-      initialData={{
-        name: teacher?.name || "",
-        email: teacher?.email || "",
-        phoneNumber: teacher?.phoneNumber || "",
-        password: "", // دايمًا فاضي
-        avatar: teacher?.avatar || "",
-        categoryId: teacher?.categoryId || "",
-        courseId: teacher?.courses.id || "",
-      }}
+     initialData={memoizedInitialData}
     />
   );
 };

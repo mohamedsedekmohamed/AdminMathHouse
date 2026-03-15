@@ -167,9 +167,9 @@ const Lessons = () => {
       ),
     },
     { header: "Name", key: "name" },
-    { header: "Chapter", key: "chapterName" },
-    { header: "Course", key: "courseName" },
-    { header: "Category", key: "categoryName" },
+    // { header: "Chapter", key: "chapterName" },
+    // { header: "Course", key: "courseName" },
+    // { header: "Category", key: "categoryName" },
     { header: "Teacher", key: "teacherName", filterable: true, filterType: 'select' },
     { header: "Total Price", key: "totalPrice", filterable: true, filterType: 'select' },
     {

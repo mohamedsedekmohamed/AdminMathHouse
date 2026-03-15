@@ -5,6 +5,7 @@ import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import SearchStudents from "../../../../components/SearchStudents";
 
 const AddGroups = () => {
   const navigate = useNavigate();
@@ -72,21 +73,28 @@ const AddGroups = () => {
         required: true,
         section: "General Information",
       },
-      {
-        name: "studentIds",
-        label: "Students",
-        type: "multipleSelect",
-        options: studentOptions,
-        section: "General Information",
-        helperText: "Select at least one student",
-      },
-      {
+        {
         name: "isActive",
         label: "Active",
         type: "switch",
         section: "General Information",
         defaultValue: true,
       },
+      {
+        name: "studentIds",
+        label: "Students",
+        fullWidth: true,
+          type: "custom",
+
+        render: ({ value, onChange, error }) => (
+    <SearchStudents
+      value={value}
+      onChange={onChange}
+      error={error}
+    />
+  )
+      },
+    
     ],
     [teacherOptions, studentOptions]
   );

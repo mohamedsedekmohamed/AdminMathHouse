@@ -23,7 +23,7 @@ const Sessions = () => {
 
   const confirmDelete = async () => {
     try {
-      await deleteData(`/api/admin/sessions/${selectedRow.id}`);
+      await deleteData(`/api/admin/session/${selectedRow.id}`);
       setOpenDeleteModal(false);
       setSelectedRow(null);
       refetch();
@@ -38,9 +38,9 @@ const Sessions = () => {
 
   const columns = [
     { header: "Name", key: "name" },
-    { header: "Category", key: "categoryName",filterable: true, filterType: 'select' },
-    { header: "Course", key: "courseName",filterable: true, filterType: 'select' },
-    { header: "Lesson", key: "lessonName" ,filterable: true, filterType: 'select'},
+    // { header: "Category", key: "categoryName",filterable: true, filterType: 'select' },
+    // { header: "Course", key: "courseName",filterable: true, filterType: 'select' },
+    // { header: "Lesson", key: "lessonName" ,filterable: true, filterType: 'select'},
     { header: "Type", key: "type" ,filterable: true, filterType: 'select'},
     { header: "Group", key: "groupName" ,filterable: true, filterType: 'select'},
     { header: "Teacher", key: "teacherName" ,filterable: true, filterType: 'select'},
@@ -49,24 +49,31 @@ const Sessions = () => {
     { header: "To", key: "timeTo" },
   ];
 
-  const tableData = useMemo(() => {
-    return (
-      data?.data?.map((s) => ({
-        id: s.id,
-        name: s.name,
-        categoryName: s.categoryName,
-        courseName: s.courseName,
-        lessonName: s.lessonName,
-        type: s.type,
-        groupName: s.groupName || "-",
-        teacherName: s.teacherName,
-        sessionDate: new Date(s.sessionDate).toLocaleDateString(),
-        timeFrom: s.timeFrom,
-        timeTo: s.timeTo,
-        raw: s,
-      })) || []
-    );
-  }, [data]);
+ const tableData = useMemo(() => {
+  return (
+    data?.data?.sessions?.map((s) => ({
+      id: s.id,
+      name: s.name,
+      // الحقول دي مش موجودة في الـ JSON الحالي، لو ضفتها في الـ API هتظهر تلقائياً
+      categoryName: s.categoryName || "-", 
+      courseName: s.courseName || "-",
+      lessonName: s.lessonName || "-",
+      
+      type: s.type,
+      
+      // ✅ التعديل هنا: الوصول للاسم من جوه الـ groups object
+      groupName: s.groups?.name || "-", 
+      
+      // ✅ التعديل هنا: الوصول للاسم من جوه الـ teacher object
+      teacherName: s.teacher?.name || "-", 
+      
+      sessionDate: s.sessionDate ? new Date(s.sessionDate).toLocaleDateString() : "-",
+      timeFrom: s.timeFrom,
+      timeTo: s.timeTo,
+      raw: s,
+    })) || []
+  );
+}, [data]);
 
   if (loading) return <Loader />;
   if (error) return <Errorpage />;

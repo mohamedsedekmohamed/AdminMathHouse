@@ -50,7 +50,6 @@ const AddLessons = () => {
         type: "select",
         required: true,
         options: teacherOptions,
-        section: "Relations",
         section: "General Information",
 
       },

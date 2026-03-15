@@ -181,7 +181,7 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
               </h2>
             </div>
 
-            <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 text-left">
+            <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 text-left">
               {sectionFields.map((field) => {
                 if (
                   typeof field.hidden === "function" &&
@@ -429,24 +429,21 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
                               String(formData[field.name]),
                           ) || null
                         }
-                        onChange={(selected) => {
-                          const selectedValue = selected ? selected.value : "";
+                      onChange={(selected) => {
+  const selectedValue = selected ? selected.value : "";
+  
+  setFormData((prev) => ({
+    ...prev,
+    [field.name]: selectedValue,
+  }));
 
-                          setFormData((prev) => ({
-                            ...prev,
-                            [field.name]: selectedValue,
-                          }));
+  if (errors[field.name]) setErrors(prev => ({ ...prev, [field.name]: "" }));
 
-                          if (errors[field.name])
-                            setErrors((prev) => ({
-                              ...prev,
-                              [field.name]: "",
-                            }));
-
-                          if (field.onChange) {
-                            field.onChange(selectedValue);
-                          }
-                        }}
+  // ✅ التعديل هنا: تمرير setFormData للأب
+  if (field.onChange) {
+    field.onChange(selectedValue, setFormData);
+  }
+}}
                         placeholder="Select..."
                       />
                     )}

@@ -109,10 +109,7 @@ const EditStudent = () => {
   );
 
   const onSave = async (formData) => {
-    if (!formData.firstname?.trim() || !formData.lastname?.trim() || !formData.email?.trim()) {
-      toast.error("Please fill all required fields");
-      return;
-    }
+   
 
     const payload = {
       firstname: formData.firstname,

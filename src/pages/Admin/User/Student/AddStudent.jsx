@@ -89,10 +89,10 @@ const AddStudent = () => {
         name: "parentphone",
         label: "Parent Phone",
         type: "text",
-        required: true,
         pattern: /^[0-9]{10,15}$/,
         placeholder: "Parent phone",
         section: "Account Information",
+        helperText: "Optional",
       },
       {
         name: "category",
@@ -131,15 +131,7 @@ const AddStudent = () => {
 
   const onSave = async (formData) => {
     // Validation
-    if (
-      !formData.firstname?.trim() ||
-      !formData.lastname?.trim() ||
-      !formData.email?.trim() ||
-      !formData.password?.trim()
-    ) {
-      toast.error("Please fill all required fields");
-      return;
-    }
+    
 
     const payload = {
       firstname: formData.firstname,
@@ -148,21 +140,21 @@ const AddStudent = () => {
       email: formData.email,
       password: formData.password,
       phone: formData.phone || "",
-      parentphone: formData.parentphone || "",
       category: formData.category || null,
       grade: formData.grade || null,
     };
+    if(formData.parentphone) payload.parentphone = formData.parentphone
 
     try {
       await postData(payload, "/api/admin/student", "Student added successfully");
       navigate("/admin/users/students");
     } catch (error) {
-      // إيقاف الـ Form Submitting في حالة الفشل (الخطأ يتم عرضه بالفعل عبر usePost)
+      
       throw error; 
     }
   };
 
-  if (loadingSelects || saving) return <Loader />;
+  if (loadingSelects ) return <Loader />;
   if( selectError) return <Errorpage  />;
   return (
     <AddPage

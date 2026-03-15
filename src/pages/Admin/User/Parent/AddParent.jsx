@@ -4,6 +4,7 @@ import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import SearchStudents from "../../../../components/SearchStudents";
 const AddParent = () => {
   const navigate = useNavigate();
   const { postData, loading: saving } = usePost("/api/admin/parent");
@@ -42,26 +43,34 @@ const AddParent = () => {
         placeholder: "Enter password",
         section: "Contact Information",
       },
+       {
+        name: "studentIds",
+        label: "Students",
+        fullWidth: true,
+          type: "custom",
+
+        render: ({ value, onChange, error }) => (
+    <SearchStudents
+      value={value}
+      onChange={onChange}
+      error={error}
+      limit={3}
+    />
+  )
+      },
     ],
     []
   );
 
-  const initialFormValues = useMemo(
-    () => ({
-      name: "",
-      email: "",
-      phoneNumber: "",
-      password: "",
-    }),
-    []
-  );
-
+  
   const onSave = async (formData) => {
     const payload = {
       name: formData.name,
       email: formData.email,
       phoneNumber: formData.phoneNumber,
       password: formData.password,
+      studentIds: formData.studentIds || [],
+
     };
 
     try {
@@ -80,7 +89,7 @@ const AddParent = () => {
       onSave={onSave}
       onCancel={() => navigate("/admin/users/parents")}
        
-      initialData={initialFormValues}
+      initialData={{}}
     />
   );
 };

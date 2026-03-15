@@ -1,16 +1,52 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import api from "@/api/api";
+
 const AddTeachers = () => {
   const navigate = useNavigate();
-  const { postData, loading: saving } = usePost("/api/admin/teacher");
 
-  const { data: categoriesRes , loading: loadingCats ,error } = useGet("/api/admin/teacher/selectionCategories");
-  const { data: courses  , loading: loadingCours ,error: errorC} = useGet("/api/admin/teacher/selectionCourses");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [loadingCours, setLoadingCours] = useState(false);
+
+  const { postData } = usePost("/api/admin/teacher");
+
+  const {
+    data: categoriesRes,
+    loading: loadingCats,
+    error,
+  } = useGet("/api/admin/teacher/selectionCategories");
+
+  // fetch courses when category changes
+  useEffect(() => {
+    if (!selectedCategory) {
+      setCourses([]);
+      return;
+    }
+
+    const fetchCourses = async () => {
+      try {
+        setLoadingCours(true);
+
+        const res = await api.get(
+          `/api/admin/courses/category/${selectedCategory}`
+        );
+
+        setCourses(res.data?.data?.data  || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingCours(false);
+      }
+    };
+
+    fetchCourses();
+  }, [selectedCategory]);
 
   const categoryOptions = useMemo(() => {
     return (
@@ -23,9 +59,9 @@ const AddTeachers = () => {
 
   const couersOptions = useMemo(() => {
     return (
-      courses?.data?.courses?.map((cat) => ({
-        value: cat.id,
-        label: cat.name,
+      courses?.map((course) => ({
+        value: course.id,
+        label: course.name,
       })) || []
     );
   }, [courses]);
@@ -52,6 +88,7 @@ const AddTeachers = () => {
         name: "phoneNumber",
         label: "Phone Number",
         type: "text",
+        pattern: /^[0-9]{10,15}$/,
         required: true,
         placeholder: "Enter phone number",
         section: "General Information",
@@ -77,11 +114,14 @@ const AddTeachers = () => {
         options: categoryOptions,
         section: "Assignment",
         helperText: "Optional: Assign teacher to a category",
+        onChange: (value) => {
+          setSelectedCategory(value);
+        },
       },
       {
-        name: "courseId",
+        name: "courseIds",
         label: "Course (Optional)",
-        type: "select",
+        type: "multipleSelect",
         options: couersOptions,
         section: "Assignment",
         helperText: "Optional: Assign teacher to a course",
@@ -106,13 +146,14 @@ const AddTeachers = () => {
       password: "",
       avatar: "",
       categoryId: "",
-      courseId: "",
+      courseIds: [],
     }),
     []
   );
 
   const onSave = async (formData) => {
     let avatarBase64 = null;
+
     if (formData.avatar instanceof File) {
       avatarBase64 = await fileToBase64(formData.avatar);
     }
@@ -124,23 +165,30 @@ const AddTeachers = () => {
       password: formData.password,
       avatar: avatarBase64,
       categoryId: formData.categoryId || null,
-      courseId: formData.courseId || null,
+      courseIds: formData.courseIds || null,
     };
 
     try {
-      await postData(payload, "/api/admin/teacher", "Teacher added successfully");
+      await postData(
+        payload,
+        "/api/admin/teacher",
+        "Teacher added successfully"
+      );
+
       navigate("/admin/users/teachers");
     } catch (error) {
       throw error;
     }
   };
 
-  if (loadingCats || loadingCours) {
+  if (loadingCats) {
     return <Loader />;
   }
-  if (error || errorC) {
+
+  if (error) {
     return <Errorpage />;
   }
+
   return (
     <AddPage
       title="Add Teacher"

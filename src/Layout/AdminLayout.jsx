@@ -138,9 +138,9 @@ const menuItems = [
     path: "/admin/payment",
     module: "payment",
     children: [
-      // { title: "Pending Payment", path: "/admin/payment/pandding-payment", icon: <FaRegClock size={18} /> },
+      { title: "Payment Recharge", path: "/admin/payment/paymentrecharge", icon: <FaRegClock size={18} /> },
       // { title: "Wallet Pending", path: "/admin/payment/pandding-wallet", icon: <FaPiggyBank size={18} /> },
-      // { title: "Payment History", path: "/admin/payment/payment-history", icon: <FaReceipt size={18} /> },
+      { title: "Payment Package", path: "/admin/payment/paymentpackage", icon: <FaReceipt size={18} /> },
       // { title: "Wallet History", path: "/admin/payment/wallet-history", icon: <FaWallet size={18} /> },
       { title: "Payment Method", path: "/admin/payment/payment-method", icon: <MdSettingsSuggest size={18} /> },
     ],

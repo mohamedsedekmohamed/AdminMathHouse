@@ -1,72 +1,71 @@
 import React, { useMemo } from "react";
-import { useNavigate ,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
 import toast from "react-hot-toast";
 import useGet from "@/hooks/useGet";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import TipTapMathEditor from "../../../../components/TipTapMathEditor";
 
 const AddQuestions = () => {
   const navigate = useNavigate();
   const { postData } = usePost("/api/admin/questions");
   const location = useLocation();
+  
+  // استلام معرف الدرس لو موجود في الـ state
   const { lessonId } = location.state || {};
+
+  // جلب بيانات الاختيارات من الـ API
   const { data: Lessons, loading: loadingLessons, error: errorLessons } = 
     useGet("/api/admin/questions/selectionLesson");
-      const { data: Sections, loading: loadingSections, error: errorSections } = useGet("/api/admin/sections/selectionSections");
-    
+  const { data: Sections, loading: loadingSections, error: errorSections } = 
+    useGet("/api/admin/sections/selectionSections");
   const { data: ExamCode, loading: loadingExamCode, error: errorExamCode } = 
     useGet("/api/admin/questions/selectionExamCode");
 
-  // توحيد شكل بيانات الدروس
-  const LessonsOptions = useMemo(() => {
-    return Lessons?.data?.data?.map(lesson => ({
-      value: lesson.value,
-      label: lesson.label 
-    })) || [];
-  }, [Lessons]);
-  const SectionsOptions = useMemo(() => {
-    return Sections?.data?.sections?.map(s => ({
-      value: s.id,
-      label: s.sectionName // تأكد أن الحقل في الـ API اسمه name أو عدله هنا
-    })) || [];
-  }, [Sections]);
+  // --- تجهيز الخيارات (Options) ---
+  const LessonsOptions = useMemo(() => 
+    Lessons?.data?.data?.map(lesson => ({ value: lesson.value, label: lesson.label })) || [], 
+    [Lessons]
+  );
 
-  // توحيد شكل بيانات أكواد الامتحانات
-  const ExamCodeOptions = useMemo(() => {
-    return ExamCode?.data?.data?.map(code => ({
-      value: code.id,
-      label: code.code
-    })) || [];
-  }, [ExamCode]);
-const currentYear = new Date().getFullYear();
-const startYear = 2000;
+  const SectionsOptions = useMemo(() => 
+    Sections?.data?.sections?.map(s => ({ value: s.id, label: s.sectionName })) || [], 
+    [Sections]
+  );
 
-const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
-  const y = startYear + i;
-  return { value: y.toString(), label: y.toString() };
-});
+  const ExamCodeOptions = useMemo(() => 
+    ExamCode?.data?.data?.map(code => ({ value: code.id, label: code.code })) || [], 
+    [ExamCode]
+  );
 
-  const answerOrders = ["A", "B", "C", "D"];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
+    const y = 2000 + i;
+    return { value: y.toString(), label: y.toString() };
+  });
 
+  // --- تعريف الحقول (Fields) ---
   const fields = useMemo(() => [
     {
       name: "question",
-      label: "Question",
-      type: "text",
+      label: "Question Content",
+      type: "custom",
       required: true,
-      placeholder: "Enter the question",
       section: "General Information",
+      fullWidth: true,
+      render: ({ value, onChange }) => (
+        <TipTapMathEditor value={value} onChange={onChange} />
+      ),
     },
-   
     {
       name: "answerType",
       label: "Answer Type",
       type: "select",
       options: [
-        { value: "MCQ", label: "MCQ" },
-        { value: "Grid in", label:"Grid in" },
+        { value: "MCQ", label: "MCQ (Multiple Choice)" },
+        { value: "Grid in", label: "Grid in (Open Answer)" },
       ],
       required: true,
       section: "General Information",
@@ -78,235 +77,205 @@ const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
       options: [
         { value: "Extra", label: "Extra" },
         { value: "Trail", label: "Trail" },
-    
       ],
       required: true,
       section: "General Information",
     },
-    {
-  name: "month",
-  label: "Month",
-  type: "select",
-  options: [
-    { value: "Jan", label: "Jan" },
-    { value: "Feb", label: "Feb" },
-    { value: "Mar", label: "Mar" },
-    { value: "Apr", label: "Apr" },
-    { value: "May", label: "May" },
-    { value: "Jun", label: "Jun" },
-    { value: "Jul", label: "Jul" },
-    { value: "Aug", label: "Aug" },
-    { value: "Sep", label: "Sep" },
-    { value: "Oct", label: "Oct" },
-    { value: "Nov", label: "Nov" },
-    { value: "Dec", label: "Dec" },
-  ],
-  required: true,
-      section: "General Information",
-},
     {
       name: "difficulty",
-      label: "Difficulty",
+      label: "Difficulty Level",
       type: "select",
       options: [
-        { value: "A", label: "A" },
+        { value: "A", label: "A (Easy)" },
         { value: "B", label: "B" },
-        { value: "C", label: "C" },
+        { value: "C", label: "C (Medium)" },
         { value: "D", label: "D" },
-        { value: "E", label: "E" },
+        { value: "E", label: "E (Hard)" },
       ],
       required: true,
       section: "General Information",
     },
-    // {
-    //   name: "lessonId",
-    //   label: "Lesson",
-    //   type: "select",
-    //   options: LessonsOptions,
-    //   required: true,
-    //   section: "Relations",
-    // },
     {
       name: "sectionId",
       label: "Section",
       type: "select",
       options: SectionsOptions,
       required: true,
-      placeholder: "Enter the section",
       section: "General Information",
     },
-   {
-  name: "year",
-  label: "Year",
-  type: "select",
-  options: years,
-  required: true,
+    {
+      name: "year",
+      label: "Year",
+      type: "select",
+      options: years,
+      required: true,
       section: "General Information",
-},
+    },
+    {
+      name: "month",
+      label: "Month",
+      type: "select",
+      options: [
+        { value: "Jan", label: "Jan" }, { value: "Feb", label: "Feb" },
+        { value: "Mar", label: "Mar" }, { value: "Apr", label: "Apr" },
+        { value: "May", label: "May" }, { value: "Jun", label: "Jun" },
+        { value: "Jul", label: "Jul" }, { value: "Aug", label: "Aug" },
+        { value: "Sep", label: "Sep" }, { value: "Oct", label: "Oct" },
+        { value: "Nov", label: "Nov" }, { value: "Dec", label: "Dec" },
+      ],
+      required: true,
+      section: "General Information",
+    },
     {
       name: "codeId",
-      label: "Code",
+      label: "Exam Code",
       type: "select",
       options: ExamCodeOptions,
       required: true,
       section: "General Information",
     },
-   {
-      name: "options", 
-      label: "Answer Options",
-      type: "dynamic-list", 
+
+    // --- MCQ Section ---
+    {
+      name: "options",
+      label: "Multiple Choice Options",
+      type: "dynamic-list",
       required: true,
-      section: "Questions",
-      helperText: "Add as many options as you need.",
-      
+      section: "Answers Configuration",
+      hidden: (formData) => formData.answerType === "Grid in",
+      helperText: "Enter the text for options A, B, C, D...",
     },
-  {
+    {
       name: "correctOption",
-      label: "Correct Option",
-      type: "custom", // غيرنا النوع هنا
+      label: "Mark Correct Letter",
+      type: "custom",
       required: true,
-      section: "Questions",
-      
-      // دالة الرسم (Render Function)
+      section: "Answers Configuration",
+      hidden: (formData) => formData.answerType === "Grid in",
       render: ({ value, onChange, formData, error }) => {
-
-        const currentOptionsCount = formData.options?.length || 4;
-        const availableLetters = Array.from({ length: currentOptionsCount }, (_, i) => String.fromCharCode(65 + i));
-
+        const count = formData.options?.length || 4;
+        const letters = Array.from({ length: count }, (_, i) => String.fromCharCode(65 + i));
         return (
-          <div className="flex flex-wrap flex-col gap-3">
-            {availableLetters.map((letter) => {
-              const isSelected = value === letter;
-              return (
-                <button
-                  key={letter}
-                  type="button" // ضروري جداً عشان الفورم ميعملش Submit
-                  onClick={() => onChange(letter)}
-                  className={`
-                    w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold transition-all duration-200 border-2
-                    ${isSelected 
-                      ? "bg-one text-white border-one shadow-lg scale-110" // ستايل المختار
-                      : "bg-white text-slate-500 border-slate-200 hover:border-one/50 hover:bg-slate-50" // ستايل العادي
-                    }
-                    ${error ? "border-red-500" : ""}
-                  `}
-                >
-                  {letter}
-                </button>
-              );
-            })}
+          <div className="flex flex-wrap gap-3">
+            {letters.map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => onChange(l)}
+                className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold transition-all border-2 
+                  ${value === l ? "bg-one text-white border-one shadow-md scale-110" : "bg-white text-slate-400 border-slate-200 hover:bg-slate-50"}`}
+              >
+                {l}
+              </button>
+            ))}
           </div>
         );
       },
     },
+
+    // --- Grid In Section ---
+    {
+      name: "gridInAnswers",
+      label: "Accepted Grid-in Answers",
+      type: "dynamic-list",
+      required: true,
+      section: "Answers Configuration",
+      hidden: (formData) => formData.answerType === "MCQ" || !formData.answerType,
+      helperText: "Add all possible correct formats (e.g., 0.5, .5, 1/2)",
+    },
+
+    // --- Media Section ---
     {
       name: "answerPdf",
-      label: "Answer PDF (Optional)",
+      label: "Answer PDF URL",
       type: "text",
-      section: "General Information",
-      helperText: "Enter the PDF URL",
+      section: "Solution Media",
     },
     {
       name: "answerVideo",
-      label: "Answer Video (Optional)",
+      label: "Answer Video URL",
       type: "text",
-      section: "General Information",
-      helperText: "Enter the video URL",
+      section: "Solution Media",
     },
-     {
+    {
       name: "image",
-      label: "Question Image (Optional)",
+      label: "Question Image",
       type: "file",
-
       section: "General Information",
     }
-  ], [LessonsOptions, ExamCodeOptions]);
+  ], [SectionsOptions, ExamCodeOptions, years]);
 
   const initialFormValues = {
     question: "",
-    image: "",
     answerType: "",
     difficulty: "",
-    lessonId: "",
-    year: "",
-    month: "",
-    sectionId: "",
-    codeId: "",
-   options: ["", "", "", ""], 
+    options: ["", "", "", ""],
+    gridInAnswers: [""],
     correctOption: "",
-    answerPdf: "",
-    answerVideo: "",
+    year:"",
   };
 
- const onSave = async (formData) => {
-  // تحويل الصورة Base64 لو موجودة
-  let imageBase64 = null;
-  if (formData.image instanceof File) {
-    imageBase64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(formData.image);
-    });
-  }
+  const onSave = async (formData) => {
+    // 1. معالجة الصورة
+    let imageBase64 = null;
+    if (formData.image instanceof File) {
+      imageBase64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(formData.image);
+      });
+    }
 
-  // تجهيز الـ Options من dynamic-list
-  const options = (formData.options || [])
-    .map((answer, index) => ({
-      answer: answer?.trim(),
-      isCorrect: formData.correctOption === String.fromCharCode(65 + index),
-      order: String.fromCharCode(65 + index),
-    }))
-    .filter(opt => opt.answer); // يشيل الفاضي
+    // 2. معالجة الإجابات بناءً على النوع
+    let finalOptions = [];
+    if (formData.answerType === "MCQ") {
+      finalOptions = (formData.options || []).map((ans, index) => ({
+        answer: ans?.trim(),
+        isCorrect: formData.correctOption === String.fromCharCode(65 + index),
+        order: String.fromCharCode(65 + index),
+      })).filter(opt => opt.answer);
 
-  // 🛑 Validation قبل الإرسال
-  if (options.length < 2) {
-      toast.error("Please add at least two answer options");
+      if (finalOptions.length < 2 || !formData.correctOption) {
+        return toast.error("Please provide MCQ options and mark the correct one");
+      }
+    } else {
+      finalOptions = (formData.gridInAnswers || [])
+        .filter(ans => ans.trim() !== "")
+        .map(ans => ({
+          answer: ans.trim(),
+          isCorrect: true,
+          order: null
+        }));
 
-    return;
-  }
+      if (finalOptions.length === 0) {
+        return toast.error("Please add at least one correct answer for Grid-in");
+      }
+    }
 
-  if (!formData.correctOption) {
-      toast.error("Please select the correct answer");
+    // 3. تجهيز الـ Payload النهائي
+    const { year, gridInAnswers, correctOption, options, ...rest } = formData;
+    const payload = {
+      ...rest,
+      year: Number(year),
+      lessonId: lessonId,
+      options: finalOptions,
+      image: imageBase64 || formData.image, // استخدام القديمة لو مفيش جديدة
+    };
 
-    return;
-  }
-
-  const hasCorrect = options.some(opt => opt.isCorrect);
-  if (!hasCorrect) {
-  toast.error("The correct answer must be one of the provided options");
-
-    return;
-  }
-
-  const numyear = Number(formData.year);
-  const { year, ...rest } = formData;
-
-  const payload = {
-    ...rest,
-    year: numyear,
-    lessonId: lessonId,
-    options,
+    try {
+      await postData(payload, "/api/admin/questions", "Question added successfully");
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  if (imageBase64) {
-    payload.image = imageBase64;
-  }
-
-  try {
-    await postData(payload, `/api/admin/questions`, "Question added successfully");
-    navigate(-1);
-  } catch (error) {
-
-    throw error;
-  }
-};
-  if (loadingLessons || loadingExamCode ||loadingSections) return <Loader />;
+  if (loadingLessons || loadingExamCode || loadingSections) return <Loader />;
   if (errorLessons || errorExamCode || errorSections) return <Errorpage />;
 
   return (
     <AddPage
-      title="Add Question"
+      title="Add New Question"
       fields={fields}
       onSave={onSave}
       onCancel={() => navigate(-1)}

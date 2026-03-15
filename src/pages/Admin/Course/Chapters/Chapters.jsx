@@ -54,7 +54,7 @@ const OrderInputCell = ({ row, tableData, patchData, refetch, loading }) => {
         null,
         "Order updated successfully!"
       );
-      refetch(); // تحديث الداتا بعد النجاح
+     await refetch();// تحديث الداتا بعد النجاح
     } catch (err) {
       console.error(err);
       setOrderVal(row.order); // لو حصل error نرجع للقديم
@@ -155,8 +155,8 @@ const Chapters = () => {
       ),
     },
     { header: "Name", key: "name" },
-    { header: "Course", key: "courseName" },
-    { header: "Category", key: "categoryName" },
+    // { header: "Course", key: "courseName" },
+    // { header: "Category", key: "categoryName" },
     { header: "Teacher", key: "teacherName", filterable: true, filterType: 'select' },
     { header: "Duration", key: "duration", filterable: true, filterType: 'select' },
     { header: "Total Price", key: "totalPrice" },
@@ -175,11 +175,11 @@ const Chapters = () => {
     },
   ];
 
-  if (loading && loadingOne) {
+  if (loading ||  loadingOne) {
     return <Loader />;
   }
   
-  if (error && errorOne) {
+  if (error ||  errorOne) {
     return <Errorpage />;
   }
 
