@@ -118,7 +118,7 @@ import EditParallel from '../pages/Admin/Course/Parallel/EditParallel'
 
 import PaymentRecharge from '../pages/Admin/Payments/PaymentRecharge/PaymentRecharge'
 import PaymentPackage from '../pages/Admin/Payments/PaymentPackage/PaymentPackage'
-import DriveLayout from "../Layout/driveLayout";
+import DriveLayout from "../Layout/DriveLayout";
 
 const router = createBrowserRouter([
   {
