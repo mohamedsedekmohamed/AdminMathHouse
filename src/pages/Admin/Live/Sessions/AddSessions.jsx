@@ -25,10 +25,6 @@ const AddSessions = () => {
     [groupData]
   );
 
-  // const courseOptions = useMemo(
-  //   () => selectData?.data?.courses || [],
-  //   [selectData]
-  // );
 
   const teacherOptions = useMemo(
     () => teachersData ?.data?.teachers.map((item) => ({ value: item.id, label: item.name })) || [],
@@ -209,10 +205,14 @@ const AddSessions = () => {
     studentIds: formData.userIds || [],
     lessonIds: formData.lessonIds || [],
   };
+ try{
 
-  await postData(payload, "/api/admin/session", "Session added successfully");
-  navigate(-1);
-};
+   await postData(payload, "/api/admin/session", "Session added successfully");
+   navigate(-1);
+  }catch(e){
+    throw e
+  }
+};  
 if (grouploading || teachersloading) return <Loader />;
 if (groupError || teachersError) return <Errorpage />;
 

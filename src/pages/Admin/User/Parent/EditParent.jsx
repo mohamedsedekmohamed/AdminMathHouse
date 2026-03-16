@@ -48,7 +48,6 @@ const EditParent = () => {
         placeholder: "Leave empty to keep current password",
                 section: "Contact Information",
 
-        section: "Security",
       },
     ],
     []

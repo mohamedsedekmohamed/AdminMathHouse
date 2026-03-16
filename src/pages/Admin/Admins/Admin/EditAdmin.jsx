@@ -60,7 +60,6 @@ const EditAdmin = () => {
         placeholder: "Leave blank to keep current password",
         helperText: "Only fill this if you want to change the password.",
         section: "Personal Information",
-                section: "Personal Information",
 
       },
       {

@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login from "../Auth/Login";
+import LoginDrive from "../Auth/LoginDrive";
 import SaveRoute from "../Auth/SaveRoute";
 import AdminLayout from "../Layout/AdminLayout";
 import Home from "../pages/Home/Home";
@@ -117,6 +118,7 @@ import EditParallel from '../pages/Admin/Course/Parallel/EditParallel'
 
 import PaymentRecharge from '../pages/Admin/Payments/PaymentRecharge/PaymentRecharge'
 import PaymentPackage from '../pages/Admin/Payments/PaymentPackage/PaymentPackage'
+import DriveLayout from "../Layout/driveLayout";
 
 const router = createBrowserRouter([
   {
@@ -124,9 +126,29 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: "logindrive",
+    element: <LoginDrive />,
+  },
+  {
+path:"/drive/*",
+element:(
+    <SaveRoute allowedRole="drive">
+    <DriveLayout />
+  </SaveRoute>
+),
+children: [
+  {
+    index: true,
+    element: <Home />,
+  },
+]
+
+  },
+
+  {
     path: "/admin/*",
     element: (
-      <SaveRoute>
+    <SaveRoute allowedRole="admin">
         <AdminLayout />
       </SaveRoute>
     ),

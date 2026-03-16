@@ -31,26 +31,21 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
           {},
         ),
     );
-  useEffect(() => {
-    if (initialData) {
+useEffect(() => {
+    if (initialData && Object.keys(initialData).length > 0) {
       setFormData((prev) => ({ ...prev, ...initialData }));
 
       const newPreviews = {};
-      // يمكنك استخدام fields هنا دون وضعها في مصفوفة الاعتماديات
-      // أو الاكتفاء بالـ initialData
       Object.keys(initialData).forEach((key) => {
-        // افتراض: لو في داتا جاية كـ string وصورتها محفوظة
-        if (
-          typeof initialData[key] === "string" &&
-          initialData[key].includes("http")
-        ) {
+        if (typeof initialData[key] === "string" && initialData[key].includes("http")) {
           newPreviews[key] = initialData[key];
         }
       });
       setPreviews(newPreviews);
     }
-    // ✅ احذف fields من هنا لتجنب مسح الفورم عند جلب الـ roles
-  }, [initialData]);
+    // 👇🔥 استخدمنا JSON.stringify عشان الكومبوننت ميعملش إعادة تعيين (Reset) للفورم فجأة
+  }, [JSON.stringify(initialData)]);
+  
 
   // --- Validation Logic (Translated) ---
   const validateField = useCallback(

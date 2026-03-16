@@ -1,32 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import { Trash2 } from "lucide-react";
 import api from "@/api/api";
 
-const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne }) => {
+const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne, initialData = {} }) => {
+  const isMounted = useRef(false);
+
+  // دالة مساعدة لاستخراج الـ IDs بشكل آمن
+  const extractLessonIds = (lessons) => {
+    if (!lessons || !Array.isArray(lessons)) return [];
+    return lessons.map(l => typeof l === 'object' ? (l.value || l.id) : l);
+  };
+
   const [selections, setSelections] = useState({
-    categoryId: "",
-    courseId: "",
-    chapterId: "",
-    selectedLessons: [],
+    categoryId: initialData.categoryId || "",
+    courseId: initialData.courseId || "",
+    chapterId: initialData.chapterId || "",
+    selectedLessonIds: extractLessonIds(initialData.selectedLessons),
   });
+
+  // 🔥 1. مراقبة الداتا المتأخرة من الأب: لو الداتا اتغيرت أو حملت متأخر، نحدث الـ State
+  useEffect(() => {
+    if (initialData.categoryId || initialData.courseId || initialData.chapterId) {
+      setSelections({
+        categoryId: initialData.categoryId || "",
+        courseId: initialData.courseId || "",
+        chapterId: initialData.chapterId || "",
+        selectedLessonIds: extractLessonIds(initialData.selectedLessons),
+      });
+    }
+  }, [initialData.categoryId, initialData.courseId, initialData.chapterId]);
 
   const [options, setOptions] = useState({
-    categories: [],
-    courses: [],
-    chapters: [],
-    lessons: [],
+    categories: [], courses: [], chapters: [], lessons: [],
   });
 
-  // 1. إضافة State لمتابعة حالة التحميل لكل Select بشكل منفصل
   const [isLoading, setIsLoading] = useState({
-    categories: false,
-    courses: false,
-    chapters: false,
-    lessons: false,
+    categories: false, courses: false, chapters: false, lessons: false,
   });
 
-  // جلب الـ Categories
+  // --- API Calls ---
   useEffect(() => {
     const fetchCategories = async () => {
       setIsLoading(prev => ({ ...prev, categories: true }));
@@ -36,91 +49,73 @@ const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne }) => {
           root.children.map(child => ({ value: child.id, label: child.name }))
         ) || [];
         setOptions(prev => ({ ...prev, categories: formatted }));
-      } catch (err) {
-        console.error("Error fetching categories", err);
-      } finally {
-        setIsLoading(prev => ({ ...prev, categories: false }));
-      }
+      } catch (err) { console.error("Error categories", err); } 
+      finally { setIsLoading(prev => ({ ...prev, categories: false })); }
     };
     fetchCategories();
   }, []);
 
-  // جلب الـ Courses
   useEffect(() => {
-    if (!selections.categoryId) {
-      setOptions(prev => ({ ...prev, courses: [] }));
-      return;
-    }
+    if (!selections.categoryId) { setOptions(prev => ({ ...prev, courses: [] })); return; }
     const fetchCourses = async () => {
       setIsLoading(prev => ({ ...prev, courses: true }));
       try {
         const res = await api.get(`/api/admin/session/select/course/${selections.categoryId}`);
         const formatted = res.data?.data?.courses.map(c => ({ value: c.id, label: c.name })) || [];
         setOptions(prev => ({ ...prev, courses: formatted }));
-      } catch (err) {
-        console.error("Error fetching courses", err);
-      } finally {
-        setIsLoading(prev => ({ ...prev, courses: false }));
-      }
+      } catch (err) { console.error("Error courses", err); } 
+      finally { setIsLoading(prev => ({ ...prev, courses: false })); }
     };
     fetchCourses();
   }, [selections.categoryId]);
 
-  // جلب الـ Chapters
   useEffect(() => {
-    if (!selections.courseId) {
-      setOptions(prev => ({ ...prev, chapters: [] }));
-      return;
-    }
+    if (!selections.courseId) { setOptions(prev => ({ ...prev, chapters: [] })); return; }
     const fetchChapters = async () => {
       setIsLoading(prev => ({ ...prev, chapters: true }));
       try {
         const res = await api.get(`/api/admin/session/select/chapter/${selections.courseId}`);
         const formatted = res.data?.data?.chapters.map(c => ({ value: c.id, label: c.name })) || [];
         setOptions(prev => ({ ...prev, chapters: formatted }));
-      } catch (err) {
-        console.error("Error fetching chapters", err);
-      } finally {
-        setIsLoading(prev => ({ ...prev, chapters: false }));
-      }
+      } catch (err) { console.error("Error chapters", err); } 
+      finally { setIsLoading(prev => ({ ...prev, chapters: false })); }
     };
     fetchChapters();
   }, [selections.courseId]);
 
-  // جلب الـ Lessons
   useEffect(() => {
-    if (!selections.chapterId) {
-      setOptions(prev => ({ ...prev, lessons: [] }));
-      return;
-    }
+    if (!selections.chapterId) { setOptions(prev => ({ ...prev, lessons: [] })); return; }
     const fetchLessons = async () => {
       setIsLoading(prev => ({ ...prev, lessons: true }));
       try {
         const res = await api.get(`/api/admin/session/select/lesson/${selections.chapterId}`);
         const formatted = res.data?.data?.lessons.map(l => ({ value: l.id, label: l.name })) || [];
         setOptions(prev => ({ ...prev, lessons: formatted }));
-      } catch (err) {
-        console.error("Error fetching lessons", err);
-      } finally {
-        setIsLoading(prev => ({ ...prev, lessons: false }));
-      }
+      } catch (err) { console.error("Error lessons", err); } 
+      finally { setIsLoading(prev => ({ ...prev, lessons: false })); }
     };
     fetchLessons();
   }, [selections.chapterId]);
 
+  // --- Handlers ---
   const updateField = (field, value) => {
     setSelections(prev => {
       const newState = { ...prev, [field]: value };
-      if (field === "categoryId") { newState.courseId = ""; newState.chapterId = ""; newState.selectedLessons = []; }
-      if (field === "courseId") { newState.chapterId = ""; newState.selectedLessons = []; }
-      if (field === "chapterId") { newState.selectedLessons = []; }
+      if (field === "categoryId") { newState.courseId = ""; newState.chapterId = ""; newState.selectedLessonIds = []; }
+      if (field === "courseId") { newState.chapterId = ""; newState.selectedLessonIds = []; }
+      if (field === "chapterId") { newState.selectedLessonIds = []; }
       return newState;
     });
   };
 
+  // 🔥 2. منع الـ onUpdate من ضرب داتا فاضية للأب أول مرة
   useEffect(() => {
-    onUpdate(index, selections.selectedLessons.map(l => l.value));
-  }, [selections.selectedLessons]);
+    if (isMounted.current) {
+      onUpdate(index, selections.selectedLessonIds);
+    } else {
+      isMounted.current = true;
+    }
+  }, [selections.selectedLessonIds]);
 
   return (
     <div className="p-4 border border-slate-200 rounded-2xl bg-white mb-4 shadow-sm space-y-4 text-left">
@@ -134,18 +129,18 @@ const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Category */}
         <div className="space-y-1">
           <label className="text-[11px] font-bold text-slate-500">Category</label>
           <Select 
-            isLoading={isLoading.categories} // 2. تفعيل علامة التحميل
+            isLoading={isLoading.categories}
             placeholder={isLoading.categories ? "Loading..." : "Select Category..."} 
-            options={options.categories} 
+            options={options.categories}
+            // 🔥 3. استخدام String() عشان نتجنب مشكلة الـ Type Mismatch (رقم vs نص)
+            value={options.categories.find(o => String(o.value) === String(selections.categoryId)) || null} 
             onChange={(val) => updateField("categoryId", val?.value)} 
           />
         </div>
 
-        {/* Course */}
         <div className="space-y-1">
           <label className="text-[11px] font-bold text-slate-500">Course</label>
           <Select 
@@ -153,12 +148,11 @@ const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne }) => {
             placeholder={isLoading.courses ? "Fetching courses..." : "Select Course..."}
             isDisabled={!selections.categoryId || isLoading.courses} 
             options={options.courses} 
-            value={options.courses.find(o => o.value === selections.courseId) || null}
+            value={options.courses.find(o => String(o.value) === String(selections.courseId)) || null}
             onChange={(val) => updateField("courseId", val?.value)} 
           />
         </div>
 
-        {/* Chapter */}
         <div className="space-y-1">
           <label className="text-[11px] font-bold text-slate-500">Chapter</label>
           <Select 
@@ -166,12 +160,11 @@ const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne }) => {
             placeholder={isLoading.chapters ? "Fetching chapters..." : "Select Chapter..."}
             isDisabled={!selections.courseId || isLoading.chapters} 
             options={options.chapters} 
-            value={options.chapters.find(o => o.value === selections.chapterId) || null}
+            value={options.chapters.find(o => String(o.value) === String(selections.chapterId)) || null}
             onChange={(val) => updateField("chapterId", val?.value)} 
           />
         </div>
 
-        {/* Lessons */}
         <div className="space-y-1">
           <label className="text-[11px] font-bold text-slate-500">Lessons</label>
           <Select 
@@ -180,8 +173,9 @@ const LessonSelectionRow = ({ index, onUpdate, onRemove, isOnlyOne }) => {
             placeholder={isLoading.lessons ? "Fetching lessons..." : "Select Lessons..."}
             isDisabled={!selections.chapterId || isLoading.lessons} 
             options={options.lessons} 
-            value={selections.selectedLessons}
-            onChange={(val) => setSelections(prev => ({...prev, selectedLessons: val || []}))}
+            // 🔥 فلترة آمنة باستخدام String 
+            value={options.lessons.filter(o => selections.selectedLessonIds.map(String).includes(String(o.value)))}
+            onChange={(val) => updateField("selectedLessonIds", val ? val.map(v => v.value) : [])}
           />
         </div>
       </div>
