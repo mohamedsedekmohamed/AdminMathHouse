@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import AddPage from "@/components/AddPage";
 import useGet from "@/hooks/useGet";
@@ -15,6 +15,10 @@ const SameQuestions = () => {
   const lessonId = location.state?.lessonId;
 
   const { postData } = usePost("/api/admin/questions");
+  
+  // 👈 ضفنا الـ API وحالة التحميل الخاصة بالـ OCR
+  const { postData: postDataimage } = usePost("/api/admin/questions/ocr");
+  const [ocrLoading, setOcrLoading] = useState(false);
 
   // جلب بيانات السؤال المراد نسخه
   const {
@@ -40,7 +44,65 @@ const SameQuestions = () => {
     label: (2000 + i).toString(),
   }));
 
+  // 👈 ضفنا دالة handleOCR
+  const handleOCR = async (imageFile, setFormData) => {
+    if (!imageFile) {
+      return toast.error("Please upload an image first");
+    }
+
+    try {
+      setOcrLoading(true);
+
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      const res = await postDataimage(
+        formData,
+        "/api/admin/questions/ocr",
+        "Text extracted successfully"
+      );
+
+      const extractedText = res?.data?.data;
+      if (extractedText) {
+        setFormData((prev) => ({
+          ...prev,
+          question: extractedText,
+        }));
+      } else {
+        toast.error("No text detected");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOcrLoading(false);
+    }
+  };
+
   const fields = useMemo(() => [
+     {
+      name: "image",
+      label: "Question Image & OCR",
+      type: "fileWithOCR",
+      section: "General Information",
+      fullWidth: true,
+      actionButton: ({ formData, setFormData }) => (
+        <button
+          type="button"
+          onClick={() => handleOCR(formData.image, setFormData)}
+          disabled={ocrLoading || !formData.image}
+      className="w-full md:w-auto h-full px-8 py-4 bg-one text-white rounded-xl hover:bg-one/80 disabled:opacity-50 flex items-center justify-center gap-2 transition-all font-bold shadow-sm"
+        >
+          {ocrLoading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>Extracting...</span>
+            </>
+          ) : (
+            <>📄 Extract Text</>
+          )}
+        </button>
+      ),
+    },
     {
       name: "question",
       label: "Question Content",
@@ -173,13 +235,11 @@ const SameQuestions = () => {
       type: "text",
       section: "Resources",
     },
-    {
-      name: "image",
-      label: "Question Image",
-      type: "file",
-      section: "General Information",
-    },
-  ], [SectionsOptions, ExamCodeOptions, years]);
+    
+    // 👈 التعديل هنا لدمج الصورة مع زرار الـ OCR
+   
+  // 👈 متنساش ocrLoading في مصفوفة الاعتمادات هنا
+  ], [SectionsOptions, ExamCodeOptions, years, ocrLoading]);
 
   // تجهيز البيانات الافتراضية من السؤال الأصلي
   const initialData = useMemo(() => {

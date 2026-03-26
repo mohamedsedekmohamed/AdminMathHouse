@@ -602,39 +602,83 @@ useEffect(() => {
                         </span>
                       </div>
                     )}
+{field.type === "fileWithOCR" && (
+  <div className="flex flex-col md:flex-row gap-4 w-full items-stretch">
+    {/* صندوق رفع الصورة */}
+    <div
+      className={`relative flex-1 group border-2 border-dashed rounded-xl p-4 transition-all ${
+        previews[field.name] ? "border-one bg-one/5" : "border-slate-200 hover:border-one/50"
+      }`}
+    >
+      <input
+        accept="image/png, image/jpeg, image/jpg, image/webp"
+        type="file"
+        onChange={(e) => handleFileChange(e, field.name)}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+      />
+      <div className="flex items-center gap-4 text-left">
+        {previews[field.name] ? (
+          <img
+            src={previews[field.name]}
+            alt="preview"
+            className="w-16 h-16 rounded-lg object-cover ring-2 ring-white shadow-md"
+          />
+        ) : (
+          <div className="w-16 h-16 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-one transition-colors">
+            <Upload size={24} />
+          </div>
+        )}
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-slate-600">
+            Click to upload or drag and drop
+          </span>
+          <span className="text-xs text-slate-400">
+            PNG, JPG up to 5MB
+          </span>
+        </div>
+      </div>
+    </div>
 
-                    {field.type === "custom" && field.render && (
-                      <div className="w-full">
-                        {field.render({
-                          value: formData[field.name], // القيمة الحالية
+    {/* الزرار الإضافي */}
+    {field.actionButton && (
+      <div className="flex md:w-auto w-full">
+        {field.actionButton({ formData, setFormData })}
+      </div>
+    )}
+  </div>
+)}
+                  {field.type === "custom" && field.render && (
+  <div className="w-full">
+    {field.render({
+      value: formData[field.name], // القيمة الحالية
+      
+      onChange: (newValue) => {
+        setFormData((prev) => ({
+          ...prev,
+          [field.name]: newValue,
+        }));
+        if (errors[field.name])
+          setErrors((prev) => ({
+            ...prev,
+            [field.name]: "",
+          }));
+      },
 
-                          // دالة لتحديث القيمة
-                          onChange: (newValue) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              [field.name]: newValue,
-                            }));
-                            // مسح الخطأ لو موجود
-                            if (errors[field.name])
-                              setErrors((prev) => ({
-                                ...prev,
-                                [field.name]: "",
-                              }));
-                          },
+      error: errors[field.name], 
+      formData: formData, 
+      field: field, 
+      
+      // 👇 التعديل هنا: لازم نمرر setFormData عشان تقدر تستخدمها في الـ OCR
+      setFormData: setFormData, 
+    })}
 
-                          error: errors[field.name], // الخطأ لو موجود
-                          formData: formData, // كل الداتا لو احتاجتها
-                          field: field, // خصائص الحقل نفسه
-                        })}
-
-                        {/* عرض رسالة الخطأ تحت الـ Custom Component */}
-                        {errors[field.name] && (
-                          <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-1">
-                            <AlertCircle size={14} /> {errors[field.name]}
-                          </p>
-                        )}
-                      </div>
-                    )}
+    {errors[field.name] && (
+      <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-1">
+        <AlertCircle size={14} /> {errors[field.name]}
+      </p>
+    )}
+  </div>
+)}
                     {/* Helper Text & Errors */}
                     {field.helperText && !errors[field.name] && (
                       <p className="text-[11px] text-slate-400 flex items-center gap-1 justify-start">

@@ -1,9 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddPage from "@/components/AddPage";
 import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
+import usePost from "@/hooks/usePost"; // 👈 ضفنا الـ usePost عشان الـ OCR
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import TipTapMathEditor from "../../../../components/TipTapMathEditor";
@@ -12,6 +13,10 @@ const EditQuestions = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { putData, loading: saving } = usePut(`/api/admin/questions/${id}`);
+  
+  // 👈 ضفنا الـ API وحالة التحميل الخاصة بالـ OCR
+  const { postData: postDataimage } = usePost("/api/admin/questions/ocr");
+  const [ocrLoading, setOcrLoading] = useState(false);
 
   // جلب بيانات السؤال الحالي
   const {
@@ -43,8 +48,66 @@ const EditQuestions = () => {
     label: (2000 + i).toString(),
   }));
 
+  // 👈 ضفنا دالة handleOCR
+  const handleOCR = async (imageFile, setFormData) => {
+    if (!imageFile) {
+      return toast.error("Please upload an image first");
+    }
+
+    try {
+      setOcrLoading(true);
+
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      const res = await postDataimage(
+        formData,
+        "/api/admin/questions/ocr",
+        "Text extracted successfully"
+      );
+
+      const extractedText = res?.data?.data;
+      if (extractedText) {
+        setFormData((prev) => ({
+          ...prev,
+          question: extractedText,
+        }));
+      } else {
+        toast.error("No text detected");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOcrLoading(false);
+    }
+  };
+
   // --- تعريف الحقول (Fields) بنفس منطق صفحة الإضافة ---
   const fields = useMemo(() => [
+      {
+      name: "image",
+      label: "Question Image & OCR",
+      type: "fileWithOCR",
+      section: "General Information",
+      fullWidth: true,
+      actionButton: ({ formData, setFormData }) => (
+        <button
+          type="button"
+          onClick={() => handleOCR(formData.image, setFormData)}
+          disabled={ocrLoading || !formData.image}
+      className="w-full md:w-auto h-full px-8 py-4 bg-one text-white rounded-xl hover:bg-one/80 disabled:opacity-50 flex items-center justify-center gap-2 transition-all font-bold shadow-sm"
+        >
+          {ocrLoading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>Extracting...</span>
+            </>
+          ) : (
+            <>📄 Extract Text</>
+          )}
+        </button>
+      ),
+    },
     {
       name: "question",
       label: "Question Content",
@@ -182,13 +245,11 @@ const EditQuestions = () => {
       type: "text",
       section: "Solution Media",
     },
-    {
-      name: "image",
-      label: "Question Image",
-      type: "file",
-      section: "General Information",
-    },
-  ], [LessonsOptions, SectionsOptions, ExamCodeOptions, years]);
+    
+    // 👈 غيرنا الحقل للنوع الجديد fileWithOCR
+  
+  // 👈 متنساش إن ocrLoading متضافة هنا
+  ], [LessonsOptions, SectionsOptions, ExamCodeOptions, years, ocrLoading]);
 
   // --- تحويل البيانات القادمة من API لشكل الفورم ---
   const initialData = useMemo(() => {

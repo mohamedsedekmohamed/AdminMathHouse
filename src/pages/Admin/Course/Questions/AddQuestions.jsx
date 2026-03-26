@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AddPage from "@/components/AddPage";
 import usePost from "@/hooks/usePost";
@@ -11,8 +11,9 @@ import TipTapMathEditor from "../../../../components/TipTapMathEditor";
 const AddQuestions = () => {
   const navigate = useNavigate();
   const { postData } = usePost("/api/admin/questions");
+  const { postData: postDataimage } = usePost("/api/admin/questions/ocr");
   const location = useLocation();
-  
+  const [ocrLoading, setOcrLoading] = useState(false);
   // استلام معرف الدرس لو موجود في الـ state
   const { lessonId } = location.state || {};
 
@@ -45,9 +46,66 @@ const AddQuestions = () => {
     const y = 2000 + i;
     return { value: y.toString(), label: y.toString() };
   });
+const handleOCR = async (imageFile, setFormData) => {
+  if (!imageFile) {
+    return toast.error("Please upload an image first");
+  }
 
-  // --- تعريف الحقول (Fields) ---
+  try {
+    setOcrLoading(true);
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const res = await postDataimage(
+      formData,
+      "/api/admin/questions/ocr",
+      "Text extracted successfully"
+    );
+
+    const extractedText = res?.data?.data;
+console.log(extractedText);
+    if (extractedText) {
+      setFormData((prev) => ({
+        ...prev,
+        question: extractedText,
+      }));
+    } else {
+      toast.error("No text detected");
+    }
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setOcrLoading(false);
+  }
+};
+
   const fields = useMemo(() => [
+{
+  name: "image",
+  label: "Question Image & OCR",
+  type: "fileWithOCR", // استخدمنا النوع الجديد هنا
+  section: "General Information",
+  fullWidth: true, // عشان ياخد العرض بالكامل والصورة والزرار يبقوا مرتاحين
+  actionButton: ({ formData, setFormData }) => (
+    <button
+      type="button"
+      onClick={() => handleOCR(formData.image, setFormData)}
+      disabled={ocrLoading || !formData.image}
+      className="w-full md:w-auto h-full px-8 py-4 bg-one text-white rounded-xl hover:bg-one/80 disabled:opacity-50 flex items-center justify-center gap-2 transition-all font-bold shadow-sm"
+    >
+      {ocrLoading ? (
+        <>
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <span>Extracting...</span>
+        </>
+      ) : (
+        <>📄 Extract Text</>
+      )}
+    </button>
+  ),
+},
     {
       name: "question",
       label: "Question Content",
@@ -156,7 +214,7 @@ const AddQuestions = () => {
         const count = formData.options?.length || 4;
         const letters = Array.from({ length: count }, (_, i) => String.fromCharCode(65 + i));
         return (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-3">
             {letters.map((l) => (
               <button
                 key={l}
@@ -197,14 +255,8 @@ const AddQuestions = () => {
       type: "text",
       section: "Solution Media",
     },
-    {
-      name: "image",
-      label: "Question Image",
-      type: "file",
-      section: "General Information",
-    }
-  ], [SectionsOptions, ExamCodeOptions, years]);
-
+    
+], [SectionsOptions, ExamCodeOptions, years, ocrLoading]);
   const initialFormValues = {
     question: "",
     answerType: "",
@@ -259,7 +311,7 @@ const AddQuestions = () => {
       year: Number(year),
       lessonId: lessonId,
       options: finalOptions,
-      image: imageBase64 || formData.image, // استخدام القديمة لو مفيش جديدة
+      image: imageBase64 || formData.image, 
     };
 
     try {

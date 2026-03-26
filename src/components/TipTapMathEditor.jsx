@@ -28,29 +28,34 @@ const TipTapMathEditor = ({ value, onChange }) => {
 
   const [activeTab, setActiveTab] = useState("Basic");
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Superscript,
-      Subscript,
-      TextStyle,
-      Color,
-      Highlight.configure({ multicolor: true }),
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    ],
-    content: value || "", // القيمة الابتدائية
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-    },
-  });
+ const editor = useEditor({
+  extensions: [
+    StarterKit,
+    Underline,
+    Superscript,
+    Subscript,
+    TextStyle,
+    Color,
+    Highlight.configure({ multicolor: true }),
+    TextAlign.configure({ types: ['heading', 'paragraph'] }),
+  ],
+  content: "",                    // ← خليها فاضية في البداية
+  onUpdate: ({ editor }) => {
+    onChange(editor.getHTML());
+  },
+});
 
-  // ✅ التعديل الجوهري لحل مشكلة ظهور البيانات في صفحة التعديل (Edit)
-  useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value || "");
-    }
-  }, [value, editor]);
+// استبدل الـ useEffect القديم بالكود ده
+useEffect(() => {
+  if (!editor) return;
+
+  // لو القيمة الجديدة مختلفة عن اللي جوا الـ editor
+  const currentContent = editor.getHTML();
+
+  if (value && value !== currentContent && value !== "<p></p>") {
+    editor.commands.setContent(value, false); // false = بدون إضافة للـ history
+  }
+}, [value, editor]);
 
   if (!editor) return null;
 
