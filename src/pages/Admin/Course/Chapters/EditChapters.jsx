@@ -150,7 +150,7 @@ useEffect(() => {
       `/api/admin/chapters/${id}`,
       "Chapter updated successfully",
     );
-    navigate(`/admin/courses/chapters/${formData.courseId}`);
+    navigate(-1);
   };
 
   if (loadingChapter || loadingTeachers || loadingCours) return <Loader />;

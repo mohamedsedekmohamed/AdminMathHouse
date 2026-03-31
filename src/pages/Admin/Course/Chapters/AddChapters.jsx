@@ -187,7 +187,7 @@ if (Number(formData.discount) > 0) {
   }
 
   await postData(payload, "/api/admin/chapters", "Chapter added successfully");
-  navigate(`/admin/courses/chapters/${formData.courseId}`,{state: { 
+  navigate(`/admin/courses/chapters/${courseId}`,{state: { 
         courseId: courseId, 
         semesterId: semesterId 
       }});

@@ -174,7 +174,7 @@ const EditCourses = () => {
       `/api/admin/courses/${id}`,
       "Course updated successfully",
     );
-    navigate(`/admin/courses/courses/${formData.categoryId}`);
+    navigate(-1);
   };
 
   if (loadingOne || loadingTeachers || loadingCats) {

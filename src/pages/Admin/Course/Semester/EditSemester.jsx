@@ -39,7 +39,7 @@ const location = useLocation();
     };
 
     await putData(payload, `/api/admin/semester/${id}`, "Semester updated successfully");
-    navigate(`/admin/courses/semester/${coursesId}`);
+    navigate(-1);
   };
 
   if ( loadingOne) {
@@ -63,7 +63,7 @@ const semester = semesterRes?.data?.data?.[0];
       title="Edit Semester"
       fields={fields}
       onSave={onSave}
-      onCancel={() => navigate(`/admin/courses/semester/${coursesId}`)}
+      onCancel={() => navigate(-1)}
       initialData={{
         name: semester?.name || "",
         categoryId: semester?.categoryId || "",

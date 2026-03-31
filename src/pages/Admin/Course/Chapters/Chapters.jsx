@@ -10,7 +10,7 @@ import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import toast from "react-hot-toast";
 import { 
-MdGridView  ,MdLayers
+MdGridView  
 } from "react-icons/md";
 import { 
  FaBook

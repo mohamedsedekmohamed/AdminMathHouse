@@ -105,13 +105,13 @@ const ReusableTable = ({
   showStatusInActions = false,
   onToggleStatus,
   statusKey = "status",
-  children
+  children,
+  rowsPerPage = 10,
 
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [columnFilters, setColumnFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
 
   const handleColumnFilterChange = (key, value) => {
     setColumnFilters(prev => ({

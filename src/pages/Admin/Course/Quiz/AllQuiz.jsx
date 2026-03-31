@@ -1,15 +1,38 @@
 import { useNavigate } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import useDelete from "@/hooks/useDelete";
 
 const AllQuiz = () => {
   const navigate = useNavigate();
 
   const { data, loading, error } = useGet("/api/admin/quiz");
+  const { deleteData, loading: deleteLoading } = useDelete();
+const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
+  const handleDelete = (row) => {
+    setSelectedRow(row);
+    setOpenDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteData(`/api/admin/quiz/${selectedRow.id}`);
+      setOpenDeleteModal(false);
+      setSelectedRow(null);
+      refetch();
+    } catch (e) {
+        throw e
+    }
+  };
+    const handleEdit = (row) => {
+    navigate(`/admin/courses/quiz/edit/${row.id}`);
+  };
   const columns = [
     {
       header: "Quiz",
@@ -84,8 +107,17 @@ const AllQuiz = () => {
         title="All Quizzes"
         columns={columns}
         data={tableData}
-        loading={loading}
+        loading={loading || deleteLoading }
+                onEdit={handleEdit}
+        onDelete={handleDelete}
       />
+       <ConfirmDeleteModal
+              open={openDeleteModal}
+              onClose={() => setOpenDeleteModal(false)}
+              onConfirm={confirmDelete}
+              title="Delete Quiz"
+              description={`Are you sure you want to delete "${selectedRow?.title}"?`}
+            />
     </div>
   );
 };

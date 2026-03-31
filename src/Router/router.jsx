@@ -4,6 +4,7 @@ import LoginDrive from "../Auth/LoginDrive";
 import SaveRoute from "../Auth/SaveRoute";
 import AdminLayout from "../Layout/AdminLayout";
 import Home from "../pages/Home/Home";
+import Filter from '../pages/Admin/Filter/Filter'
 
 import Admin from "../pages/Admin/Admins/Admin/Admin";
 import AddAdmin from "../pages/Admin/Admins/Admin/AddAdmin";
@@ -18,7 +19,6 @@ import AddCategory from '../pages/Admin/Course/Category/AddCategory'
 import EditCategory from '../pages/Admin/Course/Category/EditCategory'
 
 import Semester from '../pages/Admin/Course/Semester/Semester'
-import AllSemesters from '../pages/Admin/Course/Semester/AllSemesters'
 import AddSemester from '../pages/Admin/Course/Semester/AddSemester'
 import EditSemester from '../pages/Admin/Course/Semester/EditSemester'
 
@@ -41,12 +41,10 @@ import AddCourse from '../pages/Admin/Course/Courses/AddCourses'
 import EditCourse from '../pages/Admin/Course/Courses/EditCourses'
 
 import Chapters from '../pages/Admin/Course/Chapters/Chapters'
-import AllChapters from '../pages/Admin/Course/Chapters/AllChapters'
 import AddChapter from '../pages/Admin/Course/Chapters/AddChapters'
 import EditChapter from '../pages/Admin/Course/Chapters/EditChapters'
 
 import Lessons from '../pages/Admin/Course/Lessons/Lessons'
-import AllLessons from '../pages/Admin/Course/Lessons/AllLessons'
 import AddLesson from '../pages/Admin/Course/Lessons/AddLessons'
 import EditLesson from '../pages/Admin/Course/Lessons/EditLessons'
 
@@ -90,17 +88,14 @@ import EditPaymentMethod from '../pages/Admin/Payments/PaymentMethod/EditPayment
 
 
 import Diagnosticexam from '../pages/Admin/Course/Diagnosticexam/Diagnosticexam'
-import AllDiagnosticExam from '../pages/Admin/Course/Diagnosticexam/AllDiagnosticExam'
 import AddDiagnosticexam from "../pages/Admin/Course/Diagnosticexam/AddDiagnosticexam";
 import EditDiagnosticexam from "../pages/Admin/Course/Diagnosticexam/EditDiagnosticexam";
 
 import Exam from '../pages/Admin/Course/Exam/Exam'
-import AllExams from '../pages/Admin/Course/Exam/AllExams'
 import AddExam from '../pages/Admin/Course/Exam/AddExam'
 import EditExam from '../pages/Admin/Course/Exam/EditExam'
 
 import Quiz from '../pages/Admin/Course/Quiz/Quiz'
-import AllQuiz from '../pages/Admin/Course/Quiz/AllQuiz'
 import AddQuiz from '../pages/Admin/Course/Quiz/AddQuiz'
 import EditQuiz from '../pages/Admin/Course/Quiz/EditQuiz'
 
@@ -165,7 +160,6 @@ children: [
 
       
       { path: "courses/semester/:coursesId", element: <Semester /> },
-      { path: "courses/semester/allsemesters", element: <AllSemesters /> },
       { path: "courses/semester/add", element: <AddSemester /> },
       { path: "courses/semester/edit/:id", element: <EditSemester /> },
 
@@ -185,25 +179,21 @@ children: [
       { path: "courses/categories/add", element: <AddCategory /> },
       { path: "courses/categories/edit/:id", element: <EditCategory /> },
 
-      { path: "courses/courses/allcourses", element: <AllCourses /> },
       { path: "courses/courses/:categoryId", element: <Courses /> },
       { path: "courses/courses/add", element: <AddCourse /> },
       { path: "courses/courses/edit/:id", element: <EditCourse /> },
 
       { path: "courses/chapters/:courseId", element: <Chapters /> },
-      { path: "courses/chapters/allchapters", element: <AllChapters /> },
       { path: "courses/chapters/add", element: <AddChapter /> },
       { path: "courses/chapters/edit/:id", element: <EditChapter /> },
 
 
       {path:"courses/lessons/:chapterId", element: <Lessons />},
-      {path:"courses/lessons/alllessons", element: <AllLessons />},
       {path:"courses/lessons/add", element: <AddLesson />},
       {path:"courses/lessons/edit/:id", element: <EditLesson />},
       
       {path:"courses/questions/:lessonId", element: <Questions />},
       {path:"courses/questions/add", element: <AddQuestions />},
-      {path:"courses/questions/AllQuestions", element: <AllQuestions />},
       {path:"courses/questions/same/:id", element: <SameQuestions />},
       {path:"courses/questions/edit/:id", element: <EditQuestions />},
 
@@ -238,18 +228,15 @@ children: [
       
       
       {path:"courses/diagnosticexam/:courseId", element: <Diagnosticexam />},
-      {path:"courses/diagnosticexam/alldiagnosticexams", element: <AllDiagnosticExam />},
       {path:"courses/diagnosticexam/add", element: <AddDiagnosticexam />},
       {path:"courses/diagnosticexam/edit/:id", element: <EditDiagnosticexam />},
       
       {path:"courses/exam/:courseId", element: <Exam />},
-      {path:"courses/exam/AllExams", element: <AllExams />},
       {path:"courses/exam/add", element: <AddExam />},
       {path:"courses/exam/edit/:id", element: <EditExam />},
       
       
       {path:"courses/quiz/:lessonId", element: <Quiz />},
-      {path:"courses/quiz/allquizzes", element: <AllQuiz />},
       {path:"courses/quiz/add", element: <AddQuiz />},
       {path:"courses/quiz/edit/:id", element: <EditQuiz />},
       
@@ -265,12 +252,11 @@ children: [
       {path:"courses/questions/parallel/:id", element: <Parallel />},
       {path:"courses/questions/parallel/add", element: <AddParallel />},
       {path:"courses/questions/parallel/edit/:id", element: <EditParallel />},
-
-
-
-
-
-
+      
+      
+      
+      
+      {path:"filter", element: <Filter />},
 
 
 

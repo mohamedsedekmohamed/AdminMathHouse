@@ -129,7 +129,7 @@ const EditLessons = () => {
       `/api/admin/lessons/${id}`,
       "Lesson updated successfully",
     );
-    navigate(`/admin/courses/lessons/${formData.chapterId}`);
+    navigate(-1);
   };
 
   if (loadingLesson || loadingTeachers) {

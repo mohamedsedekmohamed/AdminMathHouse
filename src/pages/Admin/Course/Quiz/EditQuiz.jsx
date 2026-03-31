@@ -112,7 +112,7 @@ const EditQuiz = () => {
 
     try {
       await putData(payload, `/api/admin/quiz/${id}`, "Quiz updated successfully");
-      navigate(`/admin/courses/quiz/${lessonId}`);
+      navigate(-1);
     } catch (e) {
         throw e
     }
@@ -126,7 +126,7 @@ const EditQuiz = () => {
       title="Edit Quiz"
       fields={fields}
       onSave={onSave}
-      onCancel={() => navigate(`/admin/courses/quiz/${lessonId}`)}
+      onCancel={() =>  navigate(-1)}
       initialData={{
         title: quiz?.title || "",
         description: quiz?.description || "",

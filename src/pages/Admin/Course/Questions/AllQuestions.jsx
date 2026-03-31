@@ -8,6 +8,7 @@ import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 
 const AllQuestions = () => {
+  const navigate = useNavigate();
 
   // 1. States للتحكم في الترقيم والبحث والفلاتر
   const [page, setPage] = useState(1);
@@ -130,7 +131,10 @@ const AllQuestions = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1); // نرجع للصفحة الأولى لما الفلتر يتغير
   };
-
+const handleEdit = (row) => {
+    navigate(`/admin/courses/questions/edit/${row.id}`);
+  };
+  
   if (loading && !tableData.length) return <Loader />;
   if (error) return <Errorpage />;
 
@@ -141,7 +145,8 @@ const AllQuestions = () => {
         columns={columns}
         data={tableData}
         loading={loading || deleteLoading}
-       
+        onEdit={handleEdit}
+        onDelete={handleDelete}
         
         // ربط الفلاتر
         filters={filterOptions}
@@ -162,7 +167,13 @@ const AllQuestions = () => {
         onSearchChange={(val) => setSearchTerm(val)}
       />
 
-     
+     <ConfirmDeleteModal
+             open={openDeleteModal}
+             onClose={() => setOpenDeleteModal(false)}
+             onConfirm={confirmDelete}
+             title="Delete Question"
+             description={`Are you sure you want to delete this question?`}
+           />
     </div>
   );
 };

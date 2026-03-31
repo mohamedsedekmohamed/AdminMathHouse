@@ -139,7 +139,7 @@ const EditDiagnosticexam = () => {
       };
 
       await putData(payload, `/api/admin/diagnosticExam/${id}`, "Exam updated successfully");
-      navigate(`/admin/courses/diagnosticexam/${initialData.courseId}`);
+      navigate(-1);
     } catch (error) {
             throw error;
 
@@ -154,7 +154,7 @@ const EditDiagnosticexam = () => {
       title="Edit Diagnostic Exam"
       fields={fields}
       onSave={onSave}
-      onCancel={() => navigate(`/admin/courses/diagnosticexam/${initialData.courseId}`)}
+      onCancel={() => navigate(-1)}
       initialData={initialData}
       loading={saving}
     />

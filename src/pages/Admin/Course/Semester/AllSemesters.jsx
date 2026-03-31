@@ -1,15 +1,37 @@
 import { useNavigate } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import useDelete from "@/hooks/useDelete";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
 const AllSemesters = () => {
   const navigate = useNavigate();
-
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const { data, loading, error } = useGet("/api/admin/semester");
+  const { deleteData, loading: deleteLoading } = useDelete();
+const handleDelete = (row) => {
+    setSelectedRow(row);
+    setOpenDeleteModal(true);
+  };
 
+  const confirmDelete = async () => {
+    try {
+      await deleteData(`/api/admin/semester/${selectedRow.id}`);
+      setOpenDeleteModal(false);
+      setSelectedRow(null);
+      refetch();
+    } catch (e) {
+      throw e;
+    }
+  };
+  const handleEdit = (row) => {
+    navigate(`/admin/courses/semester/edit/${row.id}`, 
+      { state: row.courseId });
+  };
   const columns = [
     {
       header: "Semester Name",
@@ -43,8 +65,20 @@ const AllSemesters = () => {
         title="All Semesters"
         columns={columns}
         data={tableData}
-        loading={loading}
+        loading={loading||deleteLoading}
+         onEdit={handleEdit}
+        onDelete={handleDelete}
+                rowsPerPage={5}
+
       />
+
+        <ConfirmDeleteModal
+              open={openDeleteModal}
+              onClose={() => setOpenDeleteModal(false)}
+              onConfirm={confirmDelete}
+              title="Delete Semester"
+              description={`Are you sure you want to delete "${selectedRow?.name}" ?`}
+            />
     </div>
   );
 };

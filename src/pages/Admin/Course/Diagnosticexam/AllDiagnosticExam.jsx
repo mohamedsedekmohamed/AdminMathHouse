@@ -1,15 +1,35 @@
 import { useNavigate } from "react-router-dom";
 import ReusableTable from "@/components/ReusableTable";
 import useGet from "@/hooks/useGet";
-import React, { useMemo } from "react";
+import React, { useMemo ,useState } from "react";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import useDelete from "@/hooks/useDelete";
 
 const AllDiagnosticExam = () => {
   const navigate = useNavigate();
 
   const { data, loading, error } = useGet("/api/admin/diagnosticExam");
+  const { deleteData, loading: deleteLoading } = useDelete();
+const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
+  const handleDelete = (row) => {
+    setSelectedRow(row);
+    setOpenDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteData(`/api/admin/diagnosticExam/${selectedRow.id}`);
+      setOpenDeleteModal(false);
+      setSelectedRow(null);
+      refetch();
+    } catch (e) {
+        throw e
+    }
+  };
   const columns = [
     {
       header: "Exam",
@@ -54,7 +74,9 @@ const AllDiagnosticExam = () => {
       key: "status",
     },
   ];
-
+ const handleEdit = (row) => {
+    navigate(`/admin/courses/diagnosticexam/edit/${row.id}`);
+  };
   const tableData = useMemo(() => {
     return (
       data?.data?.data?.map((exam) => ({
@@ -82,8 +104,17 @@ const AllDiagnosticExam = () => {
         title="All Diagnostic Exams"
         columns={columns}
         data={tableData}
-        loading={loading}
+        loading={loading || deleteLoading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
+       <ConfirmDeleteModal
+              open={openDeleteModal}
+              onClose={() => setOpenDeleteModal(false)}
+              onConfirm={confirmDelete}
+              title="Delete Exam"
+              description={`Are you sure you want to delete "${selectedRow?.title}"?`}
+            />
     </div>
   );
 };
