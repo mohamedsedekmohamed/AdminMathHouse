@@ -19,12 +19,26 @@ const AllExams = () => {
       header: "Exam",
       key: "title",
     },
+     {
+      header: "Category",
+      key: "categoryName",
+      filterable: true,
+      filterType: "select",
+    },
+   
     {
       header: "Course",
       key: "course",
       filterable: true,
       filterType: "select",
     },
+    {
+      header: "Semester",
+      key: "semesterName",
+      filterable: true,
+      filterType: "select",
+    },
+
     {
       header: "Code",
       key: "codeName",
@@ -102,6 +116,8 @@ const handleDelete = (row) => {
       year: exam.year,
       month: exam.Month,
       examType: exam.examType,
+      categoryName: exam.categoryName || "—",
+      semesterName: exam.semesterName || "—",
       status: exam.isActive ? "Active" : "Inactive",
       raw: exam,
     }));

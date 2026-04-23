@@ -39,30 +39,32 @@ const AllChapters = () => {
       header: "Chapter",
       key: "chapterName",
     },
-    {
-      header: "Course",
-      key: "course",
-      filterable: true,
-      filterType: "select",
-    },
-    {
+     {
       header: "Category",
       key: "category",
       filterable: true,
       filterType: "select",
     },
     {
-      header: "Teacher",
-      key: "teacher",
+      header: "Course",
+      key: "course",
       filterable: true,
       filterType: "select",
     },
-    {
+     {
       header: "Semester",
       key: "semester",
       filterable: true,
       filterType: "select",
     },
+   
+    {
+      header: "Teacher",
+      key: "teacher",
+      filterable: true,
+      filterType: "select",
+    },
+   
     {
       header: "Price",
       key: "price",

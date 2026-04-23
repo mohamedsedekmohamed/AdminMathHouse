@@ -38,15 +38,9 @@ const [openDeleteModal, setOpenDeleteModal] = useState(false);
       header: "Quiz",
       key: "title",
     },
-    {
-      header: "Lesson",
-      key: "lesson",
-      filterable: true,
-      filterType: "select",
-    },
-    {
-      header: "Chapter",
-      key: "chapter",
+        {
+      header: "Category",
+      key: "category",
       filterable: true,
       filterType: "select",
     },
@@ -57,11 +51,26 @@ const [openDeleteModal, setOpenDeleteModal] = useState(false);
       filterType: "select",
     },
     {
-      header: "Category",
-      key: "category",
+      header: "Semester",
+      key: "semester",
       filterable: true,
       filterType: "select",
     },
+     {
+      header: "Chapter",
+      key: "chapter",
+      filterable: true,
+      filterType: "select",
+    },  
+    {
+      header: "Lesson",
+      key: "lesson",
+      filterable: true,
+      filterType: "select",
+    },
+   
+    
+
     {
       header: "Duration",
       key: "duration",
@@ -93,6 +102,7 @@ const [openDeleteModal, setOpenDeleteModal] = useState(false);
         passScore: quiz.passScore,
         questions: quiz.questionsCount,
         status: quiz.isActive ? "Active" : "Inactive",
+        semester: quiz.semester?.name || "—",
         raw: quiz,
       })) || []
     );

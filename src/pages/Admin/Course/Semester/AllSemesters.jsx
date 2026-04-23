@@ -37,12 +37,19 @@ const handleDelete = (row) => {
       header: "Semester Name",
       key: "name",
     },
+       {
+      header: "Category",
+      key: "category",
+      filterable: true,
+      filterType: "select",
+    },
+    
     {
       header: "Course",
       key: "course",
       filterable: true,
       filterType: "select",
-    },
+    }
   ];
 
   const tableData = useMemo(() => {
@@ -51,6 +58,7 @@ const handleDelete = (row) => {
         id: sem.id,
         name: sem.name,
         course: sem.course?.name || "—",
+        category: sem.category?.name || "—",
         raw: sem,
       })) || []
     );

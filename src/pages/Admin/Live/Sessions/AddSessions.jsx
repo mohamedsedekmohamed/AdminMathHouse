@@ -6,7 +6,7 @@ import useGet from "@/hooks/useGet";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import SearchStudents from "@/components/SearchStudents";
-import HierarchicalLessonSelector from "../../../../components/HierarchicalLessonSelector";
+import HierarchicalLessonSelector from "@/components/HierarchicalLessonSelector";
 import { toast } from "react-hot-toast";
 const AddSessions = () => {
   const navigate = useNavigate();

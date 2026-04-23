@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import LessonSelectionRow from "./LessonSelectionRow";
 
-const HierarchicalLessonSelector = ({ value, onChange, initialLessons = [] }) => {
+// تعريف المصفوفة الفارغة خارج الكومبوننت عشان نحافظ على الـ Reference بتاعها في الذاكرة
+// وده اللي هيمنع الـ Infinite Loop
+const EMPTY_LESSONS = [];
+
+const HierarchicalLessonSelector = ({ value, onChange, initialLessons = EMPTY_LESSONS }) => {
   const [rows, setRows] = useState([]);
   const [selectedIdsPerRow, setSelectedIdsPerRow] = useState({});
 
@@ -32,7 +36,7 @@ const HierarchicalLessonSelector = ({ value, onChange, initialLessons = [] }) =>
       const initialRowsData = Object.values(grouped);
       setRows(initialRowsData);
 
-      // 👇🔥 الحل هنا: بنخزن الـ IDs بتاعة كل الصفوف في الـ State عشان متتمسحش لما نعدل صف واحد
+      // بنخزن الـ IDs بتاعة كل الصفوف في الـ State عشان متتمسحش لما نعدل صف واحد
       const initialIdsState = {};
       initialRowsData.forEach((row, idx) => {
         initialIdsState[idx] = row.selectedLessons.map(l => l.value);
@@ -42,9 +46,12 @@ const HierarchicalLessonSelector = ({ value, onChange, initialLessons = [] }) =>
       const allIds = initialLessons.map((l) => l.id);
       onChange(allIds);
     } else {
-      setRows([{}]); 
+      // شرط إضافي عشان نتأكد إننا مش بنعمل setRows لو هي أصلاً فيها صف فاضي
+      if (rows.length === 0) {
+        setRows([{}]); 
+      }
     }
-  }, [initialLessons]); // بنراقب initialLessons بس
+  }, [initialLessons]); // دلوقتي initialLessons مش هتعمل مشاكل لأن الريفرنس بتاعها ثابت
 
   const handleUpdateRow = (index, selectedIds) => {
     setSelectedIdsPerRow((prev) => {

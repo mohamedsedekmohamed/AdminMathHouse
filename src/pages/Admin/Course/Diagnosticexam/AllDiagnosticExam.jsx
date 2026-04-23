@@ -36,8 +36,21 @@ const [openDeleteModal, setOpenDeleteModal] = useState(false);
       key: "title",
     },
     {
+      header: "Category",
+      key: "category",
+      filterable: true,
+      filterType: "select",
+    },
+   
+    {
       header: "Course",
       key: "course",
+      filterable: true,
+      filterType: "select",
+    },
+     {
+      header: "Semester",
+      key: "semester",
       filterable: true,
       filterType: "select",
     },
@@ -91,6 +104,8 @@ const [openDeleteModal, setOpenDeleteModal] = useState(false);
         passScore: exam.passScore,
         status: exam.isActive ? "Active" : "Inactive",
         raw: exam,
+        category: exam.category?.name || "—",
+        semester: exam.semester?.name || "—",
       })) || []
     );
   }, [data]);

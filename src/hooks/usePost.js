@@ -16,7 +16,7 @@ export default function usePost(defaultUrl = "") {
   
       const res = await api.post(url, body);
 
-      // ✅ استخدم النص اللي وصل من props
+      
       toast.success(toastMessage);
 
       return res.data;
@@ -36,7 +36,7 @@ export default function usePost(defaultUrl = "") {
   setError(errorMessage);
   toast.error(errorMessage);
 
-  // لو محتاج توقف التنفيذ
+
   throw new Error(errorMessage);
 
 

@@ -39,8 +39,8 @@ const handleEdit = (row) => {
       key: "lessonName",
     },
     {
-      header: "Chapter",
-      key: "chapter",
+      header: "Category",
+      key: "category",
       filterable: true,
       filterType: "select",
     },
@@ -51,8 +51,14 @@ const handleEdit = (row) => {
       filterType: "select",
     },
     {
-      header: "Category",
-      key: "category",
+      header: "Semester",
+      key: "semester",
+      filterable: true,
+      filterType: "select",
+    },
+    {
+      header: "Chapter",
+      key: "chapter",
       filterable: true,
       filterType: "select",
     },
@@ -94,6 +100,7 @@ const handleEdit = (row) => {
         price: lesson.price,
         discount: lesson.discount,
         totalPrice: lesson.totalPrice,
+        semester: lesson.semester?.name || "—",
         ideasCount: lesson.ideas?.length || 0,
         raw: lesson,
       }))

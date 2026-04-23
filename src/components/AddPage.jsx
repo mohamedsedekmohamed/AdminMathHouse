@@ -14,6 +14,8 @@ const AddPage = ({ title, fields, onSave, onCancel, initialData }) => {
   const [previews, setPreviews] = useState({});
 
   // Initialize default data
+  
+
   const [formData, setFormData] = useState(() =>
     fields.reduce(
       (acc, field) => ({ ...acc, [field.name]: field.defaultValue ?? "" }),
