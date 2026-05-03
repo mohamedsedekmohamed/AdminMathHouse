@@ -6,10 +6,14 @@ import React, { useMemo ,useState} from "react";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-
+import { MdAttachMoney } from "react-icons/md";
+import PricePlansModal from "@/components/PricePlansModal";
 const AllChapters = () => {
   const navigate = useNavigate();
-
+const [pricePopup, setPricePopup] = useState({
+  open: false,
+  row: null,
+});
   const { data, loading, error } = useGet("/api/admin/chapters");
   const { deleteData, loading: deleteLoading } = useDelete();
  const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -65,41 +69,25 @@ const AllChapters = () => {
       filterType: "select",
     },
    
-    {
-      header: "Price",
-      key: "price",
-    },
-    {
-      header: "Discount",
-      key: "discount",
-    },
-    {
-      header: "Total Price",
-      key: "totalPrice",
-    },
-    {
-      header: "Duration",
-      key: "duration",
-    },
+   
   ];
+const tableData = useMemo(() => {
+  return (
+    data?.data?.chapters?.map((item) => ({
+      id: item.chapter.id,
+      chapterName: item.chapter.name,
+      course: item.course?.name || "—",
+      category: item.category?.name || "—",
+      teacher: item.teacher?.name || "—",
+      semester: item.semester?.name || "—",
 
-  const tableData = useMemo(() => {
-    return (
-      data?.data?.chapters?.map((item) => ({
-        id: item.chapter.id,
-        chapterName: item.chapter.name,
-        course: item.course?.name || "—",
-        category: item.category?.name || "—",
-        teacher: item.teacher?.name || "—",
-        semester: item.semester?.name || "—",
-        price: item.chapter.price,
-        discount: item.chapter.discount,
-        totalPrice: item.chapter.totalPrice,
-        duration: item.chapter.duration,
-        raw: item,
-      })) || []
-    );
-  }, [data]);
+      // 👇 مهم
+      prices: item.prices || [],
+
+      raw: item,
+    })) || []
+  );
+}, [data]); 
 
   if (loading) return <Loader />;
   if (error) return <Errorpage />;
@@ -112,6 +100,14 @@ const AllChapters = () => {
         data={tableData}
         loading={loading || deleteLoading}
          onEdit={handleEdit}
+          extraActions={(row) => (
+  <button
+    onClick={() => setPricePopup({ open: true, row })}
+  >
+    <MdAttachMoney className="text-2xl text-green-600" />
+  </button>
+)}
+        
         onDelete={handleDelete}
         rowsPerPage={5}
       />
@@ -122,6 +118,11 @@ const AllChapters = () => {
               title="Delete Chapter"
               description={`Are you sure you want to delete "${selectedRow?.chapterName}" ?`}
             />
+            <PricePlansModal
+  open={pricePopup.open}
+  row={pricePopup.row}
+  onClose={() => setPricePopup({ open: false, row: null })}
+/>
     </div>
   );
 };

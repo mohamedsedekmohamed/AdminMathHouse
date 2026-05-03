@@ -6,10 +6,15 @@ import React, { useMemo, useState } from "react";
 import Loader from "@/components/Loader";
 import Errorpage from "@/components/Errorpage";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import PricePlansModal from "@/components/PricePlansModal";
+import { MdAttachMoney } from "react-icons/md";
 
 const AllLessons = () => {
   const navigate = useNavigate();
-
+const [pricePopup, setPricePopup] = useState({
+  open: false,
+  row: null,
+});
   const { data, loading, error } = useGet("/api/admin/lessons");
   const { deleteData, loading: deleteLoading } = useDelete();
  const [selectedRow, setSelectedRow] = useState(null);
@@ -68,44 +73,34 @@ const handleEdit = (row) => {
       filterable: true,
       filterType: "select",
     },
-    {
-      header: "Price",
-      key: "price",
-    },
-    {
-      header: "Discount",
-      key: "discount",
-    },
-    {
-      header: "Total Price",
-      key: "totalPrice",
-    },
+    
     {
       header: "Ideas",
       key: "ideasCount",
     },
   ];
 
-  const tableData = useMemo(() => {
-    if (!data?.data?.chapters) return [];
+const tableData = useMemo(() => {
+  if (!data?.data?.chapters) return [];
 
-    return data.data.chapters.flatMap((chapterItem) =>
-      chapterItem.lessons.map((lesson) => ({
-        id: lesson.id,
-        lessonName: lesson.name,
-        chapter: chapterItem.chapter?.name || "—",
-        course: lesson.course?.name || "—",
-        category: lesson.category?.name || "—",
-        teacher: lesson.teacher?.name || "—",
-        price: lesson.price,
-        discount: lesson.discount,
-        totalPrice: lesson.totalPrice,
-        semester: lesson.semester?.name || "—",
-        ideasCount: lesson.ideas?.length || 0,
-        raw: lesson,
-      }))
-    );
-  }, [data]);
+  return data.data.chapters.flatMap((chapterItem) =>
+    chapterItem.lessons.map((lesson) => ({
+      id: lesson.id,
+      lessonName: lesson.name,
+      chapter: chapterItem.chapter?.name || "—",
+      course: lesson.course?.name || "—",
+      category: lesson.category?.name || "—",
+      teacher: lesson.teacher?.name || "—",
+      semester: lesson.semester?.name || "—",
+
+      // 👇 مهم
+      prices: lesson.prices || [],
+
+      ideasCount: lesson.ideas?.length || 0,
+      raw: lesson,
+    }))
+  );
+}, [data]);
 
   if (loading) return <Loader />;
   if (error) return <Errorpage />;
@@ -120,7 +115,18 @@ const handleEdit = (row) => {
        onEdit={handleEdit}
         onDelete={handleDelete}
          rowsPerPage={5}
+           extraActions={(row) => (
+    <button onClick={() => setPricePopup({ open: true, row })}>
+      <MdAttachMoney className="text-2xl text-green-600" />
+    </button>
+  )}
       />
+     
+<PricePlansModal
+  open={pricePopup.open}
+  row={pricePopup.row}
+  onClose={() => setPricePopup({ open: false, row: null })}
+/>
        <ConfirmDeleteModal
               open={openDeleteModal}
               onClose={() => setOpenDeleteModal(false)}

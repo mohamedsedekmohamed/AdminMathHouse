@@ -71,7 +71,7 @@ const menuItems = [
       // { title: "All Questions", path: "/admin/courses/questions/AllQuestions", icon: <FaQuestionCircle size={18} /> },
       // { title: "All Quizzes", path: "/admin/courses/quiz/allquizzes", icon: <MdOutlineQuestionMark size={18} /> },
       // { title: "All Diagnostic Exams ", path: "/admin/courses/diagnosticexam/alldiagnosticexams", icon: <MdTimeline size={18} /> },
-      // { title: "All Exams", path: "/admin/courses/exam/AllExams", icon: <FaClipboardList size={18} /> },
+      { title: "Grade", path: "/admin/courses/grade", icon: <FaClipboardList size={18} /> },
     ],
   },
   {

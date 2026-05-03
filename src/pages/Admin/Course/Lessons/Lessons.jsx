@@ -10,6 +10,8 @@ import Loader from "@/components/Loader";
 import NavChild from "@/components/NavChild";
 import Errorpage from "@/components/Errorpage";
 import { AiFillProduct } from "react-icons/ai";
+import PricePlansModal from "@/components/PricePlansModal";
+import { MdAttachMoney } from "react-icons/md";
 
 import { 
 MdGridView  ,MdLayers
@@ -83,7 +85,10 @@ const OrderInputCell = ({ row, tableData, patchData, refetch, loading }) => {
 const Lessons = () => {
   const navigate = useNavigate();
   const { chapterId } = useParams();
-
+const [pricePopup, setPricePopup] = useState({
+  open: false,
+  row: null,
+});
   const { patchData, loading: loadingPatch } = usePatch(
     "/api/admin/lessons/swap-order"
   );
@@ -134,15 +139,14 @@ const Lessons = () => {
       id: item.lesson.id,
       name: item.lesson.name,
       image: item.lesson.image,
-      price: item.lesson.price,
-      discount: item.lesson.discount,
-      totalPrice: item.lesson.totalPrice,
+    
       order: item.lesson.order,
 
       chapterName: item.chapter?.name || "—",
       courseName: item.course?.name || "—",
       categoryName: item.category?.name || "—",
       teacherName: item.teacher?.name || "—",
+      prices: item.prices || [],
 
       prevId: list[index - 1]?.lesson.id || null,
       nextId: list[index + 1]?.lesson.id || null,
@@ -241,12 +245,19 @@ const Lessons = () => {
             >
               Quiz
             </button>
+                <button onClick={() => setPricePopup({ open: true, row })}>
+                  <MdAttachMoney className="text-2xl text-green-600" />
+                </button>
           </>
         )}
         onEdit={handleEdit}
         onDelete={handleDelete}
   >
-
+<PricePlansModal
+  open={pricePopup.open}
+  row={pricePopup.row}
+  onClose={() => setPricePopup({ open: false, row: null })}
+/>
 <div className="flex gap-2">
    <IconButton
   icon={MdGridView}

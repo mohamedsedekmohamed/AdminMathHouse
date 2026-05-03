@@ -144,7 +144,8 @@ useEffect(() => {
         </div>
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center w-fit gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition-all shadow-sm"
+          className="flex items-center w-fit gap-2 px-4 py-2 bg-white
+           border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition-all shadow-sm"
         >
           <ArrowLeft size={18} />
           <span>Back</span>
@@ -189,7 +190,7 @@ useEffect(() => {
                 return (
                   <div
                     key={field.name}
-                    className={`flex flex-col gap-1.5 ${field.fullWidth ? "md:col-span-3" : ""}`}
+                    className={`flex flex-col gap-1.5 ${field.fullWidth ? "col-span-1 md:col-span-2 lg:col-span-3" : ""}`}
                   >
                     <label className="text-sm font-bold text-slate-700 flex items-center gap-1 justify-start">
                       {field.label}

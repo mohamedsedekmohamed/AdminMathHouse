@@ -17,10 +17,14 @@ import {
 } from "react-icons/fa";
 import IconButton from "@/components/IconButton";
 import { AiFillProduct } from "react-icons/ai";
+import PricePlansModal from "@/components/PricePlansModal";
+import { MdAttachMoney } from "react-icons/md";
 
 // --- مكون إدخال الترتيب (Order Input) ---
 const OrderInputCell = ({ row, tableData, patchData, refetch, loading }) => {
   const [orderVal, setOrderVal] = useState(row.order);
+ // ✅ NEW: prices popup
+  
 
   // تحديث القيمة تلقائياً لو اتغيرت من الـ API بعد الـ refetch
   useEffect(() => {
@@ -92,7 +96,10 @@ const Chapters = () => {
       loading: loadingOne,
       error: errorOne,
     } = useGet(`/api/admin/courses/${courseId}`);
-  
+  const [pricePopup, setPricePopup] = useState({
+    open: false,
+    row: null,
+  });
     const course = courseRes?.data || {};
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -125,7 +132,6 @@ const Chapters = () => {
       id: item.chapter.id,
       name: item.chapter.name,
       image: item.chapter.image,
-      duration: item.chapter.duration,
       price: item.chapter.price,
       discount: item.chapter.discount,
       totalPrice: item.chapter.totalPrice,
@@ -136,6 +142,7 @@ const Chapters = () => {
       prevId: list[index - 1]?.chapter.id || null, 
       nextId: list[index + 1]?.chapter.id || null, 
       isFirst: index === 0,
+              prices: item.prices || [],
       isLast: index === list.length - 1,
       raw: item,
     }));
@@ -158,8 +165,6 @@ const Chapters = () => {
     // { header: "Course", key: "courseName" },
     // { header: "Category", key: "categoryName" },
     { header: "Teacher", key: "teacherName", filterable: true, filterType: 'select' },
-    { header: "Duration", key: "duration", filterable: true, filterType: 'select' },
-    { header: "Total Price", key: "totalPrice" },
     {
       header: "Order",
       key: "order",
@@ -202,7 +207,16 @@ const Chapters = () => {
         extraActions={(row) => (
           <>
             <NavChild route={`/admin/courses/lessons/${row.id}`} />
+<button
+                        onClick={() =>
+                          setPricePopup({ open: true, row })
+                        }
+                        className="px-2 py-1  rounded"
+                      >
+                        <MdAttachMoney className="text-3xl text-green-600" /> 
+                      </button>  
           </>
+
         )}
         onEdit={handleEdit}
         onDelete={handleDelete}
@@ -229,7 +243,7 @@ const Chapters = () => {
     name="Semesters"
   />
 )}
-               
+              
               
 </div>
       </ReusableTable>
@@ -241,6 +255,11 @@ const Chapters = () => {
         title="Delete Chapter"
         description={`Are you sure you want to delete "${selectedRow?.name}" ?`}
       />
+      <PricePlansModal
+  open={pricePopup.open}
+  row={pricePopup.row}
+  onClose={() => setPricePopup({ open: false, row: null })}
+/>
     </div>
   );
 };

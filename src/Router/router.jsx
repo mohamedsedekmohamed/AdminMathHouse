@@ -111,6 +111,11 @@ import Parallel from '../pages/Admin/Course/Parallel/Parallel'
 import AddParallel from '../pages/Admin/Course/Parallel/AddParallel'
 import EditParallel from '../pages/Admin/Course/Parallel/EditParallel'
 
+import Grade from '../pages/Admin/Course/Grade/Grade'
+import AddGrade from '../pages/Admin/Course/Grade/AddGrade'
+import EditGrade from '../pages/Admin/Course/Grade/EditGrade'
+
+
 import PaymentRecharge from '../pages/Admin/Payments/PaymentRecharge/PaymentRecharge'
 import PaymentPackage from '../pages/Admin/Payments/PaymentPackage/PaymentPackage'
 import DriveLayout from "../Layout/DriveLayout";
@@ -254,6 +259,9 @@ children: [
       {path:"courses/questions/parallel/edit/:id", element: <EditParallel />},
       
       
+      {path:"courses/grade", element: <Grade />},
+      {path:"courses/grade/add", element: <AddGrade />},
+      {path:"courses/grade/edit/:id", element: <EditGrade />},
       
       
       {path:"filter", element: <Filter />},
